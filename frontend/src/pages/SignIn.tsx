@@ -8,9 +8,12 @@ import {
   Button,
   createStyles,
 } from "@mantine/core";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { FoodlyLogo } from "../utils/Logo";
+import { isNotEmpty, useForm } from "@mantine/form";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { loginUser, userState } from "../features/user/UserSlice";
 
 const useStyles = createStyles((theme) => ({
   section: {
@@ -39,6 +42,30 @@ const useStyles = createStyles((theme) => ({
 
 function SignIn() {
   const { classes } = useStyles();
+  const dispatch = useAppDispatch();
+  const { isLoading } = useAppSelector(userState);
+
+  const navigate = useNavigate();
+
+  const form = useForm({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validate: {
+      email: isNotEmpty("Email is required."),
+      password: isNotEmpty("Password is required"),
+    },
+  });
+
+  const submitForm = form.onSubmit(async (formData) => {
+    try {
+      const result = await dispatch(loginUser(formData)).unwrap();
+      navigate("/home");
+    } catch (error) {
+      console.log(error);
+    }
+  });
 
   return (
     <section className={classes.section}>
@@ -50,28 +77,44 @@ function SignIn() {
           radius="md"
           className={classes.paper}
         >
-          <div className={classes.logoWrapper}>
-            <FoodlyLogo width={70} height={70} />
-          </div>
-          <Title align="center" size="h3" mb={32}>
-            Sign in to your account
-          </Title>
-          <TextInput label="Email" placeholder="johndoe@gmail.com" required />
-          <PasswordInput
-            label="Password"
-            placeholder="johndoe123"
-            required
-            mt="md"
-          />
-          <Button fullWidth mt="xl" color="red.6">
-            Sign in
-          </Button>
-          <Text fz="xs" mt="sm" align="center">
-            Don't have an account?{" "}
-            <Link to="/sign-up" className={classes.signUpLink}>
-              Sign up
-            </Link>
-          </Text>
+          <form onSubmit={submitForm}>
+            <div className={classes.logoWrapper}>
+              <FoodlyLogo width={70} height={70} />
+            </div>
+            <Title align="center" size="h3" mb={32}>
+              Sign in to your account
+            </Title>
+            <TextInput
+              withAsterisk
+              label="Email"
+              placeholder="johndoe@gmail.com"
+              disabled={isLoading}
+              {...form.getInputProps("email")}
+            />
+            <PasswordInput
+              withAsterisk
+              label="Password"
+              placeholder="johndoe123"
+              mt="md"
+              disabled={isLoading}
+              {...form.getInputProps("password")}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              mt="xl"
+              color="red.6"
+              loading={isLoading}
+            >
+              Sign in
+            </Button>
+            <Text fz="xs" mt="sm" align="center">
+              Don't have an account?{" "}
+              <Link to="/sign-up" className={classes.signUpLink}>
+                Sign up
+              </Link>
+            </Text>
+          </form>
         </Paper>
       </Container>
     </section>

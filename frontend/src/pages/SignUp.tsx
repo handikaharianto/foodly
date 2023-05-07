@@ -9,8 +9,11 @@ import {
   createStyles,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
+import { isEmail, isNotEmpty, useForm } from "@mantine/form";
 
 import { FoodlyLogo } from "../utils/Logo";
+import { registerUser, userState } from "../features/user/UserSlice";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 
 const useStyles = createStyles((theme) => ({
   section: {
@@ -44,6 +47,36 @@ const useStyles = createStyles((theme) => ({
 
 function SignUp() {
   const { classes } = useStyles();
+  const dispatch = useAppDispatch();
+  const { isLoading } = useAppSelector(userState);
+
+  const form = useForm({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    validate: {
+      firstName: isNotEmpty("First name is required."),
+      lastName: isNotEmpty("Last name is required."),
+      email: isEmail("Invalid email."),
+      password: isNotEmpty("Password is required."),
+      confirmPassword: (value, values) =>
+        value.length === 0
+          ? "Confirm password is required"
+          : value !== values.password
+          ? "Passwords do not match"
+          : null,
+    },
+  });
+
+  const submitForm = form.onSubmit((data) => {
+    const { confirmPassword, ...formData } = data;
+
+    dispatch(registerUser(formData));
+  });
 
   return (
     <section className={classes.section}>
@@ -55,45 +88,73 @@ function SignUp() {
           radius="md"
           className={classes.paper}
         >
-          <div className={classes.logoWrapper}>
-            <FoodlyLogo width={70} height={70} />
-          </div>
-          <Title align="center" size="h3" mb={32}>
-            Get started for free today
-          </Title>
-          <div className={classes.twoColumnsWrapper}>
-            <TextInput label="First name" placeholder="John" required mt="md" />
-            <TextInput label="Last name" placeholder="Doe" required mt="md" />
-          </div>
-          <TextInput
-            label="Email"
-            placeholder="johndoe@gmail.com"
-            required
-            mt="md"
-          />
-          <div className={classes.twoColumnsWrapper}>
-            <PasswordInput
-              label="Password"
-              placeholder="johndoe123"
-              required
+          <form onSubmit={submitForm}>
+            <div className={classes.logoWrapper}>
+              <FoodlyLogo width={70} height={70} />
+            </div>
+            <Title align="center" size="h3" mb={32}>
+              Get started for free today
+            </Title>
+            <div className={classes.twoColumnsWrapper}>
+              <TextInput
+                withAsterisk
+                label="First name"
+                placeholder="John"
+                mt="md"
+                disabled={isLoading}
+                {...form.getInputProps("firstName")}
+              />
+              <TextInput
+                withAsterisk
+                label="Last name"
+                placeholder="Doe"
+                mt="md"
+                disabled={isLoading}
+                {...form.getInputProps("lastName")}
+              />
+            </div>
+            <TextInput
+              withAsterisk
+              label="Email"
+              placeholder="johndoe@gmail.com"
               mt="md"
+              disabled={isLoading}
+              {...form.getInputProps("email")}
             />
-            <PasswordInput
-              label="Confirm Password"
-              placeholder="johndoe123"
-              required
-              mt="md"
-            />
-          </div>
-          <Button fullWidth mt="xl" color="red.6">
-            Sign up
-          </Button>
-          <Text fz="xs" mt="sm" align="center">
-            Already have an account?{" "}
-            <Link to="/sign-in" className={classes.signUpLink}>
-              Sign in
-            </Link>
-          </Text>
+            <div className={classes.twoColumnsWrapper}>
+              <PasswordInput
+                withAsterisk
+                label="Password"
+                placeholder="johndoe123"
+                mt="md"
+                disabled={isLoading}
+                {...form.getInputProps("password")}
+              />
+              <PasswordInput
+                withAsterisk
+                label="Confirm Password"
+                placeholder="johndoe123"
+                mt="md"
+                disabled={isLoading}
+                {...form.getInputProps("confirmPassword")}
+              />
+            </div>
+            <Button
+              type="submit"
+              fullWidth
+              mt="xl"
+              color="red.6"
+              loading={isLoading}
+            >
+              Sign up
+            </Button>
+            <Text fz="xs" mt="sm" align="center">
+              Already have an account?{" "}
+              <Link to="/sign-in" className={classes.signUpLink}>
+                Sign in
+              </Link>
+            </Text>
+          </form>
         </Paper>
       </Container>
     </section>
