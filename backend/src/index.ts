@@ -18,35 +18,6 @@ const PORT = config.get<string>("port");
 const MONGO_DB_URI = config.get<string>("mongoUri");
 const COOKIE_SECRET_KEY = config.get<string>("cookieSecretKey");
 
-// const allowedOrigins = [
-//   "https://www.yoursite.com",
-//   "http://127.0.0.1:5500",
-//   "http://localhost:3500",
-//   "http://localhost:3000",
-//   "http://127.0.0.1:5173",
-//   "http://localhost:5173",
-// ];
-
-// const corsOptions = {
-//   origin: (origin: any, callback: any) => {
-//     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error("Not allowed by CORS"));
-//     }
-//   },
-//   optionsSuccessStatus: 200,
-// };
-
-// app.use((req, res, next) => {
-//   const origin = req.headers.origin as string;
-//   if (allowedOrigins.includes(origin)) {
-//     res.header("Access-Control-Allow-Credentials", true as any);
-//   }
-//   next();
-// });
-
-// app.use(cors({ ...corsOptions, exposedHeaders: ["Set-Cookie"] }));
 app.use(
   cors({
     origin: ["http://127.0.0.1:5173", "http://localhost:5173"],

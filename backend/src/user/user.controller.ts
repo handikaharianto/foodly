@@ -3,32 +3,43 @@ import { z } from "zod";
 
 import HTTP_STATUS from "../common/http-status-code";
 import UserService from "./user.service";
-import { REFRESH_TOKEN_EXPIRATION_TIME } from "../common/auth";
 
 export const createUserSchema = z.object({
-  body: z.object({
-    firstName: z
-      .string({
-        required_error: "First name is required.",
-      })
-      .min(1, { message: "First name is required" }),
-    lastName: z
-      .string({
-        required_error: "Last name is required.",
-      })
-      .min(1, { message: "Last name is required" }),
-    email: z
-      .string({
-        required_error: "Email is required.",
-      })
-      .min(1, { message: "Email is required" })
-      .email({ message: "Invalid email." }),
-    password: z
-      .string({
-        required_error: "Password is required.",
-      })
-      .min(1, { message: "Password is required" }),
-  }),
+  firstName: z
+    .string({
+      required_error: "First name is required.",
+    })
+    .min(1, { message: "First name is required" }),
+  lastName: z
+    .string({
+      required_error: "Last name is required.",
+    })
+    .min(1, { message: "Last name is required" }),
+  email: z
+    .string({
+      required_error: "Email is required.",
+    })
+    .min(1, { message: "Email is required" })
+    .email({ message: "Invalid email." }),
+  password: z
+    .string({
+      required_error: "Password is required.",
+    })
+    .min(1, { message: "Password is required" }),
+});
+
+export const loginUserSchema = z.object({
+  email: z
+    .string({
+      required_error: "Email is required.",
+    })
+    .min(1, { message: "Email is required" })
+    .email({ message: "Invalid email." }),
+  password: z
+    .string({
+      required_error: "Password is required.",
+    })
+    .min(1, { message: "Password is required" }),
 });
 
 class UserController {
