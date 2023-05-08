@@ -3,6 +3,7 @@ import http from "http";
 import cors from "cors";
 import config from "config";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 
 import connectDB from "./utils/connectDB";
 import userRouter from "./user";
@@ -15,14 +16,20 @@ export const server = http.createServer(app);
 
 const PORT = config.get<string>("port");
 const MONGO_DB_URI = config.get<string>("mongoUri");
+const COOKIE_SECRET_KEY = config.get<string>("cookieSecretKey");
 
-app.use(cors());
-
+app.use(
+  cors({
+    origin: ["http://127.0.0.1:5173", "http://localhost:5173"],
+    credentials: true,
+  })
+);
 app.use(json());
 app.use(urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // routes
-app.use("/users", userRouter);
+app.use("/api/users", userRouter);
 
 // error handler
 app.use(handleError);

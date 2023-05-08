@@ -1,12 +1,18 @@
 import { model, Schema } from "mongoose";
 
-import { User } from "./types";
+import { User, UserRole } from "./types";
 
 const userSchema = new Schema(
   {
-    fullName: {
+    firstName: {
       type: String,
       required: true,
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
     },
     email: {
       type: String,
@@ -18,6 +24,12 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
+    },
+    role: {
+      type: String,
+      required: true,
+      enum: Object.values(UserRole),
+      default: UserRole.PUBLIC,
     },
   },
   { timestamps: true }
