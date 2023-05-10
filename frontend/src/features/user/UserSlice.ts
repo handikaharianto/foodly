@@ -5,7 +5,7 @@ import {
   LoginUserResponse,
   RegisterUserRequest,
 } from "./types";
-import { executeAsyncThunk, publicAxios } from "../../api/axios";
+import { executeAsyncThunk, privateAxios, publicAxios } from "../../api/axios";
 import { RootState } from "../../app/store";
 
 export const registerUser = executeAsyncThunk<RegisterUserRequest, void>(
@@ -21,6 +21,10 @@ export const loginUser = executeAsyncThunk<LoginUserRequest, LoginUserResponse>(
       withCredentials: true,
     })
 );
+
+export const testPage = executeAsyncThunk<void, void>("user/testPage", () => {
+  return privateAxios.get("/users/test");
+});
 
 export interface UserState {
   loggedInUser: LoginUserResponse | null;
@@ -45,7 +49,11 @@ export const userSlice = createSlice({
         state.isLoading = false;
         state.loggedInUser = action.payload;
 
-        window.localStorage.setItem("accessToken", action.payload.accessToken);
+        window.localStorage.setItem(
+          "refreshToken",
+          action.payload.refreshToken
+        );
+        privateAxios.defaults.headers.common.Authorization = `Bearer ${action.payload.accessToken}`;
       })
       .addMatcher(
         isAnyOf(registerUser.pending, loginUser.pending),

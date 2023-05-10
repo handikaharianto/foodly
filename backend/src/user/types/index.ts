@@ -16,7 +16,17 @@ export interface User {
 }
 
 export type NewUser = Omit<User, "_id" | "role">;
-export type LoginUser = Omit<User, "password"> & {
+export type UserWithoutPassword = Omit<User, "password">;
+export type LoginUser = UserWithoutPassword & {
   accessToken: string;
   refreshToken: string;
 };
+
+export interface RefreshToken {
+  _id: string;
+  token: string;
+  user: string;
+  expirationDate: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+}

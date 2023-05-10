@@ -12,6 +12,8 @@ const handleError = (
 ) => {
   const code = err.code || HTTP_STATUS.INTERNAL_SERVER_ERROR_500;
   const message = err.message || INTERNAL_SERVER_ERROR;
+  console.log({ code });
+  console.log({ message });
 
   return res.status(code).json({ error: message });
 };

@@ -69,22 +69,30 @@ class UserController {
     const { email, password } = req.body;
 
     try {
-      const { refreshToken, ...data } = await this._userService.loginUser(
-        email,
-        password
-      );
-
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 24 * 60 * 60 * 1000,
-      });
-
+      const data = await this._userService.loginUser(email, password);
       return res.status(HTTP_STATUS.OK_200).json(data);
     } catch (error: any) {
       next(error);
     }
+  };
+
+  refreshAccessToken = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { refreshToken } = req.body;
+
+    try {
+      const data = await this._userService.refreshAccessToken(refreshToken);
+      return res.status(HTTP_STATUS.OK_200).json(data);
+    } catch (error: any) {
+      next(error);
+    }
+  };
+
+  testUser = async (req: Request, res: Response) => {
+    return res.status(200).json({ success: true });
   };
 }
 

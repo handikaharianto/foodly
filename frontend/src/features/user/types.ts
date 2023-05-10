@@ -10,6 +10,7 @@ export type LoginUserResponse = {
   email: string;
   role: string;
   accessToken: string;
+  refreshToken: string;
   createdAt: Date;
   updatedAt: Date;
 };
