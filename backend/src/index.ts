@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 
 import connectDB from "./utils/connectDB";
-import userRouter from "./user";
+import userRouter from "./user/user.route";
 import handleError from "./common/middlewares/handle-error.middleware";
 
 dotenv.config();
