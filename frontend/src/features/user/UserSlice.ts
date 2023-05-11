@@ -28,11 +28,13 @@ export const testPage = executeAsyncThunk<void, void>("user/testPage", () => {
 
 export interface UserState {
   loggedInUser: LoginUserResponse | null;
+  isLoggedIn: boolean;
   isLoading: boolean;
 }
 
 const initialState: UserState = {
   loggedInUser: null,
+  isLoggedIn: false,
   isLoading: false,
 };
 
@@ -48,6 +50,7 @@ export const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.loggedInUser = action.payload;
+        state.isLoggedIn = true;
 
         window.localStorage.setItem(
           "refreshToken",
