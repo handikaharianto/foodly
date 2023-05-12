@@ -56,6 +56,8 @@ export const userSlice = createSlice({
           "refreshToken",
           action.payload.refreshToken
         );
+        window.localStorage.setItem("userId", action.payload._id);
+        window.localStorage.setItem("userRole", action.payload.role);
         privateAxios.defaults.headers.common.Authorization = `Bearer ${action.payload.accessToken}`;
       })
       .addMatcher(

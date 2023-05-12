@@ -1,3 +1,9 @@
+export enum UserRole {
+  PUBLIC = "PUBLIC",
+  COMMUNITY = "COMMUNITY",
+  ADMINISTRATOR = "ADMINISTRATOR",
+}
+
 export type LoginUserRequest = {
   email: string;
   password: string;
