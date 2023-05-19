@@ -15,11 +15,20 @@ export const registerUser = executeAsyncThunk<RegisterUserRequest, void>(
 
 export const loginUser = executeAsyncThunk<LoginUserRequest, LoginUserResponse>(
   "user/loginUser",
-  (req) =>
-    publicAxios.post("/users/login", req, {
+  async (req) => {
+    const response = await publicAxios.post("/users/login", req, {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
-    })
+    });
+    const data = (await response.data) as LoginUserResponse;
+
+    window.localStorage.setItem("refreshToken", data.refreshToken);
+    window.localStorage.setItem("userId", data._id);
+    window.localStorage.setItem("userRole", data.role);
+    privateAxios.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
+
+    return response;
+  }
 );
 
 export const testPage = executeAsyncThunk<void, void>("user/testPage", () => {
@@ -28,11 +37,13 @@ export const testPage = executeAsyncThunk<void, void>("user/testPage", () => {
 
 export interface UserState {
   loggedInUser: LoginUserResponse | null;
+  isLoggedIn: boolean;
   isLoading: boolean;
 }
 
 const initialState: UserState = {
   loggedInUser: null,
+  isLoggedIn: false,
   isLoading: false,
 };
 
@@ -48,12 +59,7 @@ export const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.loggedInUser = action.payload;
-
-        window.localStorage.setItem(
-          "refreshToken",
-          action.payload.refreshToken
-        );
-        privateAxios.defaults.headers.common.Authorization = `Bearer ${action.payload.accessToken}`;
+        state.isLoggedIn = true;
       })
       .addMatcher(
         isAnyOf(registerUser.pending, loginUser.pending),

@@ -15,6 +15,7 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
     throw new ApiError(HTTP_STATUS.UNAUTHORIZED_401, INVALID_ACCESS_TOKEN);
 
   const decoded = verifyAccessToken(accessToken);
+
   req.user = decoded;
   next();
 };
