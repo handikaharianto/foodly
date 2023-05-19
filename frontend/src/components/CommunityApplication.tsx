@@ -7,14 +7,30 @@ import {
   Container,
   Select,
   Paper,
-  Tooltip,
+  Center,
+  Text,
 } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
-import { IconAlertCircle } from "@tabler/icons-react";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import {
+  communityState,
+  createCommunityApplication,
+  getOneCommunityApplication,
+} from "../features/community/CommunitySlice";
+import Loader from "./common/Loader";
+
+type CommunityApplicationFormType = {
+  name: string;
+  type: string;
+  typeOthers?: string;
+  description: string;
+};
 
 const CommunityApplication = () => {
-  const form = useForm({
+  const { isLoading, communityApplication } = useAppSelector(communityState);
+  const dispatch = useAppDispatch();
+  const form = useForm<CommunityApplicationFormType>({
     initialValues: {
       name: "",
       type: "",
@@ -28,7 +44,7 @@ const CommunityApplication = () => {
       typeOthers: (value, values) =>
         values.type !== "Others"
           ? null
-          : value.trim() === ""
+          : value?.trim() === ""
           ? "Community type is required"
           : null,
       description: isNotEmpty("Community description is required."),
@@ -41,11 +57,35 @@ const CommunityApplication = () => {
   );
 
   const submitForm = form.onSubmit(async (formData) => {
-    console.log(formData);
-    // submit form to backend (community module)
+    if (formData.type !== "Others") {
+      delete formData.typeOthers;
+    } else {
+      formData = { ...formData, type: formData.typeOthers! };
+      delete formData.typeOthers;
+    }
+
+    try {
+      dispatch(createCommunityApplication(formData));
+    } catch (error) {
+      // display error dialog here
+    }
   });
 
-  return (
+  useEffect(() => {
+    dispatch(getOneCommunityApplication());
+  }, [dispatch]);
+
+  if (isLoading && !communityApplication) {
+    return <Loader />;
+  }
+
+  return communityApplication ? (
+    <Center h="100%">
+      <Text align="center" fz="xl">
+        Your community application is currently being reviewed.
+      </Text>
+    </Center>
+  ) : (
     <Container size="sm" mt="4rem">
       <div>
         <Title order={2} size="h1" align="center">
@@ -56,12 +96,14 @@ const CommunityApplication = () => {
         <form onSubmit={submitForm}>
           <TextInput
             withAsterisk
+            disabled={isLoading}
             label="Community name"
             placeholder="ABC community"
             {...form.getInputProps("name")}
           />
           <Select
             withAsterisk
+            disabled={isLoading}
             mt="md"
             withinPortal
             data={["Orphanage", "Nursing home", "Others"]}
@@ -72,6 +114,7 @@ const CommunityApplication = () => {
           {isOthersSelected && (
             <TextInput
               withAsterisk
+              disabled={isLoading}
               label="Community type (Others)"
               placeholder=""
               mt="md"
@@ -80,25 +123,15 @@ const CommunityApplication = () => {
           )}
           <Textarea
             withAsterisk
+            disabled={isLoading}
             label="Description"
             placeholder="Our community is helping..."
             minRows={4}
             mt="md"
             {...form.getInputProps("description")}
-            rightSection={
-              <Tooltip label="zzz" position="top-end" withArrow>
-                <div>
-                  <IconAlertCircle
-                    size="1rem"
-                    style={{ display: "block", opacity: 0.5 }}
-                  />
-                </div>
-              </Tooltip>
-            }
           />
-
           <Group position="center" mt="md">
-            <Button type="submit" color="red.6">
+            <Button type="submit" color="red.6" loading={isLoading}>
               Submit
             </Button>
           </Group>

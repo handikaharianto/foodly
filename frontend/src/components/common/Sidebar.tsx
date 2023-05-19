@@ -87,11 +87,10 @@ const communityUserLinks = [{ link: "/home", label: "Home", icon: IconHome }];
 
 const administratorLinks = [{ link: "/home", label: "Home", icon: IconHome }];
 
-const userRole = window.localStorage.getItem("userRole");
-
 function Sidebar() {
   const { classes, cx } = useStyles();
 
+  const userRole = window.localStorage.getItem("userRole");
   const currentUserRole =
     userRole === UserRole.PUBLIC
       ? publicUserLinks

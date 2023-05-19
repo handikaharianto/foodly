@@ -8,6 +8,7 @@ const useStyles = createStyles((theme) => ({
     height: "100vh",
   },
   mainContent: {
+    position: "relative",
     overflowY: "auto",
     padding: rem(32),
     flexGrow: 1,

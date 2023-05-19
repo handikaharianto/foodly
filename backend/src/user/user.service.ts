@@ -87,7 +87,7 @@ class UserService {
     const user = await userModel.findById(token.user);
     if (!user) throw new ApiError(HTTP_STATUS.NOT_FOUND_404, USER_NOT_FOUND);
 
-    const { password, ...userData } = user;
+    const { password, ...userData } = user.toObject();
     const accessToken = generateAccessToken<UserWithoutPassword>(userData);
 
     return { ...userData, accessToken, refreshToken };
