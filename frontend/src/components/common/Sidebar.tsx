@@ -15,6 +15,8 @@ import {
 import { FoodlyLogo } from "../../utils/Logo";
 import { UserRole } from "../../features/user/types";
 import { Link, NavLink } from "react-router-dom";
+import { useAppSelector } from "../../app/hooks";
+import { userState } from "../../features/user/UserSlice";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -89,9 +91,10 @@ const administratorLinks = [{ link: "/home", label: "Home", icon: IconHome }];
 
 function Sidebar() {
   const { classes, cx } = useStyles();
+  const { loggedInUser } = useAppSelector(userState);
 
-  const userRole = window.localStorage.getItem("userRole");
-  const currentUserRole =
+  const userRole = loggedInUser?.role;
+  const links =
     userRole === UserRole.PUBLIC
       ? publicUserLinks
       : userRole === UserRole.COMMUNITY
@@ -100,7 +103,7 @@ function Sidebar() {
       ? administratorLinks
       : [];
 
-  const links = currentUserRole.map((item) => (
+  const sidebarLinks = links.map((item) => (
     <NavLink
       className={({ isActive }) =>
         cx(classes.link, {
@@ -125,7 +128,7 @@ function Sidebar() {
           </Text>
           {/* <Code sx={{ fontWeight: 700 }}>v3.1.2</Code> */}
         </Group>
-        {links}
+        {sidebarLinks}
       </Navbar.Section>
 
       <Navbar.Section className={classes.footer}>

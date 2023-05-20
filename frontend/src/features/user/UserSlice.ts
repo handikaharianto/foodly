@@ -16,20 +16,18 @@ export const registerUser = executeAsyncThunk<RegisterUserRequest, void>(
 export const loginUser = executeAsyncThunk<LoginUserRequest, LoginUserResponse>(
   "user/loginUser",
   async (req) => {
-    const response = await publicAxios.post("/users/login", req, {
-      headers: { "Content-Type": "application/json" },
-      withCredentials: true,
-    });
+    const response = await publicAxios.post("/users/login", req);
     const data = (await response.data) as LoginUserResponse;
 
     window.localStorage.setItem("refreshToken", data.refreshToken);
-    window.localStorage.setItem("userId", data._id);
-    window.localStorage.setItem("userRole", data.role);
-    privateAxios.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
-
     return response;
   }
 );
+
+export const refreshAccessToken = executeAsyncThunk<
+  { refreshToken: string },
+  LoginUserResponse
+>("refreshAccessToken", (req) => publicAxios.post("/users/refresh", req));
 
 export const testPage = executeAsyncThunk<void, void>("user/testPage", () => {
   return privateAxios.get("/users/test");
@@ -57,6 +55,11 @@ export const userSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.loggedInUser = action.payload;
+        state.isLoggedIn = true;
+      })
+      .addCase(refreshAccessToken.fulfilled, (state, action) => {
         state.isLoading = false;
         state.loggedInUser = action.payload;
         state.isLoggedIn = true;
