@@ -6,6 +6,7 @@ import SharedLayout from "./components/common/SharedLayout";
 import CommunityApplication from "./components/CommunityApplication";
 import SetupAxiosInterceptor from "./components/common/SetupAxiosInterceptor";
 import AuthGuard from "./components/common/AuthGuard";
+import { NotFound } from "./pages/404";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
               />
             </Route>
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </SetupAxiosInterceptor>
     </BrowserRouter>
