@@ -62,7 +62,7 @@ const SetupAxiosInterceptor = ({ children }: { children: JSX.Element }) => {
       privateAxios.interceptors.request.eject(requestInterceptor);
       privateAxios.interceptors.response.eject(responseInterceptor);
     };
-  }, [navigate]);
+  }, []);
 
   return isSet ? children : <></>;
 };
