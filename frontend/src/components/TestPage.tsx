@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { privateAxios } from "../api/axios";
 import { useAppDispatch } from "../app/hooks";
 import { testPage } from "../features/user/UserSlice";
+import { NotificationVariant, showNotification } from "../utils/notifications";
 
 function TestPage() {
   const dispatch = useAppDispatch();
@@ -12,6 +12,16 @@ function TestPage() {
 
   return (
     <div>
+      <button
+        onClick={() => {
+          showNotification({
+            message: "message here",
+            variant: NotificationVariant.INFO,
+          });
+        }}
+      >
+        click me
+      </button>
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem ea expedita
       veritatis facere quis tenetur voluptatem. Tempora earum quo minima, fugit
       nostrum sequi exercitationem corporis neque voluptate sint cum, quam

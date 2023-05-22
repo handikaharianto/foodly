@@ -16,7 +16,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         fontFamily: "Open Sans, sans serif",
       }}
     >
-      <Notifications />
+      <Notifications position="top-center" zIndex={9999} />
       <Provider store={store}>
         <App />
       </Provider>

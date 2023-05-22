@@ -7,6 +7,10 @@ import {
 } from "./types";
 import { privateAxios } from "../../api/axios";
 import { RootState } from "../../app/store";
+import {
+  NotificationVariant,
+  showNotification,
+} from "../../utils/notifications";
 
 export const createCommunityApplication = executeAsyncThunk<
   createCommunityApplicationRequest,
@@ -41,10 +45,18 @@ export const communitySlice = createSlice({
       .addCase(createCommunityApplication.fulfilled, (state, action) => {
         state.isLoading = false;
         state.communityApplication = action.payload;
+        showNotification({
+          message:
+            "Community application form has successfully been submitted.",
+          variant: NotificationVariant.SUCCESS,
+        });
       })
       .addCase(getOneCommunityApplication.fulfilled, (state, action) => {
         state.isLoading = false;
         state.communityApplication = action.payload;
+      })
+      .addCase(createCommunityApplication.rejected, (state, action) => {
+        state.isLoading = false;
       })
       .addMatcher(
         isAnyOf(
@@ -56,10 +68,7 @@ export const communitySlice = createSlice({
         }
       )
       .addMatcher(
-        isAnyOf(
-          createCommunityApplication.rejected,
-          getOneCommunityApplication.rejected
-        ),
+        isAnyOf(getOneCommunityApplication.rejected),
         (state, action) => {
           state.isLoading = false;
         }

@@ -72,10 +72,13 @@ function SignUp() {
     },
   });
 
-  const submitForm = form.onSubmit((data) => {
+  const submitForm = form.onSubmit(async (data) => {
     const { confirmPassword, ...formData } = data;
 
-    dispatch(registerUser(formData));
+    const payload = await dispatch(registerUser(formData));
+    if (payload.meta.requestStatus === "fulfilled") {
+      form.reset();
+    }
   });
 
   return (

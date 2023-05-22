@@ -16,6 +16,7 @@ export enum NotificationVariant {
 }
 
 type NotificationVariantType = {
+  title: string;
   color: MantineColor;
   icon: React.ReactNode;
 };
@@ -24,18 +25,22 @@ const notificationVariant: {
   [key in NotificationVariant]: NotificationVariantType;
 } = {
   [NotificationVariant.SUCCESS]: {
+    title: "Success",
     color: "green",
     icon: <IconCheck />,
   },
   [NotificationVariant.ERROR]: {
+    title: "Error",
     color: "red",
     icon: <IconX />,
   },
   [NotificationVariant.WARNING]: {
+    title: "Warning",
     color: "yellow",
     icon: <IconExclamationMark />,
   },
   [NotificationVariant.INFO]: {
+    title: "Info",
     color: "blue",
     icon: <IconInfoSmall size={100} />,
   },
@@ -43,22 +48,20 @@ const notificationVariant: {
 
 type ShowNotificationType = {
   id?: string;
-  title: string;
   message: string;
   variant: NotificationVariant;
 };
 
 export const showNotification = ({
   id,
-  title,
   message,
   variant = NotificationVariant.INFO,
 }: ShowNotificationType) => {
   notifications.show({
     id,
-    title,
     message,
     withCloseButton: true,
+    autoClose: 3000,
     ...notificationVariant[variant],
   });
 };

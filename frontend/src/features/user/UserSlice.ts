@@ -7,6 +7,10 @@ import {
 } from "./types";
 import { executeAsyncThunk, privateAxios, publicAxios } from "../../api/axios";
 import { RootState } from "../../app/store";
+import {
+  NotificationVariant,
+  showNotification,
+} from "../../utils/notifications";
 
 export const registerUser = executeAsyncThunk<RegisterUserRequest, void>(
   "user/registerUser",
@@ -53,11 +57,26 @@ export const userSlice = createSlice({
     builder
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
+        showNotification({
+          message: "User has successfully been registered.",
+          variant: NotificationVariant.SUCCESS,
+        });
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.loggedInUser = action.payload;
         state.isLoggedIn = true;
+        showNotification({
+          message: "User has successfully logged in.",
+          variant: NotificationVariant.SUCCESS,
+        });
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.isLoading = false;
+        showNotification({
+          message: action.payload?.error as string,
+          variant: NotificationVariant.ERROR,
+        });
       })
       .addCase(refreshAccessToken.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -70,12 +89,13 @@ export const userSlice = createSlice({
           state.isLoading = true;
         }
       )
-      .addMatcher(
-        isAnyOf(registerUser.rejected, loginUser.rejected),
-        (state, action) => {
-          state.isLoading = false;
-        }
-      );
+      .addMatcher(isAnyOf(registerUser.rejected), (state, action) => {
+        state.isLoading = false;
+        showNotification({
+          message: action.payload?.error as string,
+          variant: NotificationVariant.ERROR,
+        });
+      });
   },
 });
 

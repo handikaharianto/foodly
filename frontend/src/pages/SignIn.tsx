@@ -59,11 +59,9 @@ function SignIn() {
   });
 
   const submitForm = form.onSubmit(async (formData) => {
-    try {
-      const result = await dispatch(loginUser(formData)).unwrap();
+    const payload = await dispatch(loginUser(formData));
+    if (payload.meta.requestStatus === "fulfilled") {
       navigate("/home");
-    } catch (error) {
-      console.log(error);
     }
   });
 
