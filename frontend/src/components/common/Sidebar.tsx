@@ -5,6 +5,7 @@ import {
   getStylesRef,
   rem,
   Text,
+  UnstyledButton,
 } from "@mantine/core";
 import {
   IconBellRinging,
@@ -14,9 +15,11 @@ import {
 } from "@tabler/icons-react";
 import { FoodlyLogo } from "../../utils/Logo";
 import { UserRole } from "../../features/user/types";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { userState } from "../../features/user/UserSlice";
+import { privateAxios } from "../../api/axios";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -73,6 +76,7 @@ const useStyles = createStyles((theme) => ({
       },
     },
   },
+  logoutButton: {},
 }));
 
 const publicUserLinks = [
@@ -92,6 +96,8 @@ const administratorLinks = [{ link: "/home", label: "Home", icon: IconHome }];
 function Sidebar() {
   const { classes, cx } = useStyles();
   const { loggedInUser } = useAppSelector(userState);
+
+  const navigate = useNavigate();
 
   const userRole = loggedInUser?.role;
   const links =
@@ -118,6 +124,12 @@ function Sidebar() {
     </NavLink>
   ));
 
+  const logoutUser = () => {
+    delete privateAxios.defaults.headers.common.Authorization;
+    window.localStorage.clear();
+    navigate("/sign-in", { replace: true });
+  };
+
   return (
     <Navbar height="100vh" width={{ sm: 300 }} p="md">
       <Navbar.Section grow>
@@ -132,10 +144,10 @@ function Sidebar() {
       </Navbar.Section>
 
       <Navbar.Section className={classes.footer}>
-        <Link to="#" className={classes.link}>
+        <UnstyledButton w="100%" className={classes.link} onClick={logoutUser}>
           <IconLogout className={classes.linkIcon} stroke={1.5} />
           <span>Logout</span>
-        </Link>
+        </UnstyledButton>
       </Navbar.Section>
     </Navbar>
   );
