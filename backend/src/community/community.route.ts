@@ -6,6 +6,8 @@ import CommunityController, {
 import CommunityService from "./community.service";
 import { validateRequestBody } from "zod-express-middleware";
 import verifyJWT from "../common/middlewares/verify-access-token.middleware";
+import authorizeUser from "../common/middlewares/authorize-user";
+import { UserRole } from "../user/types";
 
 const communityController = new CommunityController(new CommunityService());
 
@@ -15,9 +17,14 @@ communityRouter
   .route("/application")
   .post(
     verifyJWT,
+    authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
     validateRequestBody(createCommunityApplicationSchema),
     communityController.createCommunityApplication
   )
-  .get(verifyJWT, communityController.getOneCommunityApplication);
+  .get(
+    verifyJWT,
+    authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
+    communityController.getOneCommunityApplication
+  );
 
 export default communityRouter;

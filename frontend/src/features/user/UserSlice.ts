@@ -84,7 +84,11 @@ export const userSlice = createSlice({
         state.isLoggedIn = true;
       })
       .addMatcher(
-        isAnyOf(registerUser.pending, loginUser.pending),
+        isAnyOf(
+          registerUser.pending,
+          loginUser.pending,
+          refreshAccessToken.pending
+        ),
         (state, action) => {
           state.isLoading = true;
         }
