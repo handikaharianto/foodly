@@ -1,3 +1,5 @@
+import { Optional } from "src/utils/custom-utility";
+
 export enum UserRole {
   PUBLIC = "PUBLIC",
   COMMUNITY = "COMMUNITY",
@@ -15,7 +17,7 @@ export interface User {
   updatedAt?: Date;
 }
 
-export type NewUser = Omit<User, "_id" | "role">;
+export type NewUser = Omit<Optional<User, "role">, "_id">;
 export type UserWithoutPassword = Omit<User, "password">;
 export type LoginUser = UserWithoutPassword & {
   accessToken: string;
