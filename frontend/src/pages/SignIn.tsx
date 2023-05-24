@@ -61,7 +61,7 @@ function SignIn() {
   const submitForm = form.onSubmit(async (formData) => {
     const payload = await dispatch(loginUser(formData));
     if (payload.meta.requestStatus === "fulfilled") {
-      navigate("/home");
+      navigate("/");
     }
   });
 
