@@ -1,30 +1,29 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import { Flex, createStyles, rem } from "@mantine/core";
-
-const useStyles = createStyles((theme) => ({
-  main: {
-    overflowY: "hidden",
-    height: "100vh",
-  },
-  mainContent: {
-    position: "relative",
-    overflowY: "auto",
-    padding: rem(32),
-    flexGrow: 1,
-  },
-}));
+import { AppShell } from "@mantine/core";
+import Navbar from "./Navbar";
+import { useState } from "react";
 
 const SharedLayout = () => {
-  const { classes } = useStyles();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <Flex className={classes.main}>
-      <Sidebar />
-      <div className={classes.mainContent}>
-        <Outlet />
-      </div>
-    </Flex>
+    <AppShell
+      padding="2.5rem"
+      navbarOffsetBreakpoint="md"
+      navbar={<Sidebar isSidebarOpen={isSidebarOpen} />}
+      header={
+        <Navbar
+          isSidebarOpen={isSidebarOpen}
+          handleIsSidebarOpen={() => setIsSidebarOpen((prev) => !prev)}
+        />
+      }
+      styles={(theme) => ({
+        main: { backgroundColor: theme.colors.gray[0] },
+      })}
+    >
+      <Outlet />
+    </AppShell>
   );
 };
 

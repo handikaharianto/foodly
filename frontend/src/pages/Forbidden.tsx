@@ -6,13 +6,23 @@ import {
   Container,
   Group,
   rem,
+  Center,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
   root: {
+    display: "flex",
+    flexDirection: "column",
     paddingTop: rem(80),
     paddingBottom: rem(80),
+    height: "100vh",
+  },
+
+  center: {
+    flexDirection: "column",
+    marginTop: "auto",
+    marginBottom: "auto",
   },
 
   label: {
@@ -56,27 +66,31 @@ export function Forbidden() {
 
   return (
     <Container className={classes.root}>
-      <div className={classes.label}>403</div>
-      <Title className={classes.title}>You're not permitted to proceed.</Title>
-      <Text
-        color="dimmed"
-        size="lg"
-        align="center"
-        className={classes.description}
-      >
-        The page you're trying to access has restricted access. If you feel this
-        is a mistake, contact your admin.
-      </Text>
-      <Group position="center">
-        <Button
-          variant="filled"
-          size="md"
-          color="red"
-          onClick={() => navigate("/home", { replace: true })}
+      <Center className={classes.center}>
+        <div className={classes.label}>403</div>
+        <Title className={classes.title}>
+          You're not permitted to proceed.
+        </Title>
+        <Text
+          color="dimmed"
+          size="lg"
+          align="center"
+          className={classes.description}
         >
-          Take me back to home page
-        </Button>
-      </Group>
+          The page you're trying to access has restricted access. If you feel
+          this is a mistake, contact your admin.
+        </Text>
+        <Group position="center">
+          <Button
+            variant="filled"
+            size="md"
+            color="red"
+            onClick={() => navigate("/home", { replace: true })}
+          >
+            Take me back to home page
+          </Button>
+        </Group>
+      </Center>
     </Container>
   );
 }

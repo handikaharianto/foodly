@@ -1,10 +1,8 @@
 import {
   createStyles,
   Navbar,
-  Group,
   getStylesRef,
   rem,
-  Text,
   UnstyledButton,
 } from "@mantine/core";
 import {
@@ -13,7 +11,6 @@ import {
   IconHome,
   IconFileDescription,
 } from "@tabler/icons-react";
-import { FoodlyLogo } from "../../utils/Logo";
 import { UserRole } from "../../features/user/types";
 import { NavLink } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
@@ -23,11 +20,13 @@ import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
   header: {
-    paddingBottom: theme.spacing.md,
-    marginBottom: `calc(${theme.spacing.md} * 1.5)`,
-    borderBottom: `${rem(1)} solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[2]
-    }`,
+    boxShadow: theme.shadows.xs,
+  },
+
+  navbarLinks: {
+    display: "flex",
+    flexDirection: "column",
+    rowGap: "0.5rem",
   },
 
   footer: {
@@ -63,7 +62,7 @@ const useStyles = createStyles((theme) => ({
     color:
       theme.colorScheme === "dark"
         ? theme.colors.dark[2]
-        : theme.colors.gray[6],
+        : theme.colors.gray[9],
     marginRight: theme.spacing.sm,
   },
 
@@ -93,7 +92,11 @@ const communityUserLinks = [{ link: "/home", label: "Home", icon: IconHome }];
 
 const administratorLinks = [{ link: "/home", label: "Home", icon: IconHome }];
 
-function Sidebar() {
+export type SidebarProps = {
+  isSidebarOpen: boolean;
+};
+
+function Sidebar({ isSidebarOpen }: { isSidebarOpen: boolean }) {
   const { classes, cx } = useStyles();
   const { loggedInUser } = useAppSelector(userState);
 
@@ -131,15 +134,14 @@ function Sidebar() {
   };
 
   return (
-    <Navbar height="100vh" width={{ sm: 300 }} p="md">
-      <Navbar.Section grow>
-        <Group className={classes.header} position="left">
-          <FoodlyLogo width={40} height={40} />
-          <Text fz="xl" fw="bolder">
-            Foodly
-          </Text>
-          {/* <Code sx={{ fontWeight: 700 }}>v3.1.2</Code> */}
-        </Group>
+    <Navbar
+      withBorder={false}
+      p="md"
+      width={{ sm: 300 }}
+      hidden={!isSidebarOpen}
+      className={classes.header}
+    >
+      <Navbar.Section grow className={classes.navbarLinks}>
         {sidebarLinks}
       </Navbar.Section>
 

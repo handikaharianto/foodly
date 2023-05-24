@@ -6,13 +6,23 @@ import {
   Container,
   Group,
   rem,
+  Center,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
   root: {
+    display: "flex",
+    flexDirection: "column",
     paddingTop: rem(80),
     paddingBottom: rem(80),
+    height: "100vh",
+  },
+
+  center: {
+    flexDirection: "column",
+    marginTop: "auto",
+    marginBottom: "auto",
   },
 
   label: {
@@ -56,27 +66,29 @@ export function NotFound() {
 
   return (
     <Container className={classes.root}>
-      <div className={classes.label}>404</div>
-      <Title className={classes.title}>You have found a secret place.</Title>
-      <Text
-        color="dimmed"
-        size="lg"
-        align="center"
-        className={classes.description}
-      >
-        Unfortunately, this is only a 404 page. You may have mistyped the
-        address, or the page has been moved to another URL.
-      </Text>
-      <Group position="center">
-        <Button
-          variant="filled"
-          size="md"
-          color="red"
-          onClick={() => navigate("/home", { replace: true })}
+      <Center className={classes.center}>
+        <div className={classes.label}>404</div>
+        <Title className={classes.title}>You have found a secret place.</Title>
+        <Text
+          color="dimmed"
+          size="lg"
+          align="center"
+          className={classes.description}
         >
-          Take me back to home page
-        </Button>
-      </Group>
+          Unfortunately, this is only a 404 page. You may have mistyped the
+          address, or the page has been moved to another URL.
+        </Text>
+        <Group position="center">
+          <Button
+            variant="filled"
+            size="md"
+            color="red"
+            onClick={() => navigate("/home", { replace: true })}
+          >
+            Take me back to home page
+          </Button>
+        </Group>
+      </Center>
     </Container>
   );
 }
