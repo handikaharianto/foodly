@@ -10,6 +10,8 @@ import { NotFound } from "./pages/404";
 import AuthorizeUser from "./components/common/AuthorizeUser";
 import { UserRole } from "./features/user/types";
 import { Forbidden } from "./pages/Forbidden";
+import Index from "./components/common/Index";
+import CommunityRequests from "./pages/CommunityRequests";
 
 function App() {
   return (
@@ -22,15 +24,41 @@ function App() {
 
           <Route element={<AuthGuard />}>
             <Route element={<SharedLayout />}>
-              <Route path="/" element={<Navigate to="/home" replace />} />
-              <Route path="/home" element={<TestPage />} />
+              <Route path="/" element={<Index />} />
               <Route path="/notifications" element={<TestPage />} />
+
+              <Route
+                element={
+                  <AuthorizeUser
+                    acceptedRoles={[UserRole.PUBLIC, UserRole.COMMUNITY]}
+                  />
+                }
+              >
+                <Route path="/home" element={<TestPage />} />
+              </Route>
               <Route
                 element={<AuthorizeUser acceptedRoles={[UserRole.PUBLIC]} />}
               >
                 <Route
                   path="/community-applications"
                   element={<CommunityApplication />}
+                />
+              </Route>
+              <Route
+                element={
+                  <AuthorizeUser acceptedRoles={[UserRole.ADMINISTRATOR]} />
+                }
+              >
+                <Route path="/dashboard" element={<TestPage />} />
+              </Route>
+              <Route
+                element={
+                  <AuthorizeUser acceptedRoles={[UserRole.ADMINISTRATOR]} />
+                }
+              >
+                <Route
+                  path="/community-requests"
+                  element={<CommunityRequests />}
                 />
               </Route>
             </Route>

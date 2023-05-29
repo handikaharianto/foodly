@@ -33,7 +33,7 @@ class UserService {
     user = await userModel.create({
       ...userData,
       password: hashedPassword,
-      role: UserRole.PUBLIC,
+      role: userData.role || UserRole.PUBLIC,
     });
     return user;
   };

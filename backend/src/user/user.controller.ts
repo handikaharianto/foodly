@@ -49,7 +49,7 @@ class UserController {
   }
 
   createUser = async (req: Request, res: Response, next: NextFunction) => {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, role } = req.body;
 
     try {
       await this._userService.createUser({
@@ -57,6 +57,7 @@ class UserController {
         lastName,
         email,
         password,
+        role,
       });
       return res.status(HTTP_STATUS.NO_CONTENT_204).send();
     } catch (error: any) {

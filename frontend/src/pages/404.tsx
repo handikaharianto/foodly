@@ -83,7 +83,7 @@ export function NotFound() {
             variant="filled"
             size="md"
             color="red"
-            onClick={() => navigate("/home", { replace: true })}
+            onClick={() => navigate("/", { replace: true })}
           >
             Take me back to home page
           </Button>
