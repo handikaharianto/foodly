@@ -10,6 +10,8 @@ import {
   IconLogout,
   IconHome,
   IconFileDescription,
+  IconDashboard,
+  IconFiles,
 } from "@tabler/icons-react";
 import { UserRole } from "../../features/user/types";
 import { NavLink } from "react-router-dom";
@@ -90,7 +92,10 @@ const publicUserLinks = [
 
 const communityUserLinks = [{ link: "/home", label: "Home", icon: IconHome }];
 
-const administratorLinks = [{ link: "/home", label: "Home", icon: IconHome }];
+const administratorLinks = [
+  { link: "/dashboard", label: "Dashboard", icon: IconDashboard },
+  { link: "/community-requests", label: "Community requests", icon: IconFiles },
+];
 
 export type SidebarProps = {
   isSidebarOpen: boolean;
