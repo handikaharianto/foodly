@@ -12,6 +12,7 @@ import { UserRole } from "./features/user/types";
 import { Forbidden } from "./pages/Forbidden";
 import Index from "./components/common/Index";
 import CommunityRequests from "./pages/CommunityRequests";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
   return (
@@ -49,7 +50,7 @@ function App() {
                   <AuthorizeUser acceptedRoles={[UserRole.ADMINISTRATOR]} />
                 }
               >
-                <Route path="/dashboard" element={<TestPage />} />
+                <Route path="/dashboard" element={<AdminDashboard />} />
               </Route>
               <Route
                 element={
