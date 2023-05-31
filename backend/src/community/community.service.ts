@@ -4,6 +4,8 @@ import {
   CommunityApplicationStatus,
   CreateCommunityApplicationRequest,
   CreateCommunityApplicationResponse,
+  GetAllCommunityApplicationsRequest,
+  GetAllCommunityApplicationsResponse,
   GetOneCommunityApplicationResponse,
 } from "./types";
 import HTTP_STATUS from "../common/http-status-code";
@@ -50,6 +52,34 @@ class CommunityService {
 
     return communityApplication;
   };
+
+  getAllCommunityApplications = async (
+    limit: number,
+    page: number,
+    searchInput: string,
+    filter: GetAllCommunityApplicationsRequest
+  ): Promise<GetAllCommunityApplicationsResponse> => {
+    const totalData = await communityApplicationModel.countDocuments(filter);
+
+    const data = await communityApplicationModel
+      .find(filter, null, {
+        skip: (page - 1) * limit,
+        limit,
+      })
+      .populate("user");
+
+    const currentPage = totalData > limit ? page : 1;
+    const totalPages = totalData / limit > 1 ? Math.ceil(totalData / limit) : 1;
+
+    return {
+      data,
+      currentPage,
+      totalPages,
+      totalData,
+    };
+  };
+
+  updateCommunity = async () => {};
 }
 
 export default CommunityService;

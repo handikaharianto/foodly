@@ -14,17 +14,25 @@ const communityController = new CommunityController(new CommunityService());
 const communityRouter = Router();
 
 communityRouter
-  .route("/application")
+  .route("/applications")
   .post(
     verifyJWT,
     authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
     validateRequestBody(createCommunityApplicationSchema),
     communityController.createCommunityApplication
-  )
-  .get(
-    verifyJWT,
-    authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
-    communityController.getOneCommunityApplication
   );
+
+communityRouter
+  .route("/applications/list")
+  .post(
+    verifyJWT,
+    authorizeUser(UserRole.ADMINISTRATOR),
+    communityController.getAllCommunityApplications
+  );
+// .get(
+//   verifyJWT,
+//   authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
+//   communityController.getOneCommunityApplication
+// )
 
 export default communityRouter;

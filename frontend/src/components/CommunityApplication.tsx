@@ -14,10 +14,10 @@ import { isNotEmpty, useForm } from "@mantine/form";
 import { useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
-  communityState,
+  communityApplicationState,
   createCommunityApplication,
   getOneCommunityApplication,
-} from "../features/community/CommunitySlice";
+} from "../features/communityApplication/CommunityApplicationSlice";
 import Loader from "./common/Loader";
 
 type CommunityApplicationFormType = {
@@ -28,7 +28,9 @@ type CommunityApplicationFormType = {
 };
 
 const CommunityApplication = () => {
-  const { isLoading, communityApplication } = useAppSelector(communityState);
+  const { isLoading, communityApplication } = useAppSelector(
+    communityApplicationState
+  );
   const dispatch = useAppDispatch();
   const form = useForm<CommunityApplicationFormType>({
     initialValues: {

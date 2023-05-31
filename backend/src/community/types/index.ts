@@ -47,3 +47,14 @@ export type CreateCommunityApplicationResponse = CommunityApplicationModel;
 
 export type GetOneCommunityApplicationResponse =
   CreateCommunityApplicationResponse;
+
+export type GetAllCommunityApplicationsRequest = {
+  status: CommunityApplicationStatus;
+};
+
+export type GetAllCommunityApplicationsResponse = {
+  data: CommunityApplicationModel[];
+  totalData: number;
+  currentPage: number;
+  totalPages: number;
+};

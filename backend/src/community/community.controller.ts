@@ -65,6 +65,26 @@ class CommunityController {
     }
   };
 
+  getAllCommunityApplications = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { limit, page, searchInput, ...filter } = req.body;
+
+    try {
+      const data = await this._communityService.getAllCommunityApplications(
+        limit,
+        page,
+        searchInput,
+        filter
+      );
+      return res.status(HTTP_STATUS.OK_200).json(data);
+    } catch (error: any) {
+      next(error);
+    }
+  };
+
   getAllCommunities = async () => {
     // setup pagination (20 items per page)
   };

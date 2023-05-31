@@ -1,8 +1,11 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { executeAsyncThunk } from "../../api/axios";
 import {
+  CommunityApplication,
   createCommunityApplicationRequest,
   createCommunityApplicationResponse,
+  getAllCommunityApplicationsRequest,
+  getAllCommunityApplicationsResponse,
   getOneCommunityApplicationResponse,
 } from "./types";
 import { privateAxios } from "../../api/axios";
@@ -15,29 +18,44 @@ import {
 export const createCommunityApplication = executeAsyncThunk<
   createCommunityApplicationRequest,
   createCommunityApplicationResponse
->("community/createCommunityApplication", (req) =>
-  privateAxios.post("/community/application", req)
+>("communityApplication/createCommunityApplication", (req) =>
+  privateAxios.post("/community/applications", req)
 );
 
 export const getOneCommunityApplication = executeAsyncThunk<
   void,
   getOneCommunityApplicationResponse
->("community/getOneCommunityApplication", () =>
-  privateAxios.get("/community/application")
+>("communityApplication/getOneCommunityApplication", () =>
+  privateAxios.get("/community/applications")
 );
 
-export interface CommunityState {
+export const getAllCommunityApplications = executeAsyncThunk<
+  getAllCommunityApplicationsRequest,
+  getAllCommunityApplicationsResponse
+>("communityApplication/getAllCommunityApplications", (req) =>
+  privateAxios.post("/community/applications/list", req)
+);
+
+export interface communityApplicationState {
   communityApplication: getOneCommunityApplicationResponse | null;
+  communityApplications: CommunityApplication[];
+  currentPage: number | null;
+  totalPages: number | null;
+  totalData: number | null;
   isLoading: boolean;
 }
 
-const initialState: CommunityState = {
+const initialState: communityApplicationState = {
   communityApplication: null,
+  communityApplications: [],
+  currentPage: null,
+  totalPages: null,
+  totalData: null,
   isLoading: false,
 };
 
-export const communitySlice = createSlice({
-  name: "community",
+export const communityApplicationSlice = createSlice({
+  name: "communityApplication",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -58,17 +76,28 @@ export const communitySlice = createSlice({
       .addCase(createCommunityApplication.rejected, (state, action) => {
         state.isLoading = false;
       })
+      .addCase(getAllCommunityApplications.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.communityApplications = action.payload.data;
+        state.currentPage = action.payload.currentPage;
+        state.totalPages = action.payload.totalPages;
+        state.totalData = action.payload.totalData;
+      })
       .addMatcher(
         isAnyOf(
           createCommunityApplication.pending,
-          getOneCommunityApplication.pending
+          getOneCommunityApplication.pending,
+          getAllCommunityApplications.pending
         ),
         (state, action) => {
           state.isLoading = true;
         }
       )
       .addMatcher(
-        isAnyOf(getOneCommunityApplication.rejected),
+        isAnyOf(
+          getOneCommunityApplication.rejected,
+          getAllCommunityApplications.rejected
+        ),
         (state, action) => {
           state.isLoading = false;
         }
@@ -76,6 +105,7 @@ export const communitySlice = createSlice({
   },
 });
 
-export const communityState = (state: RootState) => state.community;
+export const communityApplicationState = (state: RootState) =>
+  state.communityApplication;
 
-export default communitySlice.reducer;
+export default communityApplicationSlice.reducer;

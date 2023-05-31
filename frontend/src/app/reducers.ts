@@ -1,11 +1,11 @@
 import { combineReducers } from "@reduxjs/toolkit";
 
 import user from "../features/user/UserSlice";
-import community from "../features/community/CommunitySlice";
+import communityApplication from "../features/communityApplication/CommunityApplicationSlice";
 
 const rootReducer = combineReducers({
   user,
-  community,
+  communityApplication,
 });
 
 export default rootReducer;
