@@ -22,7 +22,7 @@ function MainContent({ heading, children }: MainContentProps) {
   const { classes } = useStyles();
 
   return (
-    <Container h={"100%"} className={classes.outerContainer} mx={0} p={0}>
+    <Container fluid h={"100%"} className={classes.outerContainer}>
       <Title order={2}>{heading}</Title>
       <Container
         fluid
