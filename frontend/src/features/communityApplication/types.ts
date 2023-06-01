@@ -31,6 +31,10 @@ export type createCommunityApplicationResponse = {
   updatedAt: string;
 };
 
+export type getOneCommunityApplicationRequest = {
+  communityApplicationId: string;
+};
+
 export type getOneCommunityApplicationResponse =
   createCommunityApplicationResponse;
 

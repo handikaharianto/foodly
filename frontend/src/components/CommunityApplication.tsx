@@ -16,9 +16,10 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
   communityApplicationState,
   createCommunityApplication,
-  getOneCommunityApplication,
+  getAllCommunityApplications,
 } from "../features/communityApplication/CommunityApplicationSlice";
 import Loader from "./common/Loader";
+import { CommunityApplicationStatus } from "../features/communityApplication/types";
 
 type CommunityApplicationFormType = {
   name: string;
@@ -28,9 +29,10 @@ type CommunityApplicationFormType = {
 };
 
 const CommunityApplication = () => {
-  const { isLoading, communityApplication } = useAppSelector(
+  const { isLoading, communityApplications } = useAppSelector(
     communityApplicationState
   );
+
   const dispatch = useAppDispatch();
   const form = useForm<CommunityApplicationFormType>({
     initialValues: {
@@ -74,14 +76,18 @@ const CommunityApplication = () => {
   });
 
   useEffect(() => {
-    dispatch(getOneCommunityApplication());
+    dispatch(
+      getAllCommunityApplications({
+        status: CommunityApplicationStatus.PENDING,
+      })
+    );
   }, [dispatch]);
 
-  if (isLoading && !communityApplication) {
+  if (isLoading) {
     return <Loader />;
   }
 
-  return communityApplication ? (
+  return communityApplications.length > 0 ? (
     <Center h="100%">
       <Text align="center" fz="xl">
         Your community application is currently being reviewed.

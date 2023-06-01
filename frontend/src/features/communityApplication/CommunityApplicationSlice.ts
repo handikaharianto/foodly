@@ -6,6 +6,7 @@ import {
   createCommunityApplicationResponse,
   getAllCommunityApplicationsRequest,
   getAllCommunityApplicationsResponse,
+  getOneCommunityApplicationRequest,
   getOneCommunityApplicationResponse,
 } from "./types";
 import { privateAxios } from "../../api/axios";
@@ -19,21 +20,21 @@ export const createCommunityApplication = executeAsyncThunk<
   createCommunityApplicationRequest,
   createCommunityApplicationResponse
 >("communityApplication/createCommunityApplication", (req) =>
-  privateAxios.post("/community/applications", req)
+  privateAxios.post("/community-applications", req)
 );
 
 export const getOneCommunityApplication = executeAsyncThunk<
-  void,
+  getOneCommunityApplicationRequest,
   getOneCommunityApplicationResponse
->("communityApplication/getOneCommunityApplication", () =>
-  privateAxios.get("/community/applications")
+>("communityApplication/getOneCommunityApplication", (req) =>
+  privateAxios.get(`/community-applications/${req.communityApplicationId}`)
 );
 
 export const getAllCommunityApplications = executeAsyncThunk<
   getAllCommunityApplicationsRequest,
   getAllCommunityApplicationsResponse
 >("communityApplication/getAllCommunityApplications", (req) =>
-  privateAxios.post("/community/applications/list", req)
+  privateAxios.post("/community-applications/list", req)
 );
 
 export interface communityApplicationState {
