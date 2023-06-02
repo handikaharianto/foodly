@@ -83,6 +83,10 @@ export const userSlice = createSlice({
         state.loggedInUser = action.payload;
         state.isLoggedIn = true;
       })
+      .addCase(refreshAccessToken.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isLoggedIn = false;
+      })
       .addMatcher(
         isAnyOf(
           registerUser.pending,
