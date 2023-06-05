@@ -84,12 +84,12 @@ class CommunityApplicationController {
     res: Response,
     next: NextFunction
   ) => {
-    const { communicationApplicationId } = req.params;
+    const { communityApplicationId } = req.params;
 
     try {
       const data =
         await this._communityApplicationService.getOneCommunityApplication(
-          communicationApplicationId
+          communityApplicationId
         );
       return res.status(HTTP_STATUS.OK_200).json(data);
     } catch (error: any) {

@@ -35,7 +35,7 @@ communityApplicationRouter
   .route("/:communityApplicationId")
   .get(
     verifyJWT,
-    authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
+    authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY, UserRole.ADMINISTRATOR),
     communityApplicationController.getOneCommunityApplication
   );
 

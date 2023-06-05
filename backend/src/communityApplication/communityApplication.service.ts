@@ -11,7 +11,7 @@ import {
 } from "../common/error-message";
 import communityApplicationModel from "./communityApplication.model";
 import { PaginatedData } from "src/common/types";
-import { UserWithoutPassword } from "src/user/types";
+import { User, UserWithoutPassword } from "src/user/types";
 
 class CommunityApplicationService {
   createCommunityApplication = async (
@@ -66,11 +66,14 @@ class CommunityApplicationService {
   };
 
   getOneCommunityApplication = async (
-    communicationApplicationId: string
+    communityApplicationId: string
   ): Promise<CommunityApplication> => {
-    const communityApplication = await communityApplicationModel.findById(
-      communicationApplicationId
-    );
+    const communityApplication = await communityApplicationModel
+      .findById(communityApplicationId)
+      .populate<{ user: UserWithoutPassword }>({
+        path: "user",
+        select: "-password",
+      });
     if (!communityApplication)
       throw new ApiError(
         HTTP_STATUS.NOT_FOUND_404,
