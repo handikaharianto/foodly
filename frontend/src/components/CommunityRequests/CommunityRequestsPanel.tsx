@@ -10,7 +10,12 @@ import {
   Title,
   createStyles,
 } from "@mantine/core";
-import { IconDotsVertical, IconFilesOff } from "@tabler/icons-react";
+import {
+  IconDotsVertical,
+  IconFilesOff,
+  IconMail,
+  IconPhone,
+} from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 
 import { getTimeFromNow } from "../../utils/DateAndTime";
@@ -69,11 +74,17 @@ type CommunityRequestsListProps = {
 
 const useStyles = createStyles((theme) => ({
   card: {
+    display: "flex",
+    flexDirection: "column",
     transition: "all 0.2s",
     "&:hover": {
       boxShadow: theme.shadows.sm,
       scale: "1.01",
     },
+  },
+  cardBody: {
+    display: "flex",
+    flexDirection: "column",
   },
 }));
 
@@ -160,11 +171,23 @@ function CommunityRequestsPanel({
               </ActionIcon>
             </Group>
           </Card.Section>
-          <Card.Section p="md">
-            <Text lineClamp={3} color="gray.7" size="sm">
+          <Card.Section p="md" h="100%" className={classes.cardBody}>
+            <Text lineClamp={3} size="sm">
               {communityRequest.description}
             </Text>
-            <Text align="right" size="xs" mt="md" color="dimmed">
+            <Group mt="lg">
+              <IconMail size={18} />
+              <Text color="dimmed" fz="sm">
+                {communityRequest.user.email}
+              </Text>
+            </Group>
+            <Group mt="sm" mb="auto">
+              <IconPhone size={18} />
+              <Text color="dimmed" fz="sm">
+                +1 (950) 654-1602
+              </Text>
+            </Group>
+            <Text align="right" size="xs" color="dimmed" mt="lg">
               {getTimeFromNow(communityRequest.createdAt)}
             </Text>
           </Card.Section>

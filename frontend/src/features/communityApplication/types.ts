@@ -1,3 +1,5 @@
+import { User } from "../user/types";
+
 export enum CommunityApplicationStatus {
   ALL = "ALL",
   PENDING = "PENDING",
@@ -10,7 +12,7 @@ export type CommunityApplication = {
   name: string;
   type: string;
   description: string;
-  user: string;
+  user: User;
   createdAt: string;
   updatedAt: string;
 };
