@@ -28,7 +28,7 @@ export type createCommunityApplicationResponse = {
   name: string;
   type: string;
   description: string;
-  user: string;
+  user: User;
   createdAt: string;
   updatedAt: string;
 };
