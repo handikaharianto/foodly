@@ -1,26 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
-
 import CommunityService from "./community.service";
 import HTTP_STATUS from "../common/http-status-code";
-
-export const createCommunityApplicationSchema = z.object({
-  name: z
-    .string({
-      required_error: "Community name is required.",
-    })
-    .min(1, { message: "Community name is required" }),
-  type: z
-    .string({
-      required_error: "Community type is required.",
-    })
-    .min(1, { message: "Community type is required" }),
-  description: z
-    .string({
-      required_error: "Description is required.",
-    })
-    .min(1, { message: "Description is required" }),
-});
 
 class CommunityController {
   private readonly _communityService;
@@ -29,67 +9,69 @@ class CommunityController {
     this._communityService = _communityService;
   }
 
-  createCommunityApplication = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    const { name, type, description } = req.body;
-    const { _id } = req.user;
+  createCommunity = async (req: Request, res: Response, next: NextFunction) => {
+    const { name, type, description, user } = req.body;
 
     try {
-      const data = await this._communityService.createCommunityApplication({
+      await this._communityService.createCommunity({
         name,
         type,
         description,
-        user: _id,
+        user,
       });
-      return res.status(HTTP_STATUS.CREATED_201).json(data);
+      return res.status(HTTP_STATUS.CREATED_201).send();
     } catch (error: any) {
       next(error);
     }
   };
 
-  getOneCommunityApplication = async (
+  getAllCommunities = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
-    const { _id } = req.user;
+    const { limit, page } = req.body;
 
     try {
-      const data = await this._communityService.getOneCommunityApplication(_id);
+      const data = await this._communityService.getAllCommunities(limit, page);
       return res.status(HTTP_STATUS.OK_200).json(data);
     } catch (error: any) {
       next(error);
     }
   };
 
-  getAllCommunityApplications = async (
+  getOneCommunity = async (req: Request, res: Response, next: NextFunction) => {
+    const { communityId } = req.params;
+
+    try {
+      const data = await this._communityService.getOneCommunity(communityId);
+      return res.status(HTTP_STATUS.OK_200).json(data);
+    } catch (error: any) {
+      next(error);
+    }
+  };
+
+  updateOneCommunity = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
-    const { limit, page, searchInput, ...filter } = req.body;
+    const { communityId } = req.params;
+    const { name, description } = req.body;
 
     try {
-      const data = await this._communityService.getAllCommunityApplications(
-        limit,
-        page,
-        searchInput,
-        filter
+      const data = await this._communityService.updateOneCommunity(
+        communityId,
+        {
+          name,
+          description,
+        }
       );
       return res.status(HTTP_STATUS.OK_200).json(data);
     } catch (error: any) {
       next(error);
     }
   };
-
-  getAllCommunities = async () => {
-    // setup pagination (20 items per page)
-  };
-
-  updateCommunity = async () => {};
 }
 
 export default CommunityController;

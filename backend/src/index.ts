@@ -32,7 +32,7 @@ app.use(cookieParser());
 
 // routes
 app.use("/api/users", userRouter);
-app.use("/api/community", communityRouter);
+app.use("/api/communities", communityRouter);
 app.use("/api/community-applications", communityApplicationRouter);
 
 // error handler
