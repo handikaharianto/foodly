@@ -144,7 +144,7 @@ function CommunityRequestsPanel({
           component={Link}
           className={classes.card}
         >
-          <Card.Section withBorder p="md">
+          <Card.Section withBorder p="lg">
             <Group noWrap align="center" position="apart">
               <Container p={0} m={0} miw="0%">
                 <Title
@@ -152,11 +152,17 @@ function CommunityRequestsPanel({
                   transform="capitalize"
                   order={3}
                   align="left"
-                  size="h5"
+                  size="h6"
                 >
                   {communityRequest.name}
                 </Title>
-                <Badge color="red" size="md" mt="xs">
+                <Badge
+                  color="red"
+                  size="md"
+                  mt="xs"
+                  radius="sm"
+                  variant="outline"
+                >
                   {communityRequest.type}
                 </Badge>
               </Container>
@@ -171,23 +177,36 @@ function CommunityRequestsPanel({
               </ActionIcon>
             </Group>
           </Card.Section>
-          <Card.Section p="md" h="100%" className={classes.cardBody}>
-            <Text lineClamp={3} size="sm">
+          <Card.Section p="lg" h="100%" className={classes.cardBody}>
+            <Text lineClamp={3} size="sm" mb="auto">
               {communityRequest.description}
             </Text>
-            <Group mt="lg">
-              <IconMail size={18} />
+            <Group mt="xl">
+              <IconMail stroke={1} size={18} />
               <Text color="dimmed" fz="sm">
                 {communityRequest.user.email}
               </Text>
             </Group>
-            <Group mt="sm" mb="auto">
-              <IconPhone size={18} />
+            <Group mt="sm">
+              <IconPhone stroke={1} size={18} />
               <Text color="dimmed" fz="sm">
                 +1 (950) 654-1602
               </Text>
             </Group>
-            <Text align="right" size="xs" color="dimmed" mt="lg">
+            <Group mt="xl" spacing="0.4rem" tt="capitalize">
+              {["Non-halal", "Halal", "Canned goods"].map((item) => (
+                <Badge
+                  key={item}
+                  color="gray.5"
+                  radius="sm"
+                  variant="outline"
+                  size="sm"
+                >
+                  {item}
+                </Badge>
+              ))}
+            </Group>
+            <Text align="right" size="xs" color="dimmed" mt="xl">
               {getTimeFromNow(communityRequest.createdAt)}
             </Text>
           </Card.Section>
