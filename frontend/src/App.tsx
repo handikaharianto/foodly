@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import TestPage from "./components/TestPage";
@@ -12,6 +12,7 @@ import { UserRole } from "./features/user/types";
 import { Forbidden } from "./pages/Forbidden";
 import Index from "./components/common/Index";
 import CommunityRequests from "./pages/CommunityRequests";
+import CommunityRequestsDetails from "./components/CommunityRequests/CommunityRequestsDetails";
 
 function App() {
   return (
@@ -59,6 +60,16 @@ function App() {
                 <Route
                   path="/community-requests"
                   element={<CommunityRequests />}
+                />
+              </Route>
+              <Route
+                element={
+                  <AuthorizeUser acceptedRoles={[UserRole.ADMINISTRATOR]} />
+                }
+              >
+                <Route
+                  path="/community-requests/:communityApplicationId"
+                  element={<CommunityRequestsDetails />}
                 />
               </Route>
             </Route>

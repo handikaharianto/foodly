@@ -6,7 +6,7 @@ const Loader = () => {
       visible
       overlayBlur={2}
       zIndex={1001}
-      loaderProps={{ color: "red.7" }}
+      loaderProps={{ color: "red.7", variant: "bars" }}
     />
   );
 };

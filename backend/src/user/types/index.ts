@@ -1,4 +1,4 @@
-import { Optional } from "src/utils/custom-utility";
+import { Types } from "mongoose";
 
 export enum UserRole {
   PUBLIC = "PUBLIC",
@@ -6,29 +6,36 @@ export enum UserRole {
   ADMINISTRATOR = "ADMINISTRATOR",
 }
 
-export interface User {
+export type User = {
   _id: string;
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  role: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
+  role: UserRole;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
-export type NewUser = Omit<Optional<User, "role">, "_id">;
+export type NewUser = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  role?: UserRole;
+};
+
 export type UserWithoutPassword = Omit<User, "password">;
 export type LoginUser = UserWithoutPassword & {
   accessToken: string;
   refreshToken: string;
 };
 
-export interface RefreshToken {
+export type RefreshToken = {
   _id: string;
   token: string;
-  user: string;
+  user: Types.ObjectId | string;
   expirationDate: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
+  createdAt: Date;
+  updatedAt: Date;
+};

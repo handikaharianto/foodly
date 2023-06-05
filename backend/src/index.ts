@@ -9,6 +9,7 @@ import connectDB from "./utils/connectDB";
 import userRouter from "./user/user.route";
 import handleError from "./common/middlewares/handle-error.middleware";
 import communityRouter from "./community/community.route";
+import communityApplicationRouter from "./communityApplication/communityApplication.route";
 
 dotenv.config();
 
@@ -31,7 +32,8 @@ app.use(cookieParser());
 
 // routes
 app.use("/api/users", userRouter);
-app.use("/api/community", communityRouter);
+app.use("/api/communities", communityRouter);
+app.use("/api/community-applications", communityApplicationRouter);
 
 // error handler
 app.use(handleError);

@@ -1,7 +1,6 @@
 import { Group, Pagination, Select, Tabs, TextInput } from "@mantine/core";
 import MainContent from "../components/common/MainContent";
 import {
-  IconArrowsSort,
   IconBan,
   IconCircleCheck,
   IconRotate2,
@@ -11,17 +10,17 @@ import {
 import CommunityRequestPanel from "../components/CommunityRequests/CommunityRequestsPanel";
 import { useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
-
-export enum CommunityRequestTabsType {
-  ALL = "ALL",
-  PENDING = "PENDING",
-  ACCEPTED = "ACCEPTED",
-  REJECTED = "REJECTED",
-}
+import { CommunityApplicationStatus } from "../features/communityApplication/types";
+import { useAppSelector } from "../app/hooks";
+import { communityApplicationState } from "../features/communityApplication/CommunityApplicationSlice";
 
 function CommunityRequests() {
   const [searchInput, setSearchInput] = useState("");
-  const [debounced] = useDebouncedValue(searchInput, 200);
+  const [debouncedSearchInput] = useDebouncedValue(searchInput, 200);
+
+  const { totalPages, communityApplications, isLoading } = useAppSelector(
+    communityApplicationState
+  );
 
   return (
     <MainContent heading="Community Requests">
@@ -44,57 +43,80 @@ function CommunityRequests() {
         keepMounted={false}
         color="red"
         mt="xl"
-        defaultValue={CommunityRequestTabsType.PENDING}
+        defaultValue={CommunityApplicationStatus.PENDING}
+        h={"100%"}
       >
         <Tabs.List>
           <Tabs.Tab
-            value={CommunityRequestTabsType.ALL}
+            value={CommunityApplicationStatus.ALL}
             icon={<IconStack3 size="0.8rem" />}
           >
             All
           </Tabs.Tab>
           <Tabs.Tab
-            value={CommunityRequestTabsType.PENDING}
+            value={CommunityApplicationStatus.PENDING}
             icon={<IconRotate2 size="0.8rem" />}
           >
             Pending
           </Tabs.Tab>
           <Tabs.Tab
-            value={CommunityRequestTabsType.ACCEPTED}
+            value={CommunityApplicationStatus.ACCEPTED}
             icon={<IconCircleCheck size="0.8rem" />}
           >
             Accepted
           </Tabs.Tab>
           <Tabs.Tab
-            value={CommunityRequestTabsType.REJECTED}
+            value={CommunityApplicationStatus.REJECTED}
             icon={<IconBan size="0.8rem" />}
           >
             Rejected
           </Tabs.Tab>
         </Tabs.List>
 
-        <Tabs.Panel value={CommunityRequestTabsType.ALL} pt="xs">
-          <CommunityRequestPanel activeTab={CommunityRequestTabsType.ALL} />
-        </Tabs.Panel>
-
-        <Tabs.Panel value={CommunityRequestTabsType.PENDING} pt="xs">
-          <CommunityRequestPanel activeTab={CommunityRequestTabsType.PENDING} />
-        </Tabs.Panel>
-
-        <Tabs.Panel value={CommunityRequestTabsType.ACCEPTED} pt="xs">
+        <Tabs.Panel h={"100%"} value={CommunityApplicationStatus.ALL} pt="xs">
           <CommunityRequestPanel
-            activeTab={CommunityRequestTabsType.ACCEPTED}
+            activeTab={CommunityApplicationStatus.ALL}
+            searchInput={debouncedSearchInput}
           />
         </Tabs.Panel>
-        <Tabs.Panel value={CommunityRequestTabsType.REJECTED} pt="xs">
+
+        <Tabs.Panel
+          h={"100%"}
+          value={CommunityApplicationStatus.PENDING}
+          pt="xs"
+        >
           <CommunityRequestPanel
-            activeTab={CommunityRequestTabsType.REJECTED}
+            activeTab={CommunityApplicationStatus.PENDING}
+            searchInput={debouncedSearchInput}
+          />
+        </Tabs.Panel>
+
+        <Tabs.Panel
+          h={"100%"}
+          value={CommunityApplicationStatus.ACCEPTED}
+          pt="xs"
+        >
+          <CommunityRequestPanel
+            activeTab={CommunityApplicationStatus.ACCEPTED}
+            searchInput={debouncedSearchInput}
+          />
+        </Tabs.Panel>
+        <Tabs.Panel
+          h={"100%"}
+          value={CommunityApplicationStatus.REJECTED}
+          pt="xs"
+        >
+          <CommunityRequestPanel
+            activeTab={CommunityApplicationStatus.REJECTED}
+            searchInput={debouncedSearchInput}
           />
         </Tabs.Panel>
       </Tabs>
-      <Group position="right" mt="2.5rem">
-        <Pagination total={10} color="red" />
-      </Group>
+      {!isLoading && communityApplications.length > 0 && (
+        <Group position="right" mt="2.5rem">
+          <Pagination total={totalPages || 1} color="red" />
+        </Group>
+      )}
     </MainContent>
   );
 }

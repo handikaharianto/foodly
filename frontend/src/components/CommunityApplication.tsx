@@ -7,18 +7,21 @@ import {
   Container,
   Select,
   Paper,
-  Center,
-  Text,
 } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useEffect, useMemo } from "react";
+import { IconReportSearch } from "@tabler/icons-react";
+
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
-  communityState,
+  communityApplicationState,
   createCommunityApplication,
-  getOneCommunityApplication,
-} from "../features/community/CommunitySlice";
+  getAllCommunityApplications,
+} from "../features/communityApplication/CommunityApplicationSlice";
 import Loader from "./common/Loader";
+import { CommunityApplicationStatus } from "../features/communityApplication/types";
+import MainContent from "./common/MainContent";
+import EmptyState from "./common/EmptyState";
 
 type CommunityApplicationFormType = {
   name: string;
@@ -28,7 +31,10 @@ type CommunityApplicationFormType = {
 };
 
 const CommunityApplication = () => {
-  const { isLoading, communityApplication } = useAppSelector(communityState);
+  const { isLoading, communityApplications } = useAppSelector(
+    communityApplicationState
+  );
+
   const dispatch = useAppDispatch();
   const form = useForm<CommunityApplicationFormType>({
     initialValues: {
@@ -72,72 +78,79 @@ const CommunityApplication = () => {
   });
 
   useEffect(() => {
-    dispatch(getOneCommunityApplication());
+    dispatch(
+      getAllCommunityApplications({
+        status: CommunityApplicationStatus.PENDING,
+      })
+    );
   }, [dispatch]);
 
-  if (isLoading && !communityApplication) {
+  if (isLoading) {
     return <Loader />;
   }
 
-  return communityApplication ? (
-    <Center h="100%">
-      <Text align="center" fz="xl">
-        Your community application is currently being reviewed.
-      </Text>
-    </Center>
-  ) : (
-    <Container size="sm" mt="4rem">
-      <div>
-        <Title order={2} size="h1" align="center">
-          Tell us a bit about your community
-        </Title>
-      </div>
-      <Paper shadow="md" radius="lg" p="xl" withBorder mt="4rem">
-        <form onSubmit={submitForm}>
-          <TextInput
-            withAsterisk
-            disabled={isLoading}
-            label="Community name"
-            placeholder="ABC community"
-            {...form.getInputProps("name")}
-          />
-          <Select
-            withAsterisk
-            disabled={isLoading}
-            mt="md"
-            withinPortal
-            data={["Orphanage", "Nursing home", "Others"]}
-            placeholder="Pick one"
-            label="Community type"
-            {...form.getInputProps("type")}
-          />
-          {isOthersSelected && (
-            <TextInput
-              withAsterisk
-              disabled={isLoading}
-              label="Community type (Others)"
-              placeholder=""
-              mt="md"
-              {...form.getInputProps("typeOthers")}
-            />
-          )}
-          <Textarea
-            withAsterisk
-            disabled={isLoading}
-            label="Description"
-            placeholder="Our community is helping..."
-            minRows={4}
-            mt="md"
-            {...form.getInputProps("description")}
-          />
-          <Group position="center" mt="md">
-            <Button type="submit" color="red.6" loading={isLoading}>
-              Submit
-            </Button>
-          </Group>
-        </form>
-      </Paper>
-    </Container>
+  return (
+    <MainContent heading={"Community Applications"}>
+      {communityApplications.length > 0 ? (
+        <EmptyState
+          Icon={IconReportSearch}
+          title={"Your community application is currently being reviewed."}
+        />
+      ) : (
+        <Container size="sm" mt="4rem">
+          <div>
+            <Title order={2} size="h1" align="center">
+              Tell us a bit about your community
+            </Title>
+          </div>
+          <Paper shadow="md" radius="lg" p="xl" withBorder mt="4rem">
+            <form onSubmit={submitForm}>
+              <TextInput
+                withAsterisk
+                disabled={isLoading}
+                label="Community name"
+                placeholder="ABC community"
+                {...form.getInputProps("name")}
+              />
+              <Select
+                withAsterisk
+                disabled={isLoading}
+                mt="md"
+                withinPortal
+                data={["Orphanage", "Nursing home", "Others"]}
+                placeholder="Pick one"
+                label="Community type"
+                {...form.getInputProps("type")}
+              />
+              {isOthersSelected && (
+                <TextInput
+                  withAsterisk
+                  disabled={isLoading}
+                  label="Community type (Others)"
+                  placeholder=""
+                  mt="md"
+                  {...form.getInputProps("typeOthers")}
+                />
+              )}
+              <Textarea
+                withAsterisk
+                disabled={isLoading}
+                label="Description"
+                placeholder="Our community is helping..."
+                minRows={4}
+                mt="md"
+                {...form.getInputProps("description")}
+              />
+              <Group position="center" mt="md">
+                <Button type="submit" color="red.6" loading={isLoading}>
+                  Submit
+                </Button>
+              </Group>
+            </form>
+          </Paper>
+        </Container>
+      )}
+    </MainContent>
   );
 };
 

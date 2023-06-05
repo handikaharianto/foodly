@@ -16,6 +16,13 @@ export const USER_WRONG_PASSWORD = "Incorrect password.";
 /**
  * COMMUNITY
  */
+export const COMMUNITY_EXISTS_FOR_USER =
+  "Another community is associated with this user.";
+export const COMMUNITY_NOT_FOUND = "Community not found.";
+
+/**
+ * COMMUNITY APPLICATION
+ */
 export const COMMUNITY_APPLICATION_EXISTS_ERROR =
   "Community application exists.";
 export const COMMUNITY_APPLICATION_NOT_FOUND =
