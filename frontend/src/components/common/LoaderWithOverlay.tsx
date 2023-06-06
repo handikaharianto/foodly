@@ -1,6 +1,6 @@
 import { LoadingOverlay } from "@mantine/core";
 
-const Loader = () => {
+const LoaderWithOverlay = () => {
   return (
     <LoadingOverlay
       visible
@@ -11,4 +11,4 @@ const Loader = () => {
   );
 };
 
-export default Loader;
+export default LoaderWithOverlay;

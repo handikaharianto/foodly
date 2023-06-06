@@ -18,7 +18,7 @@ import {
   createCommunityApplication,
   getAllCommunityApplications,
 } from "../features/communityApplication/CommunityApplicationSlice";
-import Loader from "./common/Loader";
+import Loader from "./common/LoaderWithOverlay";
 import { CommunityApplicationStatus } from "../features/communityApplication/types";
 import MainContent from "./common/MainContent";
 import EmptyState from "./common/EmptyState";

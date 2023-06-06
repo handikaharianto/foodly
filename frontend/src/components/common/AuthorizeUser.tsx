@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { userState } from "../../features/user/UserSlice";
 import { UserRole } from "../../features/user/types";
-import Loader from "./Loader";
+import Loader from "./LoaderWithOverlay";
 
 type AuthorizeUserProps = {
   acceptedRoles: UserRole[];

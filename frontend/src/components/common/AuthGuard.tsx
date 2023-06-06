@@ -3,7 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { refreshAccessToken, userState } from "../../features/user/UserSlice";
-import Loader from "./Loader";
+import Loader from "./LoaderWithOverlay";
 import { privateAxios } from "../../api/axios";
 
 const AuthGuard = () => {
