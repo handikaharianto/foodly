@@ -25,8 +25,8 @@ import {
   getAllCommunityApplications,
 } from "../../features/communityApplication/CommunityApplicationSlice";
 import { CommunityApplicationStatus } from "../../features/communityApplication/types";
-import Loader from "../common/Loader";
 import EmptyState from "../common/EmptyState";
+import LoaderState from "../common/LoaderState";
 
 type CommunityRequestsListProps = {
   activeTab: CommunityApplicationStatus;
@@ -109,7 +109,7 @@ function CommunityRequestsPanel({
   }, []);
 
   if (isLoading) {
-    return <Loader />;
+    return <LoaderState />;
   }
 
   const title =
