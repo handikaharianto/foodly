@@ -20,6 +20,7 @@ export type CommunityApplication = {
 export type createCommunityApplicationRequest = {
   name: string;
   type: string;
+  foodPreferences: string[];
   description: string;
 };
 

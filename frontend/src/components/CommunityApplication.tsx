@@ -7,10 +7,15 @@ import {
   Container,
   Select,
   Paper,
+  MultiSelect,
+  Modal,
+  createStyles,
 } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useEffect, useMemo } from "react";
-import { IconReportSearch } from "@tabler/icons-react";
+import { IconBrandVite, IconReportSearch } from "@tabler/icons-react";
+import ReactMapGl, { GeolocateControl, Marker, useControl } from "react-map-gl";
+import MapBoxGeocoder from "@mapbox/mapbox-gl-geocoder";
 
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
@@ -22,18 +27,34 @@ import Loader from "./common/LoaderWithOverlay";
 import { CommunityApplicationStatus } from "../features/communityApplication/types";
 import MainContent from "./common/MainContent";
 import EmptyState from "./common/EmptyState";
+import { useDisclosure } from "@mantine/hooks";
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import Geocoder from "./common/Geocoder";
+
+const useStyles = createStyles((theme) => ({
+  modalContent: {
+    overflowY: "visible",
+  },
+  modalBody: {
+    height: "500px",
+    width: "800px",
+  },
+}));
 
 type CommunityApplicationFormType = {
   name: string;
   type: string;
   typeOthers?: string;
+  foodPreferences: string[];
   description: string;
 };
 
 const CommunityApplication = () => {
+  const [opened, { open, close }] = useDisclosure(false);
   const { isLoading, communityApplications } = useAppSelector(
     communityApplicationState
   );
+  const { classes } = useStyles();
 
   const dispatch = useAppDispatch();
   const form = useForm<CommunityApplicationFormType>({
@@ -41,6 +62,7 @@ const CommunityApplication = () => {
       name: "",
       type: "",
       typeOthers: "",
+      foodPreferences: [],
       description: "",
     },
 
@@ -63,18 +85,20 @@ const CommunityApplication = () => {
   );
 
   const submitForm = form.onSubmit(async (formData) => {
-    if (formData.type !== "Others") {
-      delete formData.typeOthers;
-    } else {
-      formData = { ...formData, type: formData.typeOthers! };
-      delete formData.typeOthers;
-    }
+    console.log(formData);
 
-    try {
-      dispatch(createCommunityApplication(formData));
-    } catch (error) {
-      // display error dialog here
-    }
+    // if (formData.type !== "Others") {
+    //   delete formData.typeOthers;
+    // } else {
+    //   formData = { ...formData, type: formData.typeOthers! };
+    //   delete formData.typeOthers;
+    // }
+
+    // try {
+    //   dispatch(createCommunityApplication(formData));
+    // } catch (error) {
+    //   // display error dialog here
+    // }
   });
 
   useEffect(() => {
@@ -132,6 +156,72 @@ const CommunityApplication = () => {
                   {...form.getInputProps("typeOthers")}
                 />
               )}
+              <MultiSelect
+                withAsterisk
+                disabled={isLoading}
+                mt="md"
+                placeholder="Select food preferences"
+                label="Food preferences"
+                {...form.getInputProps("foodPreferences")}
+                data={[
+                  "Halal",
+                  "Non-Halal",
+                  "Canned",
+                  "Fruits",
+                  "Vegetables",
+                  "Baked",
+                  "Packaged",
+                ]}
+              />
+              <Button mt="md" variant="outline" color="red" onClick={open}>
+                Add community location
+              </Button>
+              <Modal
+                centered
+                opened={opened}
+                onClose={close}
+                classNames={{
+                  content: classes.modalContent,
+                  body: classes.modalBody,
+                }}
+              >
+                <ReactMapGl
+                  reuseMaps
+                  initialViewState={{
+                    latitude: 3.0633808896596406,
+                    longitude: 101.69701345766993,
+                    zoom: 8,
+                  }}
+                  mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+                  mapStyle={import.meta.env.VITE_MAPBOX_MAP_STYLE}
+                  onClick={(e) => {
+                    console.log(e.lngLat);
+                    console.log(e.features);
+                    console.log(e.point);
+                    console.log(e.type);
+                  }}
+                  onLoad={(e) => console.log(e.type)}
+                >
+                  <Marker
+                    anchor="bottom"
+                    latitude={3.0633808896596406}
+                    longitude={101.69701345766993}
+                    color="#fa5252"
+                  />
+                  <GeolocateControl
+                    showUserLocation
+                    trackUserLocation
+                    showUserHeading
+                    position="top-left"
+                    onGeolocate={(e) => {
+                      console.log(e.coords);
+                      console.log(e.timestamp);
+                      console.log(e.target);
+                    }}
+                  />
+                  <Geocoder />
+                </ReactMapGl>
+              </Modal>
               <Textarea
                 withAsterisk
                 disabled={isLoading}

@@ -14,6 +14,9 @@ import Index from "./components/common/Index";
 import CommunityRequests from "./pages/CommunityRequests";
 import CommunityRequestsDetails from "./components/CommunityRequests/CommunityRequestsDetails";
 
+import "mapbox-gl/dist/mapbox-gl.css";
+import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
+
 function App() {
   return (
     <BrowserRouter>
