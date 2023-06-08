@@ -1,8 +1,9 @@
-import { SimpleGrid, createStyles } from "@mantine/core";
+import { SimpleGrid, Stack, createStyles } from "@mantine/core";
 
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import ChatSidebar from "../components/Chat/ChatSidebar";
 import ChatMessages from "../components/Chat/ChatMessages";
+import ChatHeader from "../components/Chat/ChatHeader";
 
 const useStyles = createStyles((theme) => ({
   chatGrid: {
@@ -16,7 +17,10 @@ function Chat() {
   return (
     <SimpleGrid spacing={0} className={classes.chatGrid} h={"100%"}>
       <ChatSidebar />
-      <ChatMessages />
+      <Stack spacing={0}>
+        <ChatHeader />
+        <ChatMessages />
+      </Stack>
     </SimpleGrid>
   );
 }

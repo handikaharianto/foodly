@@ -55,7 +55,7 @@ function UserContact({
         <Group w={"100%"} className={classes.userInfo} spacing={0}>
           <Group noWrap position="apart" miw={"100%"}>
             <Text truncate size="sm" weight={500}>
-              {name}asfasasfsafsdfafsasd
+              {name}
             </Text>
             <Text size={"xs"} color="dimmed" className={classes.userTimestamp}>
               2hr ago
