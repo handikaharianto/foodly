@@ -13,6 +13,7 @@ import { Forbidden } from "./pages/Forbidden";
 import Index from "./components/common/Index";
 import CommunityRequests from "./pages/CommunityRequests";
 import CommunityRequestsDetails from "./components/CommunityRequests/CommunityRequestsDetails";
+import Chat from "./pages/Chat";
 
 function App() {
   return (
@@ -36,6 +37,15 @@ function App() {
                 }
               >
                 <Route path="/home" element={<TestPage />} />
+              </Route>
+              <Route
+                element={
+                  <AuthorizeUser
+                    acceptedRoles={[UserRole.PUBLIC, UserRole.COMMUNITY]}
+                  />
+                }
+              >
+                <Route path="/chat" element={<Chat />} />
               </Route>
               <Route
                 element={<AuthorizeUser acceptedRoles={[UserRole.PUBLIC]} />}
