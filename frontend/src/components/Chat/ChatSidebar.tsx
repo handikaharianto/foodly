@@ -26,10 +26,8 @@ const useStyles = createStyles((theme) => ({
     paddingRight: theme.spacing.lg,
     overflowX: "hidden !important" as "hidden",
 
-    "& > div:first-child": {
+    "& > div:first-of-type": {
       display: "block !important",
-      // position: "relative",
-      // inset: "0",
     },
   },
 }));
