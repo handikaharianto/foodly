@@ -3,6 +3,16 @@ import { NextFunction, Request, Response } from "express";
 import MessageService from "../services/message.service";
 import HTTP_STATUS from "../../common/http-status-code";
 import { NewMessage } from "../types";
+import { z } from "zod";
+
+export const getAllMessagesSchema = z.object({
+  chat: z.string().min(1, { message: "Chat ID is required." }),
+});
+
+export const getOneMessageSchema = z.object({
+  chatId: z.string().min(1, { message: "Chat ID is required." }),
+  messageId: z.string().min(1, { message: "Message ID is required." }),
+});
 
 class MessageController {
   private readonly _messageService;

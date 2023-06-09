@@ -32,6 +32,7 @@ export const COMMUNITY_APPLICATION_NOT_FOUND =
  * CHAT
  */
 export const CHAT_NOT_FOUND = "Chat not found.";
+export const CHAT_EXISTS_ERROR = "Chat exists.";
 
 /**
  * MESSAGE

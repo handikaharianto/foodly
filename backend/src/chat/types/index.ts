@@ -11,7 +11,7 @@ export type Chat = {
 
 export type Message = {
   _id: string;
-  chat: Types.ObjectId | UserWithoutPassword;
+  chat: Types.ObjectId | Chat;
   sender: Types.ObjectId | UserWithoutPassword;
   content: string;
   createdAt: Date;

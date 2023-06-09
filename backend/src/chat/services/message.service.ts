@@ -3,7 +3,7 @@ import messageModel from "../models/message.model";
 import ApiError from "../../common/api-error";
 import HTTP_STATUS from "../../common/http-status-code";
 import { MESSAGE_NOT_FOUND } from "../../common/error-message";
-import { Message } from "../types";
+import { Chat, Message } from "../types";
 
 class MessageService {
   getAllMessages = async (chat: string): Promise<Message[]> => {
@@ -12,16 +12,27 @@ class MessageService {
       .populate<{ sender: UserWithoutPassword }>({
         path: "sender",
         select: "-password",
+      })
+      .populate<{ chat: Chat }>({
+        path: "chat",
       });
 
     return messages;
   };
 
   getOneMessage = async (chat: string, message: string): Promise<Message> => {
-    const chatMessage = await messageModel.findOne({
-      chat,
-      message,
-    });
+    const chatMessage = await messageModel
+      .findOne({
+        chat,
+        message,
+      })
+      .populate<{ sender: UserWithoutPassword }>({
+        path: "sender",
+        select: "-password",
+      })
+      .populate<{ chat: Chat }>({
+        path: "chat",
+      });
 
     if (!chatMessage)
       throw new ApiError(HTTP_STATUS.NOT_FOUND_404, MESSAGE_NOT_FOUND);

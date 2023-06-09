@@ -1,11 +1,22 @@
 import { Router } from "express";
-import ChatController from "../controllers/chat.controller";
+import ChatController, {
+  createChatSchema,
+  getAllChatsSchema,
+  getOneChatSchema,
+} from "../controllers/chat.controller";
 import ChatService from "../services/chat.service";
 import verifyJWT from "../../common/middlewares/verify-access-token.middleware";
 import authorizeUser from "../../common/middlewares/authorize-user";
 import { UserRole } from "../../user/types";
-import MessageController from "../controllers/message.controller";
+import MessageController, {
+  getAllMessagesSchema,
+  getOneMessageSchema,
+} from "../controllers/message.controller";
 import MessageService from "../services/message.service";
+import {
+  validateRequestBody,
+  validateRequestParams,
+} from "zod-express-middleware";
 
 const chatController = new ChatController(new ChatService());
 const messageController = new MessageController(new MessageService());
@@ -17,6 +28,7 @@ chatRouter
   .post(
     verifyJWT,
     authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
+    validateRequestBody(createChatSchema),
     chatController.createChat
   );
 
@@ -25,6 +37,7 @@ chatRouter
   .post(
     verifyJWT,
     authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
+    validateRequestBody(getAllChatsSchema),
     chatController.getAllChats
   );
 
@@ -33,6 +46,7 @@ chatRouter
   .get(
     verifyJWT,
     authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
+    validateRequestParams(getOneChatSchema),
     chatController.getOneChat
   );
 
@@ -41,6 +55,7 @@ chatRouter
   .post(
     verifyJWT,
     authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
+    validateRequestBody(getAllMessagesSchema),
     messageController.getAllMessages
   );
 
@@ -49,6 +64,7 @@ chatRouter
   .get(
     verifyJWT,
     authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
+    validateRequestParams(getOneMessageSchema),
     messageController.getOneMessage
   );
 

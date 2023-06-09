@@ -1,6 +1,21 @@
 import { NextFunction, Request, Response } from "express";
 import ChatService from "../services/chat.service";
 import HTTP_STATUS from "../../common/http-status-code";
+import { z } from "zod";
+
+export const createChatSchema = z.object({
+  users: z
+    .array(z.string())
+    .length(2, { message: "Sender and receiver are required." }),
+});
+
+export const getAllChatsSchema = z.object({
+  userId: z.string().min(1, { message: "User ID is required." }),
+});
+
+export const getOneChatSchema = z.object({
+  chatId: z.string().min(1, { message: "Chat ID is required." }),
+});
 
 class ChatController {
   private readonly _chatService;
@@ -10,11 +25,10 @@ class ChatController {
   }
 
   createChat = async (req: Request, res: Response, next: NextFunction) => {
-    const { _id: sender } = req.user;
-    const { receiver } = req.body;
+    const { users } = req.body;
 
     try {
-      await this._chatService.createChat(sender, receiver);
+      await this._chatService.createChat(users);
       res.sendStatus(HTTP_STATUS.CREATED_201);
     } catch (error: any) {
       next(error);
@@ -22,10 +36,10 @@ class ChatController {
   };
 
   getAllChats = async (req: Request, res: Response, next: NextFunction) => {
-    const { sender } = req.body;
+    const { userId } = req.body;
 
     try {
-      const data = await this._chatService.getAllChats(sender);
+      const data = await this._chatService.getAllChats(userId);
       return res.status(HTTP_STATUS.OK_200).json(data);
     } catch (error: any) {
       next(error);
@@ -36,7 +50,7 @@ class ChatController {
     const { chatId } = req.params;
 
     try {
-      const data = await this._chatService.getAllChats(chatId);
+      const data = await this._chatService.getOneChat(chatId);
       return res.status(HTTP_STATUS.OK_200).json(data);
     } catch (error: any) {
       next(error);
