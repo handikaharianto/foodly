@@ -4,7 +4,7 @@ import cors from "cors";
 import config from "config";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 
 import connectDB from "./utils/connectDB";
 import userRouter from "./user/user.route";
@@ -12,6 +12,9 @@ import handleError from "./common/middlewares/handle-error.middleware";
 import communityRouter from "./community/community.route";
 import communityApplicationRouter from "./communityApplication/communityApplication.route";
 import chatRouter from "./chat/routes/chat.route";
+import { SEND_CHAT_MESSAGE } from "./socket";
+import MessageController from "./chat/controllers/message.controller";
+import MessageService from "./chat/services/message.service";
 
 dotenv.config();
 
@@ -19,7 +22,7 @@ export const app = express();
 export const server = http.createServer(app);
 export const io = new Server(server, {
   cors: {
-    origin: "http://127.0.0.1:5173",
+    origin: ["http://127.0.0.1:5173", "http://localhost:5173"],
   },
 });
 
@@ -45,6 +48,16 @@ app.use("/api/chats", chatRouter);
 
 // error handler
 app.use(handleError);
+
+// socket.io
+io.on("connection", (socket: Socket) => {
+  console.log(`user connected ${socket.id}`);
+
+  const messageController = new MessageController(new MessageService());
+
+  // receive new message
+  socket.on(SEND_CHAT_MESSAGE, messageController.createMessage);
+});
 
 const start = () => {
   try {
