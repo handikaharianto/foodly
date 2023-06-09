@@ -27,3 +27,13 @@ export const COMMUNITY_APPLICATION_EXISTS_ERROR =
   "Community application exists.";
 export const COMMUNITY_APPLICATION_NOT_FOUND =
   "Community application not found.";
+
+/**
+ * CHAT
+ */
+export const CHAT_NOT_FOUND = "Chat not found.";
+
+/**
+ * MESSAGE
+ */
+export const MESSAGE_NOT_FOUND = "Message not found.";
