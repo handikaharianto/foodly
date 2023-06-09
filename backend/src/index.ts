@@ -4,17 +4,24 @@ import cors from "cors";
 import config from "config";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import { Server } from "socket.io";
 
 import connectDB from "./utils/connectDB";
 import userRouter from "./user/user.route";
 import handleError from "./common/middlewares/handle-error.middleware";
 import communityRouter from "./community/community.route";
 import communityApplicationRouter from "./communityApplication/communityApplication.route";
+import chatRouter from "./chat/routes/chat.route";
 
 dotenv.config();
 
 export const app = express();
 export const server = http.createServer(app);
+export const io = new Server(server, {
+  cors: {
+    origin: "http://127.0.0.1:5173",
+  },
+});
 
 const PORT = config.get<string>("port");
 const MONGO_DB_URI = config.get<string>("mongoUri");
@@ -34,6 +41,7 @@ app.use(cookieParser());
 app.use("/api/users", userRouter);
 app.use("/api/communities", communityRouter);
 app.use("/api/community-applications", communityApplicationRouter);
+app.use("/api/chats", chatRouter);
 
 // error handler
 app.use(handleError);
