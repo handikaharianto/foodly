@@ -8,7 +8,7 @@ import { UserWithoutPassword } from "src/user/types";
 
 class ChatService {
   createChat = async (users: string[]): Promise<void> => {
-    const chat = await chatModel.find({
+    const chat = await chatModel.findOne({
       users: { $all: users },
     });
     if (chat) throw new ApiError(HTTP_STATUS.CONFLICT_409, CHAT_EXISTS_ERROR);

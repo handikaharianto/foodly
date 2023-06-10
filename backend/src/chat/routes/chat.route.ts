@@ -1,7 +1,6 @@
 import { Router } from "express";
 import ChatController, {
   createChatSchema,
-  getAllChatsSchema,
   getOneChatSchema,
 } from "../controllers/chat.controller";
 import ChatService from "../services/chat.service";
@@ -27,7 +26,7 @@ chatRouter
   .route("/")
   .post(
     verifyJWT,
-    authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
+    authorizeUser(UserRole.ADMINISTRATOR, UserRole.PUBLIC, UserRole.COMMUNITY),
     validateRequestBody(createChatSchema),
     chatController.createChat
   );
@@ -37,7 +36,6 @@ chatRouter
   .post(
     verifyJWT,
     authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
-    validateRequestBody(getAllChatsSchema),
     chatController.getAllChats
   );
 

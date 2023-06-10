@@ -4,13 +4,7 @@ import HTTP_STATUS from "../../common/http-status-code";
 import { z } from "zod";
 
 export const createChatSchema = z.object({
-  users: z
-    .array(z.string())
-    .length(2, { message: "Sender and receiver are required." }),
-});
-
-export const getAllChatsSchema = z.object({
-  userId: z.string().min(1, { message: "User ID is required." }),
+  users: z.array(z.string()).length(2),
 });
 
 export const getOneChatSchema = z.object({
@@ -36,7 +30,7 @@ class ChatController {
   };
 
   getAllChats = async (req: Request, res: Response, next: NextFunction) => {
-    const { userId } = req.body;
+    const { _id: userId } = req.user;
 
     try {
       const data = await this._chatService.getAllChats(userId);
