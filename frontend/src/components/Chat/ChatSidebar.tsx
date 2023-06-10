@@ -1,13 +1,11 @@
 import { Input, Paper, ScrollArea, Title, createStyles } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
+import { IconMessage, IconSearch } from "@tabler/icons-react";
 import UserContact from "./UserContact";
-
-const user = {
-  image:
-    "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80",
-  name: "Harriette Spoonlicker",
-  email: "hspoonlicker@outlook.com",
-};
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useEffect } from "react";
+import { chatState, getAllChats } from "../../features/chat/ChatSlice";
+import LoaderState from "../common/LoaderState";
+import EmptyState from "../common/EmptyState";
 
 const useStyles = createStyles((theme) => ({
   chatSidebar: {
@@ -28,12 +26,21 @@ const useStyles = createStyles((theme) => ({
 
     "& > div:first-of-type": {
       display: "block !important",
+      height: "100%",
     },
   },
 }));
 
 function ChatSidebar() {
   const { classes } = useStyles();
+
+  const { isLoading, chats } = useAppSelector(chatState);
+  const dispatch = useAppDispatch();
+  console.log(chats);
+
+  useEffect(() => {
+    dispatch(getAllChats());
+  }, [dispatch]);
 
   return (
     <Paper withBorder h={"100%"} className={classes.chatSidebar}>
@@ -54,18 +61,13 @@ function ChatSidebar() {
           viewport: classes.scrollAreaViewport,
         }}
       >
-        <UserContact {...user} />
-        <UserContact {...user} />
-        <UserContact {...user} />
-        <UserContact {...user} />
-        <UserContact {...user} />
-        <UserContact {...user} />
-        <UserContact {...user} />
-        <UserContact {...user} />
-        <UserContact {...user} />
-        <UserContact {...user} />
-        <UserContact {...user} />
-        <UserContact {...user} />
+        {isLoading ? (
+          <LoaderState />
+        ) : chats.length > 0 ? (
+          chats.map((chat) => <UserContact {...chat} />)
+        ) : (
+          <EmptyState Icon={IconMessage} title="Chat is empty." />
+        )}
       </ScrollArea>
     </Paper>
   );

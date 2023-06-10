@@ -1,11 +1,16 @@
 import {
   UnstyledButton,
-  UnstyledButtonProps,
   Group,
   Avatar,
   Text,
   createStyles,
 } from "@mantine/core";
+import { Message } from "../../features/chat/types";
+import { User } from "../../features/user/types";
+import { getSender } from "../../utils/chat";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { userState } from "../../features/user/UserSlice";
+import { setChatMessageTime } from "../../utils/DateAndTime";
 
 const useStyles = createStyles((theme) => ({
   user: {
@@ -32,37 +37,35 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface UserContactProps extends UnstyledButtonProps {
-  image: string;
-  name: string;
-  email: string;
-  icon?: React.ReactNode;
-}
+type UserContactProps = {
+  _id: string;
+  latestMessage: null | Message;
+  users: User[];
+  createdAt: string;
+  updatedAt: string;
+};
 
-function UserContact({
-  image,
-  name,
-  email,
-  icon,
-  ...others
-}: UserContactProps) {
+function UserContact({ latestMessage, users, updatedAt }: UserContactProps) {
   const { classes } = useStyles();
 
+  const { loggedInUser } = useAppSelector(userState);
+  const dispatch = useAppDispatch();
+
   return (
-    <UnstyledButton className={classes.user} {...others}>
+    <UnstyledButton className={classes.user}>
       <Group noWrap w={"100%"}>
         <Avatar radius="xl" />
         <Group w={"100%"} className={classes.userInfo} spacing={0}>
           <Group noWrap position="apart" miw={"100%"}>
-            <Text truncate size="sm" weight={500}>
-              {name}
+            <Text truncate size="sm" weight={500} transform="capitalize">
+              {getSender(loggedInUser!, users)}
             </Text>
             <Text size={"xs"} color="dimmed" className={classes.userTimestamp}>
-              2hr ago
+              {setChatMessageTime(updatedAt)}
             </Text>
           </Group>
-          <Text color="dimmed" size="xs">
-            {email}
+          <Text color="dimmed" size="xs" mih={"1.1625rem"} miw={"1px"}>
+            {latestMessage?.content}
           </Text>
         </Group>
       </Group>
