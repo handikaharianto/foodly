@@ -57,7 +57,7 @@ class CommunityApplicationController {
     res: Response,
     next: NextFunction
   ) => {
-    const { limit, page, searchInput, ...filter } = req.body;
+    const { limit, page, searchInput, status, ...filter } = req.body;
     const { _id: userId, role: userRole } = req.user;
 
     // public user can only fetch data associated to their account
@@ -71,6 +71,7 @@ class CommunityApplicationController {
           limit,
           page,
           searchInput,
+          status,
           filter
         );
       return res.status(HTTP_STATUS.OK_200).json(data);

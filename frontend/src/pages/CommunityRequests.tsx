@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { Badge, Group, Select, Text, useMantineTheme } from "@mantine/core";
+import {
+  Badge,
+  Group,
+  Select,
+  Text,
+  createStyles,
+  useMantineTheme,
+} from "@mantine/core";
 import MainContent from "../components/common/MainContent";
 import { MantineReactTable } from "mantine-react-table";
 import { MRT_ColumnDef, MRT_TablePagination } from "mantine-react-table";
@@ -16,16 +23,26 @@ import {
 import { setDate } from "../utils/DateAndTime";
 import { IconFilter } from "@tabler/icons-react";
 
+const useStyles = createStyles((theme) => ({
+  statusSelect: {
+    display: "flex",
+    alignItems: "center",
+    columnGap: theme.spacing.sm,
+  },
+}));
+
 function CommunityRequests() {
   const [searchInput, setSearchInput] = useState("");
   const [filterByStatus, setFilterByStatus] =
     useState<CommunityApplicationStatus>(CommunityApplicationStatus.PENDING);
-  const theme = useMantineTheme();
 
   const dispatch = useAppDispatch();
   const { totalPages, communityApplications, isLoading } = useAppSelector(
     communityApplicationState
   );
+
+  const theme = useMantineTheme();
+  const { classes } = useStyles();
 
   const columns = useMemo<MRT_ColumnDef<CommunityApplication>[]>(
     () => [
@@ -82,14 +99,20 @@ function CommunityRequests() {
   );
 
   useEffect(() => {
+    const status =
+      filterByStatus === CommunityApplicationStatus.ALL
+        ? undefined
+        : filterByStatus;
+
     dispatch(
       getAllCommunityApplications({
-        searchInput: searchInput || "",
         limit: 10,
         page: 1,
+        searchInput: searchInput || "",
+        status,
       })
     );
-  }, [searchInput]);
+  }, [searchInput, filterByStatus]);
 
   return (
     <MainContent heading="Community Requests">
@@ -110,6 +133,7 @@ function CommunityRequests() {
           onChange={(value) =>
             setFilterByStatus(value as CommunityApplicationStatus)
           }
+          className={classes.statusSelect}
         />
       </Group>
       <MantineReactTable

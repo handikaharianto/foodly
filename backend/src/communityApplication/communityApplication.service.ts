@@ -41,6 +41,7 @@ class CommunityApplicationService {
     limit: number,
     page: number,
     searchInput: string,
+    status: CommunityApplicationStatus,
     filter: Pick<CommunityApplication, "status" | "user">
   ): Promise<PaginatedData<CommunityApplication>> => {
     const totalData = await communityApplicationModel.countDocuments(filter);
@@ -49,6 +50,11 @@ class CommunityApplicationService {
     // add search input to query
     if (searchInput) {
       query.name = setMongoRegex(searchInput);
+    }
+
+    // add status to query
+    if (status) {
+      query.status = status;
     }
 
     const data = await communityApplicationModel
