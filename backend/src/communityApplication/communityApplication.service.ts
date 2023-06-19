@@ -13,6 +13,7 @@ import communityApplicationModel from "./communityApplication.model";
 import { PaginatedData } from "src/common/types";
 import { UserWithoutPassword } from "src/user/types";
 import { setMongoRegex } from "../utils/regex";
+import setPagination from "../utils/pagination";
 
 class CommunityApplicationService {
   createCommunityApplication = async (
@@ -44,8 +45,6 @@ class CommunityApplicationService {
     status: CommunityApplicationStatus,
     filter: Pick<CommunityApplication, "status" | "user">
   ): Promise<PaginatedData<CommunityApplication>> => {
-    const totalData = await communityApplicationModel.countDocuments(filter);
-
     let query: any = filter;
     // add search input to query
     if (searchInput) {
@@ -56,6 +55,13 @@ class CommunityApplicationService {
     if (status) {
       query.status = status;
     }
+
+    const paginationData = await setPagination(
+      communityApplicationModel,
+      limit,
+      page,
+      query
+    );
 
     const data = await communityApplicationModel
       .find(query, null, {
@@ -68,14 +74,9 @@ class CommunityApplicationService {
         select: "-password",
       });
 
-    const currentPage = totalData > limit ? page : 1;
-    const totalPages = totalData / limit > 1 ? Math.ceil(totalData / limit) : 1;
-
     return {
       data,
-      currentPage,
-      totalPages,
-      totalData,
+      ...paginationData,
     };
   };
 
