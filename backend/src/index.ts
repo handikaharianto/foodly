@@ -12,9 +12,7 @@ import handleError from "./common/middlewares/handle-error.middleware";
 import communityRouter from "./community/community.route";
 import communityApplicationRouter from "./communityApplication/communityApplication.route";
 import chatRouter from "./chat/routes/chat.route";
-import { SEND_CHAT_MESSAGE } from "./socket";
-import MessageController from "./chat/controllers/message.controller";
-import MessageService from "./chat/services/message.service";
+import connectSocket, { SOCKET_CONNECTED } from "./socket";
 
 dotenv.config();
 
@@ -50,14 +48,7 @@ app.use("/api/chats", chatRouter);
 app.use(handleError);
 
 // socket.io
-io.on("connection", (socket: Socket) => {
-  console.log(`user connected ${socket.id}`);
-
-  const messageController = new MessageController(new MessageService());
-
-  // receive new message
-  socket.on(SEND_CHAT_MESSAGE, messageController.createMessage);
-});
+io.on(SOCKET_CONNECTED, connectSocket);
 
 const start = () => {
   try {
