@@ -12,7 +12,10 @@ type SingleMessageProps = {
 
 function SingleMessage({ message, isSenderCurrentUser }: SingleMessageProps) {
   return (
-    <MessageGroup direction={isSenderCurrentUser ? "outgoing" : "incoming"}>
+    <MessageGroup
+      direction={isSenderCurrentUser ? "outgoing" : "incoming"}
+      style={{ width: "75%" }}
+    >
       <MessageGroup.Header>
         <Text transform="capitalize" weight={500}>
           {message.sender.firstName} {message.sender.lastName}
@@ -22,11 +25,12 @@ function SingleMessage({ message, isSenderCurrentUser }: SingleMessageProps) {
       <MessageGroup.Messages>
         <MessageUI
           model={{
-            message: message.content,
             position: "single",
             direction: "incoming",
           }}
-        />
+        >
+          <MessageUI.TextContent text={message.content} />
+        </MessageUI>
       </MessageGroup.Messages>
       <MessageGroup.Footer style={{ marginLeft: "auto" }}>
         2 hr ago

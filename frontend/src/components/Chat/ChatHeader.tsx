@@ -10,6 +10,10 @@ import {
   createStyles,
 } from "@mantine/core";
 import { IconLayoutSidebarLeftCollapse } from "@tabler/icons-react";
+import { useAppSelector } from "../../app/hooks";
+import { chatState } from "../../features/chat/ChatSlice";
+import { getSender } from "../../utils/chat";
+import { userState } from "../../features/user/UserSlice";
 
 const useStyles = createStyles((theme) => ({
   headerWrapper: {
@@ -23,6 +27,9 @@ const useStyles = createStyles((theme) => ({
 function ChatHeader() {
   const { classes } = useStyles();
 
+  const { loggedInUser } = useAppSelector(userState);
+  const { chat } = useAppSelector(chatState);
+
   return (
     <Paper withBorder className={classes.headerWrapper} p={"lg"}>
       <Group>
@@ -33,12 +40,12 @@ function ChatHeader() {
           <Divider orientation="vertical" />
           <Avatar radius="xl" />
           <Stack spacing={0}>
-            <Title order={4} size={"h6"} weight={"600"}>
-              Harriette Spoonlicker
+            <Title order={4} size={"h6"} weight={"600"} transform="capitalize">
+              {getSender(loggedInUser!, chat!.users)}
             </Title>
-            <Text color="dimmed" size={"xs"}>
+            {/* <Text color="dimmed" size={"xs"}>
               Online
-            </Text>
+            </Text> */}
           </Stack>
         </Group>
       </Group>

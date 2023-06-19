@@ -11,6 +11,7 @@ import { getSender } from "../../utils/chat";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { userState } from "../../features/user/UserSlice";
 import { setChatMessageTime } from "../../utils/DateAndTime";
+import { getAllMessages, getOneChat } from "../../features/chat/ChatSlice";
 
 const useStyles = createStyles((theme) => ({
   user: {
@@ -45,14 +46,26 @@ type UserContactProps = {
   updatedAt: string;
 };
 
-function UserContact({ latestMessage, users, updatedAt }: UserContactProps) {
+function UserContact({
+  _id,
+  latestMessage,
+  users,
+  updatedAt,
+}: UserContactProps) {
   const { classes } = useStyles();
 
   const { loggedInUser } = useAppSelector(userState);
   const dispatch = useAppDispatch();
 
+  const handleChatClick = () => {
+    Promise.all([
+      dispatch(getOneChat({ chatId: _id })),
+      dispatch(getAllMessages({ chatId: _id })),
+    ]);
+  };
+
   return (
-    <UnstyledButton className={classes.user}>
+    <UnstyledButton className={classes.user} onClick={handleChatClick}>
       <Group noWrap w={"100%"}>
         <Avatar radius="xl" />
         <Group w={"100%"} className={classes.userInfo} spacing={0}>
@@ -64,7 +77,7 @@ function UserContact({ latestMessage, users, updatedAt }: UserContactProps) {
               {setChatMessageTime(updatedAt)}
             </Text>
           </Group>
-          <Text color="dimmed" size="xs" mih={"1.1625rem"} miw={"1px"}>
+          <Text truncate color="dimmed" size="xs" mih={"1.1625rem"} miw={"1px"}>
             {latestMessage?.content}
           </Text>
         </Group>

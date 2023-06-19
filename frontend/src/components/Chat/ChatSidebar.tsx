@@ -36,7 +36,6 @@ function ChatSidebar() {
 
   const { isLoading, chats } = useAppSelector(chatState);
   const dispatch = useAppDispatch();
-  console.log(chats);
 
   useEffect(() => {
     dispatch(getAllChats());
@@ -64,7 +63,7 @@ function ChatSidebar() {
         {isLoading ? (
           <LoaderState />
         ) : chats.length > 0 ? (
-          chats.map((chat) => <UserContact {...chat} />)
+          chats.map((chat) => <UserContact key={chat._id} {...chat} />)
         ) : (
           <EmptyState Icon={IconMessage} title="Chat is empty." />
         )}

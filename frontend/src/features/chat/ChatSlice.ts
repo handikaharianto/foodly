@@ -1,4 +1,4 @@
-import { createSlice, isAnyOf } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { Chat, Message } from "./types";
 import { executeAsyncThunk, privateAxios } from "../../api/axios";
 import { RootState } from "../../app/store";
@@ -18,6 +18,20 @@ export const getOneChat = executeAsyncThunk<{ chatId: string }, Chat>(
   (req) => privateAxios.get(`/chats/${req.chatId}`)
 );
 
+export const createMessage = executeAsyncThunk<
+  {
+    content: string;
+    sender: string;
+    chat: string;
+  },
+  Message
+>("chat/createMessage", (req) =>
+  privateAxios.post(`/chats/${req.chat}/messages`, {
+    content: req.content,
+    sender: req.sender,
+  })
+);
+
 export const getAllMessages = executeAsyncThunk<{ chatId: string }, Message[]>(
   "chat/getAllMessages",
   (req) => privateAxios.post(`/chats/${req.chatId}/messages/list`)
@@ -33,7 +47,7 @@ export const getOneMessage = executeAsyncThunk<
   privateAxios.get(`/chats/${req.chatId}/messages/${req.messageId}`)
 );
 
-type chatState = {
+type ChatState = {
   chats: Chat[];
   chat: Chat | null;
   messages: Message[];
@@ -41,7 +55,7 @@ type chatState = {
   isLoading: boolean;
 };
 
-const initialState: chatState = {
+const initialState: ChatState = {
   chats: [],
   chat: null,
   messages: [],
@@ -52,7 +66,11 @@ const initialState: chatState = {
 export const chatSlice = createSlice({
   name: "chat",
   initialState,
-  reducers: {},
+  reducers: {
+    addNewMessage(state, action: PayloadAction<Message>) {
+      state.messages = [...state.messages, action.payload];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createChat.fulfilled, (state, action) => {
@@ -66,6 +84,16 @@ export const chatSlice = createSlice({
         state.isLoading = false;
         state.chat = action.payload;
       })
+      .addCase(createMessage.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.messages = [...state.messages, action.payload];
+        state.chats = state.chats.map((chat) => {
+          if (chat._id === action.payload.chat._id) {
+            return { ...chat, latestMessage: action.payload };
+          }
+          return chat;
+        });
+      })
       .addCase(getAllMessages.fulfilled, (state, action) => {
         state.isLoading = false;
         state.messages = action.payload;
@@ -75,13 +103,7 @@ export const chatSlice = createSlice({
         state.message = action.payload;
       })
       .addMatcher(
-        isAnyOf(
-          createChat.pending,
-          getAllChats.pending,
-          getOneChat.pending,
-          getAllMessages.pending,
-          getOneMessage.pending
-        ),
+        isAnyOf(createChat.pending, getAllChats.pending, getOneMessage.pending),
         (state, action) => {
           state.isLoading = true;
         }
@@ -91,6 +113,7 @@ export const chatSlice = createSlice({
           createChat.rejected,
           getAllChats.rejected,
           getOneChat.rejected,
+          createMessage.rejected,
           getAllMessages.rejected,
           getOneMessage.rejected
         ),
@@ -100,6 +123,8 @@ export const chatSlice = createSlice({
       );
   },
 });
+
+export const { addNewMessage } = chatSlice.actions;
 
 export const chatState = (state: RootState) => state.chat;
 
