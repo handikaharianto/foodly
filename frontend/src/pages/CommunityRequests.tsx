@@ -184,6 +184,7 @@ function CommunityRequests() {
         mantinePaginationProps={{
           rowsPerPageOptions: ["10", "20", "50"],
         }}
+        enableSorting={false}
       />
     </MainContent>
   );
