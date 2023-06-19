@@ -11,7 +11,8 @@ import {
 } from "../common/error-message";
 import communityApplicationModel from "./communityApplication.model";
 import { PaginatedData } from "src/common/types";
-import { User, UserWithoutPassword } from "src/user/types";
+import { UserWithoutPassword } from "src/user/types";
+import { setMongoRegex } from "../utils/regex";
 
 class CommunityApplicationService {
   createCommunityApplication = async (
@@ -44,8 +45,14 @@ class CommunityApplicationService {
   ): Promise<PaginatedData<CommunityApplication>> => {
     const totalData = await communityApplicationModel.countDocuments(filter);
 
+    let query: any = filter;
+    // add search input to query
+    if (searchInput) {
+      query.name = setMongoRegex(searchInput);
+    }
+
     const data = await communityApplicationModel
-      .find(filter, null, {
+      .find(query, null, {
         skip: (page - 1) * limit,
         limit,
       })

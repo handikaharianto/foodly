@@ -84,12 +84,12 @@ function CommunityRequests() {
   useEffect(() => {
     dispatch(
       getAllCommunityApplications({
+        searchInput: searchInput || "",
         limit: 10,
         page: 1,
-        searchInput: searchInput || undefined,
       })
     );
-  }, []);
+  }, [searchInput]);
 
   return (
     <MainContent heading="Community Requests">
