@@ -12,6 +12,7 @@ export type CommunityApplication = {
   name: string;
   type: string;
   description: string;
+  status: CommunityApplicationStatus;
   user: User;
   createdAt: string;
   updatedAt: string;

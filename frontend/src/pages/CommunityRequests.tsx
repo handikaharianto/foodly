@@ -1,122 +1,166 @@
-import { Group, Pagination, Select, Tabs, TextInput } from "@mantine/core";
+import { useEffect, useMemo, useState } from "react";
+import { Badge, Group, Select, Text, useMantineTheme } from "@mantine/core";
 import MainContent from "../components/common/MainContent";
+import { MantineReactTable } from "mantine-react-table";
+import { MRT_ColumnDef, MRT_TablePagination } from "mantine-react-table";
+
 import {
-  IconBan,
-  IconCircleCheck,
-  IconRotate2,
-  IconSearch,
-  IconStack3,
-} from "@tabler/icons-react";
-import CommunityRequestPanel from "../components/CommunityRequests/CommunityRequestsPanel";
-import { useState } from "react";
-import { useDebouncedValue } from "@mantine/hooks";
-import { CommunityApplicationStatus } from "../features/communityApplication/types";
-import { useAppSelector } from "../app/hooks";
-import { communityApplicationState } from "../features/communityApplication/CommunityApplicationSlice";
+  CommunityApplication,
+  CommunityApplicationStatus,
+} from "../features/communityApplication/types";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import {
+  communityApplicationState,
+  getAllCommunityApplications,
+} from "../features/communityApplication/CommunityApplicationSlice";
+import { setDate } from "../utils/DateAndTime";
+import { IconFilter } from "@tabler/icons-react";
 
 function CommunityRequests() {
   const [searchInput, setSearchInput] = useState("");
-  const [debouncedSearchInput] = useDebouncedValue(searchInput, 200);
+  const [filterByStatus, setFilterByStatus] =
+    useState<CommunityApplicationStatus>(CommunityApplicationStatus.PENDING);
+  const theme = useMantineTheme();
 
+  const dispatch = useAppDispatch();
   const { totalPages, communityApplications, isLoading } = useAppSelector(
     communityApplicationState
   );
 
+  const columns = useMemo<MRT_ColumnDef<CommunityApplication>[]>(
+    () => [
+      {
+        header: "Community name",
+        Cell: ({ cell, row }) => (
+          <Text weight={500} transform="capitalize">
+            {row.original.name}
+          </Text>
+        ),
+      },
+      {
+        header: "Type",
+        Cell: ({ cell, row }) => (
+          <Badge variant="dot" color="red">
+            {row.original.type}
+          </Badge>
+        ),
+      },
+      {
+        header: "Status",
+        Cell: ({ cell, row }) => {
+          const status = row.original.status;
+          return (
+            <Badge
+              variant="outline"
+              color={
+                status === CommunityApplicationStatus.ACCEPTED
+                  ? "green"
+                  : status === CommunityApplicationStatus.REJECTED
+                  ? "red"
+                  : "blue"
+              }
+            >
+              {status}
+            </Badge>
+          );
+        },
+      },
+      {
+        header: "Submitted by",
+        Cell: ({ cell, row }) => (
+          <Text transform="capitalize">
+            {row.original.user.firstName} {row.original.user.lastName}
+          </Text>
+        ),
+      },
+      {
+        header: "Created at",
+        accessorFn: (originalRow) => setDate(originalRow.createdAt),
+      },
+    ],
+    []
+  );
+
+  useEffect(() => {
+    dispatch(
+      getAllCommunityApplications({
+        limit: 10,
+        page: 1,
+        searchInput: searchInput || undefined,
+      })
+    );
+  }, []);
+
   return (
     <MainContent heading="Community Requests">
-      <Group position="apart" align="center">
-        <TextInput
-          placeholder="Search"
-          icon={<IconSearch size="0.8rem" />}
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.currentTarget.value)}
+      <Group mb={theme.spacing.xl}>
+        <Select
+          label="Status:"
+          data={[
+            { value: CommunityApplicationStatus.ALL, label: "All" },
+            { value: CommunityApplicationStatus.PENDING, label: "Pending" },
+            { value: CommunityApplicationStatus.ACCEPTED, label: "Accepted" },
+            {
+              value: CommunityApplicationStatus.REJECTED,
+              label: "Rejected",
+            },
+          ]}
+          icon={<IconFilter size="0.8rem" />}
+          value={filterByStatus}
+          onChange={(value) =>
+            setFilterByStatus(value as CommunityApplicationStatus)
+          }
         />
-        {/* <Select
-          allowDeselect
-          withinPortal
-          data={[""]}
-          placeholder="Sort by"
-          icon={<IconArrowsSort size="0.8rem" />}
-        /> */}
       </Group>
-      <Tabs
-        keepMounted={false}
-        color="red"
-        mt="xl"
-        defaultValue={CommunityApplicationStatus.PENDING}
-        h={"100%"}
-      >
-        <Tabs.List>
-          <Tabs.Tab
-            value={CommunityApplicationStatus.ALL}
-            icon={<IconStack3 size="0.8rem" />}
-          >
-            All
-          </Tabs.Tab>
-          <Tabs.Tab
-            value={CommunityApplicationStatus.PENDING}
-            icon={<IconRotate2 size="0.8rem" />}
-          >
-            Pending
-          </Tabs.Tab>
-          <Tabs.Tab
-            value={CommunityApplicationStatus.ACCEPTED}
-            icon={<IconCircleCheck size="0.8rem" />}
-          >
-            Accepted
-          </Tabs.Tab>
-          <Tabs.Tab
-            value={CommunityApplicationStatus.REJECTED}
-            icon={<IconBan size="0.8rem" />}
-          >
-            Rejected
-          </Tabs.Tab>
-        </Tabs.List>
-
-        <Tabs.Panel h={"100%"} value={CommunityApplicationStatus.ALL} pt="xs">
-          <CommunityRequestPanel
-            activeTab={CommunityApplicationStatus.ALL}
-            searchInput={debouncedSearchInput}
-          />
-        </Tabs.Panel>
-
-        <Tabs.Panel
-          h={"100%"}
-          value={CommunityApplicationStatus.PENDING}
-          pt="xs"
-        >
-          <CommunityRequestPanel
-            activeTab={CommunityApplicationStatus.PENDING}
-            searchInput={debouncedSearchInput}
-          />
-        </Tabs.Panel>
-
-        <Tabs.Panel
-          h={"100%"}
-          value={CommunityApplicationStatus.ACCEPTED}
-          pt="xs"
-        >
-          <CommunityRequestPanel
-            activeTab={CommunityApplicationStatus.ACCEPTED}
-            searchInput={debouncedSearchInput}
-          />
-        </Tabs.Panel>
-        <Tabs.Panel
-          h={"100%"}
-          value={CommunityApplicationStatus.REJECTED}
-          pt="xs"
-        >
-          <CommunityRequestPanel
-            activeTab={CommunityApplicationStatus.REJECTED}
-            searchInput={debouncedSearchInput}
-          />
-        </Tabs.Panel>
-      </Tabs>
-      {!isLoading && communityApplications.length > 0 && (
-        <Group position="right" mt="2.5rem">
-          <Pagination total={totalPages || 1} color="red" />
-        </Group>
-      )}
+      <MantineReactTable
+        manualFiltering
+        columns={columns}
+        data={communityApplications}
+        // Table state
+        initialState={{
+          showGlobalFilter: true,
+          density: "xl",
+        }}
+        state={{
+          showSkeletons: isLoading,
+          globalFilter: searchInput,
+        }}
+        // Table
+        mantinePaperProps={{
+          sx: (theme) => ({
+            boxShadow: "none",
+            borderRadius: theme.radius.xs,
+          }),
+        }}
+        enableColumnActions={false}
+        // Top toolbar
+        mantineTopToolbarProps={{
+          sx: (theme) => ({
+            padding: theme.spacing.sm,
+          }),
+        }}
+        enableDensityToggle={false}
+        enableColumnFilters={false}
+        enableHiding={false}
+        enableFullScreenToggle={false}
+        // Global filtering (Search)
+        positionGlobalFilter="left"
+        mantineSearchTextInputProps={{
+          placeholder: `Search community requests`,
+          sx: { minWidth: "300px" },
+          variant: "filled",
+        }}
+        onGlobalFilterChange={setSearchInput}
+        // Bottom toolbar
+        renderBottomToolbar={({ table }) => (
+          <Group position="right" p={theme.spacing.sm}>
+            <MRT_TablePagination table={table} />
+          </Group>
+        )}
+        mantinePaginationProps={{
+          rowsPerPageOptions: ["10", "20", "50"],
+        }}
+      />
     </MainContent>
   );
 }

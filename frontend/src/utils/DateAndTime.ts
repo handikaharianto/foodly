@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import calendar from "dayjs/plugin/calendar";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 
 export const getTimeFromNow = (time: string) => {
   dayjs.extend(relativeTime);
@@ -20,4 +21,10 @@ export const setChatMessageTime = (time: string) => {
   });
 
   return formattedTime;
+};
+
+export const setDate = (time: string) => {
+  dayjs.extend(localizedFormat);
+
+  return dayjs(time).format("LLL");
 };
