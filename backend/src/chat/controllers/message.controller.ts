@@ -2,11 +2,10 @@ import { NextFunction, Request, Response } from "express";
 
 import MessageService from "../services/message.service";
 import HTTP_STATUS from "../../common/http-status-code";
-import { NewMessage } from "../types";
 import { z } from "zod";
 
 export const getAllMessagesSchema = z.object({
-  chat: z.string().min(1, { message: "Chat ID is required." }),
+  chatId: z.string().min(1, { message: "Chat ID is required." }),
 });
 
 export const getOneMessageSchema = z.object({
@@ -21,15 +20,27 @@ class MessageController {
     this._messageService = _messageService;
   }
 
-  createMessage = (data: NewMessage) => {
-    console.log({ data });
+  createMessage = async (req: Request, res: Response, next: NextFunction) => {
+    const { content, sender } = req.body;
+    const { chatId: chat } = req.params;
+
+    try {
+      const data = await this._messageService.createMessage({
+        content,
+        sender,
+        chat,
+      });
+      return res.status(HTTP_STATUS.CREATED_201).json(data);
+    } catch (error: any) {
+      next(error);
+    }
   };
 
   getAllMessages = async (req: Request, res: Response, next: NextFunction) => {
-    const { chat } = req.body;
+    const { chatId } = req.params;
 
     try {
-      const data = await this._messageService.getAllMessages(chat);
+      const data = await this._messageService.getAllMessages(chatId);
       return res.status(HTTP_STATUS.OK_200).json(data);
     } catch (error: any) {
       next(error);

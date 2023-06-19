@@ -33,7 +33,13 @@ class ChatService {
   };
 
   getOneChat = async (chatId: string): Promise<Chat> => {
-    const chat = await chatModel.findById(chatId);
+    const chat = await chatModel
+      .findById(chatId)
+      .populate<{ users: UserWithoutPassword[] }>({
+        path: "users",
+        select: "-password",
+      })
+      .populate<{ latestMessage: Message }>({ path: "latestMessage" });
     if (!chat) throw new ApiError(HTTP_STATUS.NOT_FOUND_404, CHAT_NOT_FOUND);
 
     return chat;

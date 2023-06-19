@@ -49,11 +49,19 @@ chatRouter
   );
 
 chatRouter
+  .route("/:chatId/messages")
+  .post(
+    verifyJWT,
+    authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
+    messageController.createMessage
+  );
+
+chatRouter
   .route("/:chatId/messages/list")
   .post(
     verifyJWT,
     authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
-    validateRequestBody(getAllMessagesSchema),
+    validateRequestParams(getAllMessagesSchema),
     messageController.getAllMessages
   );
 
