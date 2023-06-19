@@ -14,6 +14,7 @@ import Index from "./components/common/Index";
 import CommunityRequests from "./pages/CommunityRequests";
 import CommunityRequestsDetails from "./components/CommunityRequests/CommunityRequestsDetails";
 import Chat from "./pages/Chat";
+import PublicUserHome from "./components/Home/PublicUserHome";
 
 function App() {
   return (
@@ -36,7 +37,7 @@ function App() {
                   />
                 }
               >
-                <Route path="/home" element={<TestPage />} />
+                <Route path="/home" element={<PublicUserHome />} />
               </Route>
               <Route
                 element={

@@ -37,7 +37,7 @@ export const testPage = executeAsyncThunk<void, void>("user/testPage", () => {
   return privateAxios.get("/users/test");
 });
 
-export interface UserState {
+interface UserState {
   loggedInUser: LoginUserResponse | null;
   isLoggedIn: boolean;
   isLoading: boolean;
