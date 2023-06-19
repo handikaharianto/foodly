@@ -9,7 +9,7 @@ type EmptyStateProps = {
 function EmptyState({ Icon, title, description }: EmptyStateProps) {
   return (
     <Center h={"100%"}>
-      <Stack w={"40rem"}>
+      <Stack w={"30rem"}>
         <Center>
           <Icon stroke={1} size={64} />
         </Center>
