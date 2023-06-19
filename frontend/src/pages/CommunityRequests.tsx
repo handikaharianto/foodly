@@ -138,6 +138,8 @@ function CommunityRequests() {
       </Group>
       <MantineReactTable
         manualFiltering
+        enableRowNumbers
+        rowNumberMode="original"
         columns={columns}
         data={communityApplications}
         // Table state
