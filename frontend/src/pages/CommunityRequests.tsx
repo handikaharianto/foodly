@@ -22,6 +22,7 @@ import {
 } from "../features/communityApplication/CommunityApplicationSlice";
 import { setDate } from "../utils/DateAndTime";
 import { IconFilter } from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
   statusSelect: {
@@ -43,6 +44,8 @@ function CommunityRequests() {
 
   const theme = useMantineTheme();
   const { classes } = useStyles();
+
+  const navigate = useNavigate();
 
   const columns = useMemo<MRT_ColumnDef<CommunityApplication>[]>(
     () => [
@@ -92,7 +95,11 @@ function CommunityRequests() {
       },
       {
         header: "Created at",
-        accessorFn: (originalRow) => setDate(originalRow.createdAt),
+        Cell: ({ cell, row }) => (
+          <Text color="dimmed" transform="capitalize">
+            {setDate(row.original.createdAt)}
+          </Text>
+        ),
       },
     ],
     []
@@ -165,6 +172,13 @@ function CommunityRequests() {
             padding: theme.spacing.sm,
           }),
         }}
+        // Table body row
+        mantineTableBodyRowProps={({ row }) => ({
+          onClick: () => navigate(`/community-requests/${row.original._id}`),
+          sx: (theme) => ({
+            cursor: "pointer",
+          }),
+        })}
         enableDensityToggle={false}
         enableColumnFilters={false}
         enableHiding={false}
