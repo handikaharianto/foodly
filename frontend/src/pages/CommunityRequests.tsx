@@ -33,7 +33,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 function CommunityRequests() {
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] = useState<string>("");
   const [filterByStatus, setFilterByStatus] =
     useState<CommunityApplicationStatus>(CommunityApplicationStatus.PENDING);
 
@@ -119,7 +119,7 @@ function CommunityRequests() {
         status,
       })
     );
-  }, [searchInput, filterByStatus]);
+  }, [filterByStatus, searchInput]);
 
   return (
     <MainContent heading="Community Requests">

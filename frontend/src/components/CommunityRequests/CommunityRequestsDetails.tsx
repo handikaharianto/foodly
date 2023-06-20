@@ -31,7 +31,6 @@ function CommunityRequestsDetails() {
 
   const dispatch = useAppDispatch();
   const { communityApplication } = useAppSelector(communityApplicationState);
-  console.log(communityApplication);
 
   const { classes } = useStyles();
 
