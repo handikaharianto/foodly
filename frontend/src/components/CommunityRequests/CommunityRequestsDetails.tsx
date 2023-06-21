@@ -24,6 +24,11 @@ import { createCommunity } from "../../features/community/communitySlice";
 import LoaderState from "../common/LoaderState";
 import { communityState } from "../../features/community/communitySlice";
 import { CommunityApplicationStatus } from "../../features/communityApplication/types";
+import { modals } from "@mantine/modals";
+import {
+  NotificationVariant,
+  showNotification,
+} from "../../utils/notifications";
 
 //TODO: Add community application status in UI
 
@@ -64,8 +69,34 @@ function CommunityRequestsDetails() {
   };
 
   const rejectCommunityRequest = () => {
-    console.log("aa");
+    dispatch(
+      updateOneCommunityApplication({
+        communityApplicationId: communityApplication!._id,
+        status: CommunityApplicationStatus.REJECTED,
+      })
+    ).then((res) => {
+      if (res.meta.requestStatus === "fulfilled") {
+        showNotification({
+          message: "Community request has been rejected!",
+          variant: NotificationVariant.SUCCESS,
+        });
+      }
+    });
   };
+
+  const openRejectCommunityRequestModal = () =>
+    modals.openConfirmModal({
+      title: <Text weight={600}>Reject community application</Text>,
+      centered: true,
+      children: (
+        <Text size="sm" mb="2.5rem">
+          Are you sure you want to reject this community request?
+        </Text>
+      ),
+      labels: { confirm: "Reject", cancel: "Cancel" },
+      confirmProps: { color: "red" },
+      onConfirm: rejectCommunityRequest,
+    });
 
   useEffect(() => {
     dispatch(
@@ -109,7 +140,7 @@ function CommunityRequestsDetails() {
                 <Button
                   variant="subtle"
                   color="red"
-                  onClick={rejectCommunityRequest}
+                  onClick={openRejectCommunityRequestModal}
                 >
                   Reject
                 </Button>
