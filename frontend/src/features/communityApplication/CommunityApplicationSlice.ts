@@ -15,6 +15,7 @@ import {
   NotificationVariant,
   showNotification,
 } from "../../utils/notifications";
+import { CommunityApplicationStatus } from "./types";
 
 export const createCommunityApplication = executeAsyncThunk<
   createCommunityApplicationRequest,
@@ -35,6 +36,15 @@ export const getAllCommunityApplications = executeAsyncThunk<
   getAllCommunityApplicationsResponse
 >("communityApplication/getAllCommunityApplications", (req) =>
   privateAxios.post("/community-applications/list", req)
+);
+
+export const updateOneCommunityApplication = executeAsyncThunk<
+  { communityApplicationId: string; status?: CommunityApplicationStatus },
+  CommunityApplication
+>("communityApplication/updateOneCommunityApplication", (req) =>
+  privateAxios.put(`/community-applications/${req.communityApplicationId}`, {
+    status: req.status,
+  })
 );
 
 export interface communityApplicationState {
@@ -84,11 +94,16 @@ export const communityApplicationSlice = createSlice({
         state.totalPages = action.payload.totalPages;
         state.totalData = action.payload.totalData;
       })
+      .addCase(updateOneCommunityApplication.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.communityApplication = action.payload;
+      })
       .addMatcher(
         isAnyOf(
           createCommunityApplication.pending,
           getOneCommunityApplication.pending,
-          getAllCommunityApplications.pending
+          getAllCommunityApplications.pending,
+          updateOneCommunityApplication.pending
         ),
         (state, action) => {
           state.isLoading = true;
@@ -97,10 +112,15 @@ export const communityApplicationSlice = createSlice({
       .addMatcher(
         isAnyOf(
           getOneCommunityApplication.rejected,
-          getAllCommunityApplications.rejected
+          getAllCommunityApplications.rejected,
+          updateOneCommunityApplication.rejected
         ),
         (state, action) => {
           state.isLoading = false;
+          showNotification({
+            message: action.payload?.error as string,
+            variant: NotificationVariant.ERROR,
+          });
         }
       );
   },
