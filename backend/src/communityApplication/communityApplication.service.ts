@@ -11,7 +11,9 @@ import {
 } from "../common/error-message";
 import communityApplicationModel from "./communityApplication.model";
 import { PaginatedData } from "src/common/types";
-import { User, UserWithoutPassword } from "src/user/types";
+import { UserWithoutPassword } from "src/user/types";
+import { setMongoRegex } from "../utils/regex";
+import setPagination from "../utils/pagination";
 
 class CommunityApplicationService {
   createCommunityApplication = async (
@@ -40,28 +42,41 @@ class CommunityApplicationService {
     limit: number,
     page: number,
     searchInput: string,
+    status: CommunityApplicationStatus,
     filter: Pick<CommunityApplication, "status" | "user">
   ): Promise<PaginatedData<CommunityApplication>> => {
-    const totalData = await communityApplicationModel.countDocuments(filter);
+    let query: any = filter;
+    // add search input to query
+    if (searchInput) {
+      query.name = setMongoRegex(searchInput);
+    }
+
+    // add status to query
+    if (status) {
+      query.status = status;
+    }
+
+    const paginationData = await setPagination(
+      communityApplicationModel,
+      limit,
+      page,
+      query
+    );
 
     const data = await communityApplicationModel
-      .find(filter, null, {
+      .find(query, null, {
         skip: (page - 1) * limit,
         limit,
+        sort: "createdAt",
       })
       .populate<{ user: UserWithoutPassword }>({
         path: "user",
         select: "-password",
       });
 
-    const currentPage = totalData > limit ? page : 1;
-    const totalPages = totalData / limit > 1 ? Math.ceil(totalData / limit) : 1;
-
     return {
       data,
-      currentPage,
-      totalPages,
-      totalData,
+      ...paginationData,
     };
   };
 
@@ -74,6 +89,25 @@ class CommunityApplicationService {
         path: "user",
         select: "-password",
       });
+    if (!communityApplication)
+      throw new ApiError(
+        HTTP_STATUS.NOT_FOUND_404,
+        COMMUNITY_APPLICATION_NOT_FOUND
+      );
+
+    return communityApplication;
+  };
+
+  updateOneCommunityApplication = async (
+    communityApplicationId: string,
+    communityApplicationData: Pick<CommunityApplication, "status">
+  ): Promise<CommunityApplication> => {
+    const communityApplication =
+      await communityApplicationModel.findByIdAndUpdate(
+        communityApplicationId,
+        communityApplicationData,
+        { runValidators: true, new: true }
+      );
     if (!communityApplication)
       throw new ApiError(
         HTTP_STATUS.NOT_FOUND_404,
