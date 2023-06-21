@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { refreshAccessToken, userState } from "../../features/user/UserSlice";
 import Loader from "./LoaderWithOverlay";
 import { privateAxios } from "../../api/axios";
+import { USER_OFFLINE, USER_ONLINE, socket } from "../../socket/socket";
 
 const AuthGuard = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -17,13 +18,16 @@ const AuthGuard = () => {
     delete privateAxios.defaults.headers.common.Authorization;
     window.localStorage.clear();
     navigate("/sign-in", { replace: true });
+
+    socket.emit(USER_OFFLINE);
+    socket.disconnect();
   };
 
   useEffect(() => {
     if (!loggedInUser?.accessToken) {
       const refreshToken = window.localStorage.getItem("refreshToken");
       if (!refreshToken) {
-        navigate("/sign-in", { replace: true });
+        logoutUser();
         setIsLoading(false);
         return;
       }
@@ -35,6 +39,13 @@ const AuthGuard = () => {
     }
     setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    if (loggedInUser?.accessToken) {
+      socket.connect();
+      socket.emit(USER_ONLINE, { userId: loggedInUser._id });
+    }
+  }, [loggedInUser]);
 
   if (isLoading) {
     return <Loader />;

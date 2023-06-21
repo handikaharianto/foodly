@@ -22,13 +22,21 @@ class CommunityService {
   };
 
   getAllCommunities = async (
+    userId: string,
     limit: number,
     page: number
   ): Promise<PaginatedData<Community>> => {
-    const paginationData = await setPagination(communityModel, limit, page);
+    let query = { user: { $ne: userId } };
+
+    const paginationData = await setPagination(
+      communityModel,
+      limit,
+      page,
+      query
+    );
 
     const data = await communityModel
-      .find({}, null, {
+      .find(query, null, {
         skip: (page - 1) * limit,
         limit,
       })

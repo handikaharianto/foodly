@@ -12,6 +12,7 @@ import {
   IconFileDescription,
   IconDashboard,
   IconFiles,
+  IconMessage,
 } from "@tabler/icons-react";
 import { UserRole } from "../../features/user/types";
 import { NavLink } from "react-router-dom";
@@ -19,6 +20,7 @@ import { useAppSelector } from "../../app/hooks";
 import { userState } from "../../features/user/UserSlice";
 import { privateAxios } from "../../api/axios";
 import { useNavigate } from "react-router-dom";
+import { socket } from "../../socket/socket";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -83,6 +85,7 @@ const useStyles = createStyles((theme) => ({
 const publicUserLinks = [
   { link: "/home", label: "Home", icon: IconHome },
   { link: "/notifications", label: "Notifications", icon: IconBellRinging },
+  { link: "/chat", label: "Chat", icon: IconMessage },
   {
     link: "/community-applications",
     label: "Community Applications",
@@ -90,7 +93,11 @@ const publicUserLinks = [
   },
 ];
 
-const communityUserLinks = [{ link: "/home", label: "Home", icon: IconHome }];
+const communityUserLinks = [
+  { link: "/home", label: "Home", icon: IconHome },
+  { link: "/notifications", label: "Notifications", icon: IconBellRinging },
+  { link: "/chat", label: "Chat", icon: IconMessage },
+];
 
 const administratorLinks = [
   { link: "/dashboard", label: "Dashboard", icon: IconDashboard },
@@ -136,6 +143,8 @@ function Sidebar({ isSidebarOpen }: { isSidebarOpen: boolean }) {
     delete privateAxios.defaults.headers.common.Authorization;
     window.localStorage.clear();
     navigate("/sign-in", { replace: true });
+
+    socket.disconnect();
   };
 
   return (

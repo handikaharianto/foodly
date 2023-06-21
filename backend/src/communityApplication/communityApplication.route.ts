@@ -39,4 +39,12 @@ communityApplicationRouter
     communityApplicationController.getOneCommunityApplication
   );
 
+communityApplicationRouter
+  .route("/:communityApplicationId")
+  .put(
+    verifyJWT,
+    authorizeUser(UserRole.ADMINISTRATOR),
+    communityApplicationController.updateOneCommunityApplication
+  );
+
 export default communityApplicationRouter;
