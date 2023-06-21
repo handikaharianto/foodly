@@ -44,31 +44,31 @@ function CommunityAddressForm() {
           label="Address line 1"
           description="(Street, number)"
           placeholder="ABC street"
-          {...form.getInputProps("name")}
+          {...form.getInputProps("address.addressLine1")}
         />
         <TextInput
           disabled={isLoading}
           label="Address line 2 (Optional)"
           description="(Unit, building, floor, etc.)"
-          placeholder=""
+          placeholder="ABC buidling"
           mt="md"
-          {...form.getInputProps("name")}
+          {...form.getInputProps("address.addressLine2")}
         />
         <TextInput
           withAsterisk
           disabled={isLoading}
           label="City"
-          placeholder=""
+          placeholder="City ABC"
           mt="md"
-          {...form.getInputProps("name")}
+          {...form.getInputProps("address.city")}
         />
         <TextInput
           withAsterisk
           disabled={isLoading}
           label="Postal code"
-          placeholder=""
+          placeholder="12345"
           mt="md"
-          {...form.getInputProps("name")}
+          {...form.getInputProps("address.postalCode")}
         />
         <Group mt="md" spacing={0}>
           <Text size="sm" weight={500} display="flex">

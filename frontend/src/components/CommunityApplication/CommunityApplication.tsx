@@ -32,6 +32,16 @@ const CommunityApplication = () => {
       typeOthers: "",
       foodPreferences: [],
       description: "",
+      address: {
+        addressLine1: "",
+        addressLine2: "",
+        city: "",
+        postalCode: "",
+      },
+      coordinate: {
+        latitude: "",
+        longitude: "",
+      },
     },
 
     validate: {
@@ -44,6 +54,11 @@ const CommunityApplication = () => {
           ? "Community type is required"
           : null,
       description: isNotEmpty("Community description is required."),
+      address: {
+        addressLine1: isNotEmpty("Community address is required."),
+        city: isNotEmpty("City is required."),
+        postalCode: isNotEmpty("Postal code is required."),
+      },
     },
   });
 
