@@ -3,7 +3,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import TestPage from "./components/TestPage";
 import SharedLayout from "./components/common/SharedLayout";
-import CommunityApplication from "./components/CommunityApplication";
+import CommunityApplication from "./components/CommunityApplication/CommunityApplication";
 import SetupAxiosInterceptor from "./components/common/SetupAxiosInterceptor";
 import AuthGuard from "./components/common/AuthGuard";
 import { NotFound } from "./pages/404";
