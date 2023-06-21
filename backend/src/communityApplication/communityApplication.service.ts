@@ -97,6 +97,25 @@ class CommunityApplicationService {
 
     return communityApplication;
   };
+
+  updateOneCommunityApplication = async (
+    communityApplicationId: string,
+    communityApplicationData: Pick<CommunityApplication, "status">
+  ): Promise<CommunityApplication> => {
+    const communityApplication =
+      await communityApplicationModel.findByIdAndUpdate(
+        communityApplicationId,
+        communityApplicationData,
+        { runValidators: true, new: true }
+      );
+    if (!communityApplication)
+      throw new ApiError(
+        HTTP_STATUS.NOT_FOUND_404,
+        COMMUNITY_APPLICATION_NOT_FOUND
+      );
+
+    return communityApplication;
+  };
 }
 
 export default CommunityApplicationService;

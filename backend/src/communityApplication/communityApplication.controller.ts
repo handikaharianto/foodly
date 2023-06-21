@@ -97,6 +97,26 @@ class CommunityApplicationController {
       next(error);
     }
   };
+
+  updateOneCommunityApplication = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { communityApplicationId } = req.params;
+    const { status } = req.body;
+
+    try {
+      const data =
+        await this._communityApplicationService.updateOneCommunityApplication(
+          communityApplicationId,
+          { status }
+        );
+      return res.status(HTTP_STATUS.OK_200).json(data);
+    } catch (error: any) {
+      next(error);
+    }
+  };
 }
 
 export default CommunityApplicationController;
