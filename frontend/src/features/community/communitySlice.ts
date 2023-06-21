@@ -3,6 +3,8 @@ import { Community, UpdateCommunity, NewCommunity } from "./types";
 import { executeAsyncThunk, privateAxios } from "../../api/axios";
 import { PaginatedData } from "../../utils/types";
 import { RootState } from "../../app/store";
+import { showNotification } from "../../utils/notifications";
+import { NotificationVariant } from "../../utils/notifications";
 
 export const createCommunity = executeAsyncThunk<NewCommunity, void>(
   "community/createCommunity",
@@ -58,6 +60,10 @@ const communitySlice = createSlice({
     builder
       .addCase(createCommunity.fulfilled, (state, action) => {
         state.isLoading = false;
+        showNotification({
+          message: "Community has successfully been accepted!",
+          variant: NotificationVariant.SUCCESS,
+        });
       })
       .addCase(getAllCommunities.fulfilled, (state, action) => {
         state.isLoading = false;
