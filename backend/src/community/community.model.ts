@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { Community } from "./types";
+import { Community, CommunityAddress, CommunityCoordinate } from "./types";
 
 const communitySchema = new Schema<Community>(
   {
@@ -27,6 +27,39 @@ const communitySchema = new Schema<Community>(
   },
   { timestamps: true }
 );
+
+export const communityAddressSchema = new Schema<CommunityAddress>({
+  addressLine1: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  addressLine2: {
+    type: String,
+    trim: true,
+  },
+  city: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  postalCode: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+});
+
+export const communityCoordinateSchema = new Schema<CommunityCoordinate>({
+  latitude: {
+    type: Number,
+    required: true,
+  },
+  longitude: {
+    type: Number,
+    required: true,
+  },
+});
 
 const communityModel = model<Community>("Community", communitySchema);
 
