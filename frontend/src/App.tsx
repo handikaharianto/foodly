@@ -14,6 +14,7 @@ import { UserRole } from "./features/user/types";
 import { Forbidden } from "./pages/Forbidden";
 import Index from "./components/common/Index";
 import CommunityRequests from "./pages/CommunityRequests";
+import AdminDashboard from "./pages/AdminDashboard";
 import CommunityRequestsDetails from "./components/CommunityRequests/CommunityRequestsDetails";
 import Chat from "./pages/Chat";
 import PublicUserHome from "./components/Home/PublicUserHome";
@@ -68,7 +69,7 @@ function App() {
                   <AuthorizeUser acceptedRoles={[UserRole.ADMINISTRATOR]} />
                 }
               >
-                <Route path="/dashboard" element={<TestPage />} />
+                <Route path="/dashboard" element={<AdminDashboard />} />
               </Route>
               <Route
                 element={
