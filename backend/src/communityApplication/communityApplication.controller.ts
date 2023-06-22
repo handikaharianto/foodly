@@ -35,7 +35,8 @@ class CommunityApplicationController {
     res: Response,
     next: NextFunction
   ) => {
-    const { name, type, description } = req.body;
+    const { name, type, foodPreferences, description, address, coordinate } =
+      req.body;
     const { _id } = req.user;
 
     try {
@@ -43,7 +44,10 @@ class CommunityApplicationController {
         await this._communityApplicationService.createCommunityApplication({
           name,
           type,
+          foodPreferences,
           description,
+          address,
+          coordinate,
           user: _id,
         });
       return res.status(HTTP_STATUS.CREATED_201).json(data);

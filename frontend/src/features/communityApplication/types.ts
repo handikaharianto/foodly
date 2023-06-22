@@ -11,36 +11,44 @@ export type CommunityApplication = {
   _id: string;
   name: string;
   type: string;
+  foodPreferences: string[];
   description: string;
+  address: {
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    postalCode: string;
+  };
+  coordinate: {
+    latitude: number;
+    longitude: number;
+  };
   status: CommunityApplicationStatus;
   user: User;
   createdAt: string;
   updatedAt: string;
 };
 
-export type createCommunityApplicationRequest = {
+export type NewCommunityApplication = {
   name: string;
   type: string;
+  foodPreferences: string[];
   description: string;
-};
-
-export type createCommunityApplicationResponse = {
-  _id: string;
-  name: string;
-  type: string;
-  description: string;
-  status: CommunityApplicationStatus;
-  user: User;
-  createdAt: string;
-  updatedAt: string;
+  address: {
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    postalCode: string;
+  };
+  coordinate: {
+    latitude: number;
+    longitude: number;
+  };
 };
 
 export type getOneCommunityApplicationRequest = {
   communityApplicationId: string;
 };
-
-export type getOneCommunityApplicationResponse =
-  createCommunityApplicationResponse;
 
 export type getAllCommunityApplicationsRequest = {
   status?: CommunityApplicationStatus;

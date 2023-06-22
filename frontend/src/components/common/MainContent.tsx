@@ -23,7 +23,9 @@ function MainContent({ heading, children }: MainContentProps) {
 
   return (
     <Container fluid h={"100%"} className={classes.outerContainer}>
-      <Title order={2}>{heading}</Title>
+      <Title order={2} weight={600}>
+        {heading}
+      </Title>
       <Container
         fluid
         p={0}

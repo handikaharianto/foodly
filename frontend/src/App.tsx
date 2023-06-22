@@ -1,9 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import mapboxgl from "mapbox-gl";
+
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import TestPage from "./components/TestPage";
 import SharedLayout from "./components/common/SharedLayout";
-import CommunityApplication from "./components/CommunityApplication";
+import CommunityApplication from "./components/CommunityApplication/CommunityApplication";
 import SetupAxiosInterceptor from "./components/common/SetupAxiosInterceptor";
 import AuthGuard from "./components/common/AuthGuard";
 import { NotFound } from "./pages/404";
@@ -15,6 +17,11 @@ import CommunityRequests from "./pages/CommunityRequests";
 import CommunityRequestsDetails from "./components/CommunityRequests/CommunityRequestsDetails";
 import Chat from "./pages/Chat";
 import PublicUserHome from "./components/Home/PublicUserHome";
+
+import "mapbox-gl/dist/mapbox-gl.css";
+import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
+
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
 function App() {
   return (
