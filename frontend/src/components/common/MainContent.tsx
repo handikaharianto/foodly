@@ -1,5 +1,17 @@
 import { ReactNode } from "react";
-import { Container, Title } from "@mantine/core";
+import { Container, Title, createStyles } from "@mantine/core";
+
+const useStyles = createStyles((theme) => ({
+  outerContainer: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  innerContainer: {
+    display: "flex",
+    flexDirection: "column",
+    flexGrow: 1,
+  },
+}));
 
 type MainContentProps = {
   heading: string;
@@ -7,13 +19,23 @@ type MainContentProps = {
 };
 
 function MainContent({ heading, children }: MainContentProps) {
+  const { classes } = useStyles();
+
   return (
-    <div>
-      <Title order={2}>{heading}</Title>
-      <Container fluid p={0} mt="2.5rem">
+    <Container fluid h={"100%"} className={classes.outerContainer}>
+      <Title order={2} weight={600}>
+        {heading}
+      </Title>
+      <Container
+        fluid
+        p={0}
+        mt="2.5rem"
+        mx={"0"}
+        className={classes.innerContainer}
+      >
         {children}
       </Container>
-    </div>
+    </Container>
   );
 }
 

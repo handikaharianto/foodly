@@ -3,7 +3,9 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { refreshAccessToken, userState } from "../../features/user/UserSlice";
-import Loader from "./Loader";
+import Loader from "./LoaderWithOverlay";
+import { privateAxios } from "../../api/axios";
+import { USER_OFFLINE, USER_ONLINE, socket } from "../../socket/socket";
 
 const AuthGuard = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -12,18 +14,38 @@ const AuthGuard = () => {
   const { loggedInUser } = useAppSelector(userState);
   const dispatch = useAppDispatch();
 
+  const logoutUser = () => {
+    delete privateAxios.defaults.headers.common.Authorization;
+    window.localStorage.clear();
+    navigate("/sign-in", { replace: true });
+
+    socket.emit(USER_OFFLINE);
+    socket.disconnect();
+  };
+
   useEffect(() => {
     if (!loggedInUser?.accessToken) {
       const refreshToken = window.localStorage.getItem("refreshToken");
       if (!refreshToken) {
-        navigate("/sign-in", { replace: true });
+        logoutUser();
         setIsLoading(false);
         return;
       }
-      dispatch(refreshAccessToken({ refreshToken }));
+      dispatch(refreshAccessToken({ refreshToken })).then((res) => {
+        if (res.meta.requestStatus === "rejected") {
+          logoutUser();
+        }
+      });
     }
     setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    if (loggedInUser?.accessToken) {
+      socket.connect();
+      socket.emit(USER_ONLINE, { userId: loggedInUser._id });
+    }
+  }, [loggedInUser]);
 
   if (isLoading) {
     return <Loader />;

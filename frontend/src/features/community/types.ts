@@ -1,18 +1,24 @@
-export type createCommunityApplicationRequest = {
-  name: string;
-  type: string;
-  description: string;
-};
+import { User } from "../user/types";
 
-export type createCommunityApplicationResponse = {
+export type Community = {
   _id: string;
   name: string;
   type: string;
   description: string;
-  user: string;
-  createdAt: string;
-  updatedAt: string;
+  user: User;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
-export type getOneCommunityApplicationResponse =
-  createCommunityApplicationResponse;
+export type NewCommunity = {
+  name: string;
+  type: string;
+  description: string;
+  user: string;
+};
+
+export type UpdateCommunity = {
+  communityId: string;
+  name: string;
+  description: string;
+};

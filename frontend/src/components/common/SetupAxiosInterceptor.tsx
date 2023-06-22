@@ -4,6 +4,7 @@ import { LoginUserResponse } from "../../features/user/types";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { userState } from "../../features/user/UserSlice";
+import { USER_OFFLINE, socket } from "../../socket/socket";
 
 const SetupAxiosInterceptor = ({ children }: { children: JSX.Element }) => {
   const [isSet, setIsSet] = useState(false);
@@ -17,6 +18,9 @@ const SetupAxiosInterceptor = ({ children }: { children: JSX.Element }) => {
       delete privateAxios.defaults.headers.common.Authorization;
       window.localStorage.clear();
       navigate("/sign-in", { replace: true });
+
+      socket.emit(USER_OFFLINE);
+      socket.disconnect();
     };
 
     const requestInterceptor = privateAxios.interceptors.request.use(

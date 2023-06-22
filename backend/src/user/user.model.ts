@@ -3,7 +3,7 @@ import { model, Schema } from "mongoose";
 import { RefreshToken, User, UserRole } from "./types";
 import { REFRESH_TOKEN_EXPIRATION_TIME } from "../common/auth";
 
-const userSchema = new Schema(
+const userSchema = new Schema<User>(
   {
     firstName: {
       type: String,
@@ -36,7 +36,7 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-const refreshTokenSchema = new Schema(
+const refreshTokenSchema = new Schema<RefreshToken>(
   {
     token: {
       type: String,

@@ -1,26 +1,38 @@
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
-
 import CommunityService from "./community.service";
 import HTTP_STATUS from "../common/http-status-code";
+import { z } from "zod";
+import mongoose from "mongoose";
 
-export const createCommunityApplicationSchema = z.object({
-  name: z
-    .string({
-      required_error: "Community name is required.",
-    })
-    .min(1, { message: "Community name is required" }),
-  type: z
-    .string({
-      required_error: "Community type is required.",
-    })
-    .min(1, { message: "Community type is required" }),
+export const createCommunitySchema = z.object({
+  name: z.string().min(1, { message: "Community name is required." }),
+  type: z.string().min(1, { message: "Community type is required." }),
   description: z
-    .string({
-      required_error: "Description is required.",
-    })
-    .min(1, { message: "Description is required" }),
+    .string()
+    .min(1, { message: "Community description is required." }),
+  user: z.custom<mongoose.Types.ObjectId>(),
 });
+
+export const getAllCommunitiesSchema = z.object({
+  limit: z.number().positive(),
+  page: z.number().positive(),
+});
+
+export const getOneCommunitySchema = z.object({
+  communityId: z.string(),
+});
+
+export const updateOneCommunitySchema = {
+  params: z.object({
+    communityId: z.string(),
+  }),
+  body: z.object({
+    name: z.string().min(1, { message: "Community name is required." }),
+    description: z
+      .string()
+      .min(1, { message: "Community description is required." }),
+  }),
+};
 
 class CommunityController {
   private readonly _communityService;
@@ -29,47 +41,74 @@ class CommunityController {
     this._communityService = _communityService;
   }
 
-  createCommunityApplication = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    const { name, type, description } = req.body;
-    const { _id } = req.user;
+  createCommunity = async (req: Request, res: Response, next: NextFunction) => {
+    const { name, type, description, user } = req.body;
 
     try {
-      const data = await this._communityService.createCommunityApplication({
+      await this._communityService.createCommunity({
         name,
         type,
         description,
-        user: _id,
+        user,
       });
-      return res.status(HTTP_STATUS.CREATED_201).json(data);
+      return res.status(HTTP_STATUS.CREATED_201).send();
     } catch (error: any) {
       next(error);
     }
   };
 
-  getOneCommunityApplication = async (
+  getAllCommunities = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
-    const { _id } = req.user;
+    const { limit, page } = req.body;
+    const { _id: userId } = req.user;
 
     try {
-      const data = await this._communityService.getOneCommunityApplication(_id);
+      const data = await this._communityService.getAllCommunities(
+        userId,
+        limit,
+        page
+      );
       return res.status(HTTP_STATUS.OK_200).json(data);
     } catch (error: any) {
       next(error);
     }
   };
 
-  getAllCommunities = async () => {
-    // setup pagination (20 items per page)
+  getOneCommunity = async (req: Request, res: Response, next: NextFunction) => {
+    const { communityId } = req.params;
+
+    try {
+      const data = await this._communityService.getOneCommunity(communityId);
+      return res.status(HTTP_STATUS.OK_200).json(data);
+    } catch (error: any) {
+      next(error);
+    }
   };
 
-  updateCommunity = async () => {};
+  updateOneCommunity = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { communityId } = req.params;
+    const { name, description } = req.body;
+
+    try {
+      const data = await this._communityService.updateOneCommunity(
+        communityId,
+        {
+          name,
+          description,
+        }
+      );
+      return res.status(HTTP_STATUS.OK_200).json(data);
+    } catch (error: any) {
+      next(error);
+    }
+  };
 }
 
 export default CommunityController;

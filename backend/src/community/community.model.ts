@@ -1,13 +1,7 @@
 import { model, Schema } from "mongoose";
-import {
-  CommunitySchema,
-  CommunityApplicationSchema,
-  CommunityApplicationStatus,
-  CommunityApplicationModel,
-  CommunityModel,
-} from "./types";
+import { Community, CommunityAddress, CommunityCoordinate } from "./types";
 
-const communitySchema = new Schema<CommunitySchema>(
+const communitySchema = new Schema<Community>(
   {
     name: {
       type: String,
@@ -34,45 +28,39 @@ const communitySchema = new Schema<CommunitySchema>(
   { timestamps: true }
 );
 
-const communityApplicationSchema = new Schema<CommunityApplicationSchema>(
-  {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    type: {
-      type: String,
-      required: true,
-      trim: true,
-      uppercase: true,
-
-    },
-    description: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    status: {
-      type: String,
-      enum: Object.values(CommunityApplicationStatus),
-      default: CommunityApplicationStatus.PENDING,
-    },
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
+export const communityAddressSchema = new Schema<CommunityAddress>({
+  addressLine1: {
+    type: String,
+    required: true,
+    trim: true,
   },
-  { timestamps: true }
-);
+  addressLine2: {
+    type: String,
+    trim: true,
+  },
+  city: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  postalCode: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+});
 
-export const communityModel = model<CommunityModel>(
-  "Community",
-  communitySchema
-);
+export const communityCoordinateSchema = new Schema<CommunityCoordinate>({
+  latitude: {
+    type: Number,
+    required: true,
+  },
+  longitude: {
+    type: Number,
+    required: true,
+  },
+});
 
-export const communityApplicationModel = model<CommunityApplicationModel>(
-  "CommunityApplication",
-  communityApplicationSchema
-);
+const communityModel = model<Community>("Community", communitySchema);
+
+export default communityModel;

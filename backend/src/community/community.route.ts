@@ -1,30 +1,50 @@
 import { Router } from "express";
 
 import CommunityController, {
-  createCommunityApplicationSchema,
+  createCommunitySchema,
+  getAllCommunitiesSchema,
+  updateOneCommunitySchema,
 } from "./community.controller";
 import CommunityService from "./community.service";
-import { validateRequestBody } from "zod-express-middleware";
 import verifyJWT from "../common/middlewares/verify-access-token.middleware";
 import authorizeUser from "../common/middlewares/authorize-user";
 import { UserRole } from "../user/types";
+import { validateRequest, validateRequestBody } from "zod-express-middleware";
 
 const communityController = new CommunityController(new CommunityService());
 
 const communityRouter = Router();
 
 communityRouter
-  .route("/application")
+  .route("/")
   .post(
     verifyJWT,
-    authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
-    validateRequestBody(createCommunityApplicationSchema),
-    communityController.createCommunityApplication
-  )
+    authorizeUser(UserRole.ADMINISTRATOR),
+    validateRequestBody(createCommunitySchema),
+    communityController.createCommunity
+  );
+
+communityRouter
+  .route("/list")
+  .post(
+    verifyJWT,
+    authorizeUser(UserRole.ADMINISTRATOR, UserRole.COMMUNITY, UserRole.PUBLIC),
+    validateRequestBody(getAllCommunitiesSchema),
+    communityController.getAllCommunities
+  );
+
+communityRouter
+  .route("/:communityId")
   .get(
     verifyJWT,
-    authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
-    communityController.getOneCommunityApplication
+    authorizeUser(UserRole.ADMINISTRATOR, UserRole.COMMUNITY, UserRole.PUBLIC),
+    communityController.getOneCommunity
+  )
+  .put(
+    verifyJWT,
+    authorizeUser(UserRole.ADMINISTRATOR, UserRole.COMMUNITY),
+    validateRequest(updateOneCommunitySchema),
+    communityController.updateOneCommunity
   );
 
 export default communityRouter;

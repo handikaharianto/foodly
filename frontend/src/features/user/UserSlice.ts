@@ -37,7 +37,7 @@ export const testPage = executeAsyncThunk<void, void>("user/testPage", () => {
   return privateAxios.get("/users/test");
 });
 
-export interface UserState {
+interface UserState {
   loggedInUser: LoginUserResponse | null;
   isLoggedIn: boolean;
   isLoading: boolean;
@@ -82,6 +82,10 @@ export const userSlice = createSlice({
         state.isLoading = false;
         state.loggedInUser = action.payload;
         state.isLoggedIn = true;
+      })
+      .addCase(refreshAccessToken.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isLoggedIn = false;
       })
       .addMatcher(
         isAnyOf(

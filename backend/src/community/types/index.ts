@@ -1,49 +1,31 @@
 import { Types } from "mongoose";
+import { UserWithoutPassword } from "src/user/types";
 
-export enum CommunityApplicationStatus {
-  PENDING = "PENDING",
-  ACCEPTED = "ACCEPTED",
-  REJECTED = "REJECTED",
-}
-
-/**
- * SCHEMA
- */
-export interface CommunitySchema {
+export type Community = {
+  _id: string;
   name: string;
   type: string;
   description: string;
-  user: Types.ObjectId;
-}
-
-export type CommunityApplicationSchema = CommunitySchema & { status: string };
-
-/**
- * MODEL
- */
-export type CommunityModel = CommunitySchema & {
-  _id: string;
-  createdAt: string;
-  updatedAt: string;
+  user: Types.ObjectId | UserWithoutPassword;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
-export type CommunityApplicationModel = CommunityApplicationSchema & {
-  _id: string;
-  createdAt: string;
-  updatedAt: string;
+export type CommunityAddress = {
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  postalCode: string;
 };
 
-/**
- * QUERY
- */
-export interface CreateCommunityApplicationRequest {
+export type CommunityCoordinate = {
+  latitude: number;
+  longitude: number;
+};
+
+export type NewCommunity = {
   name: string;
   type: string;
   description: string;
   user: string;
-}
-
-export type CreateCommunityApplicationResponse = CommunityApplicationModel;
-
-export type GetOneCommunityApplicationResponse =
-  CreateCommunityApplicationResponse;
+};
