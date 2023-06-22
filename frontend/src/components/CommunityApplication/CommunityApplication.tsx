@@ -9,7 +9,10 @@ import {
   createCommunityApplication,
   getAllCommunityApplications,
 } from "../../features/communityApplication/CommunityApplicationSlice";
-import { CommunityApplicationStatus } from "../../features/communityApplication/types";
+import {
+  CommunityApplicationStatus,
+  NewCommunityApplication,
+} from "../../features/communityApplication/types";
 import MainContent from "../common/MainContent";
 import EmptyState from "../common/EmptyState";
 import LoaderState from "../common/LoaderState";
@@ -83,7 +86,7 @@ const CommunityApplication = () => {
     }
 
     try {
-      dispatch(createCommunityApplication(formData));
+      dispatch(createCommunityApplication(formData as NewCommunityApplication));
     } catch (error) {
       // display error dialog here
       console.log(error);

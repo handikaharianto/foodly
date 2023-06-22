@@ -2,12 +2,10 @@ import { createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { executeAsyncThunk } from "../../api/axios";
 import {
   CommunityApplication,
-  createCommunityApplicationRequest,
-  createCommunityApplicationResponse,
+  NewCommunityApplication,
   getAllCommunityApplicationsRequest,
   getAllCommunityApplicationsResponse,
   getOneCommunityApplicationRequest,
-  getOneCommunityApplicationResponse,
 } from "./types";
 import { privateAxios } from "../../api/axios";
 import { RootState } from "../../app/store";
@@ -18,15 +16,15 @@ import {
 import { CommunityApplicationStatus } from "./types";
 
 export const createCommunityApplication = executeAsyncThunk<
-  createCommunityApplicationRequest,
-  createCommunityApplicationResponse
+  NewCommunityApplication,
+  CommunityApplication
 >("communityApplication/createCommunityApplication", (req) =>
   privateAxios.post("/community-applications", req)
 );
 
 export const getOneCommunityApplication = executeAsyncThunk<
   getOneCommunityApplicationRequest,
-  getOneCommunityApplicationResponse
+  CommunityApplication
 >("communityApplication/getOneCommunityApplication", (req) =>
   privateAxios.get(`/community-applications/${req.communityApplicationId}`)
 );
@@ -48,7 +46,7 @@ export const updateOneCommunityApplication = executeAsyncThunk<
 );
 
 export interface communityApplicationState {
-  communityApplication: getOneCommunityApplicationResponse | null;
+  communityApplication: CommunityApplication | null;
   communityApplications: CommunityApplication[];
   currentPage: number | null;
   totalPages: number | null;
