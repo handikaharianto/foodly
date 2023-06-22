@@ -35,6 +35,7 @@ import {
   showNotification,
 } from "../../utils/notifications";
 import { formatCommunityAddress } from "../../utils/community";
+import { NewCommunity } from "../../features/community/types";
 
 //TODO: Add community application status in UI
 
@@ -60,14 +61,19 @@ function CommunityRequestsDetails() {
 
   // TODO: Handle Error from Promise.all
   const acceptCommunityRequest = () => {
+    if (!communityApplication) return;
+
     Promise.all([
       dispatch(
         createCommunity({
-          name: communityApplication!.name,
-          type: communityApplication!.type,
-          description: communityApplication!.description,
-          user: communityApplication!.user._id,
-        })
+          name: communityApplication.name,
+          type: communityApplication.type,
+          foodPreferences: communityApplication.foodPreferences,
+          description: communityApplication.description,
+          address: communityApplication.address,
+          coordinate: communityApplication.coordinate,
+          user: communityApplication.user._id,
+        } as NewCommunity)
       ),
       dispatch(
         updateOneCommunityApplication({
