@@ -21,7 +21,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function CommunityDetails() {
+function CommunityApplicationDetailsForm() {
   const form = useCommunityApplicationFormContext();
 
   const { isLoading } = useAppSelector(communityApplicationState);
@@ -102,4 +102,4 @@ function CommunityDetails() {
   );
 }
 
-export default CommunityDetails;
+export default CommunityApplicationDetailsForm;
