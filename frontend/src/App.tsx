@@ -1,4 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import mapboxgl from "mapbox-gl";
+
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import TestPage from "./components/TestPage";
@@ -18,6 +20,8 @@ import PublicUserHome from "./components/Home/PublicUserHome";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
+
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
 function App() {
   return (

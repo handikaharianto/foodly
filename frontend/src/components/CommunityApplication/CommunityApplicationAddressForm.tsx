@@ -1,6 +1,7 @@
 import {
   Button,
   Group,
+  Modal,
   Paper,
   Text,
   TextInput,
@@ -11,6 +12,9 @@ import { useCommunityApplicationFormContext } from "./community-application-cont
 import { useAppSelector } from "../../app/hooks";
 import { communityApplicationState } from "../../features/communityApplication/CommunityApplicationSlice";
 import { IconMap } from "@tabler/icons-react";
+import CommunityApplicationMap from "./CommunityApplicationMap";
+import { useDisclosure } from "@mantine/hooks";
+import { useState } from "react";
 
 const useStyles = createStyles((theme) => ({
   cardGrid: {
@@ -21,11 +25,25 @@ const useStyles = createStyles((theme) => ({
 }));
 
 function CommunityAddressForm() {
-  const form = useCommunityApplicationFormContext();
+  const [showCommunityLocationError, setShowCommunityLocationError] =
+    useState<boolean>(false);
 
   const { isLoading } = useAppSelector(communityApplicationState);
 
   const { classes } = useStyles();
+
+  const [opened, { open, close }] = useDisclosure(false);
+
+  const form = useCommunityApplicationFormContext();
+
+  const closeMapModal = () => {
+    if (!form.values.coordinate.latitude && !form.values.coordinate.longitude) {
+      setShowCommunityLocationError(true);
+      return;
+    }
+
+    close();
+  };
 
   return (
     <Paper withBorder p="xl" className={classes.cardGrid}>
@@ -82,9 +100,24 @@ function CommunityAddressForm() {
           variant="default"
           color="red"
           leftIcon={<IconMap size="0.8rem" />}
+          onClick={open}
         >
           Open map
         </Button>
+        <Modal
+          centered
+          size={800}
+          opened={opened}
+          onClose={closeMapModal}
+          title={
+            <Text weight={600}>What is the exact community location?</Text>
+          }
+        >
+          <CommunityApplicationMap
+            closeModal={closeMapModal}
+            showCommunityLocationError={showCommunityLocationError}
+          />
+        </Modal>
       </div>
     </Paper>
   );

@@ -13,8 +13,8 @@ type CommunityApplicationFormType = {
     postalCode: string;
   };
   coordinate: {
-    latitude: string;
-    longitude: string;
+    latitude: number | null;
+    longitude: number | null;
   };
 };
 

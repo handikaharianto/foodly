@@ -6,18 +6,19 @@ import { IconReportSearch } from "@tabler/icons-react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   communityApplicationState,
+  createCommunityApplication,
   getAllCommunityApplications,
 } from "../../features/communityApplication/CommunityApplicationSlice";
 import { CommunityApplicationStatus } from "../../features/communityApplication/types";
 import MainContent from "../common/MainContent";
 import EmptyState from "../common/EmptyState";
 import LoaderState from "../common/LoaderState";
-import CommunityDetailsForm from "./CommunityDetailsForm";
+import CommunityApplicationDetailsForm from "./CommunityApplicationDetailsForm";
 import {
   CommunityApplicationFormProvider,
   useCommunityApplicationForm,
 } from "./community-application-context";
-import CommunityAddressForm from "./CommunityAddressForm";
+import CommunityApplicationAddressForm from "./CommunityApplicationAddressForm";
 
 const CommunityApplication = () => {
   const { isLoading, communityApplications } = useAppSelector(
@@ -39,45 +40,55 @@ const CommunityApplication = () => {
         postalCode: "",
       },
       coordinate: {
-        latitude: "",
-        longitude: "",
+        latitude: null,
+        longitude: null,
       },
     },
 
     validate: {
       name: isNotEmpty("Community name is required."),
-      type: isNotEmpty("Community type is required"),
+      type: isNotEmpty("Community type is required."),
       typeOthers: (value, values) =>
         values.type !== "Others"
           ? null
           : value?.trim() === ""
           ? "Community type is required"
           : null,
+      foodPreferences: isNotEmpty("Food preferences are required."),
       description: isNotEmpty("Community description is required."),
       address: {
         addressLine1: isNotEmpty("Community address is required."),
         city: isNotEmpty("City is required."),
         postalCode: isNotEmpty("Postal code is required."),
       },
+      coordinate: {
+        latitude: isNotEmpty(),
+        longitude: isNotEmpty(),
+      },
     },
   });
 
-  const submitForm = form.onSubmit(async (formData) => {
-    console.log(formData);
+  const submitForm = async () => {
+    const formValidation = form.validate();
+    if (formValidation.hasErrors) {
+      return;
+    }
 
-    // if (formData.type !== "Others") {
-    //   delete formData.typeOthers;
-    // } else {
-    //   formData = { ...formData, type: formData.typeOthers! };
-    //   delete formData.typeOthers;
-    // }
+    let formData = form.values;
+    if (formData.type !== "Others") {
+      delete formData.typeOthers;
+    } else {
+      formData = { ...formData, type: formData.typeOthers! };
+      delete formData.typeOthers;
+    }
 
-    // try {
-    //   dispatch(createCommunityApplication(formData));
-    // } catch (error) {
-    //   // display error dialog here
-    // }
-  });
+    try {
+      dispatch(createCommunityApplication(formData));
+    } catch (error) {
+      // display error dialog here
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     dispatch(
@@ -98,13 +109,13 @@ const CommunityApplication = () => {
         />
       ) : (
         <CommunityApplicationFormProvider form={form}>
-          <form onSubmit={submitForm}>
+          <form>
             <Stack spacing="xl">
-              <CommunityDetailsForm />
-              <CommunityAddressForm />
+              <CommunityApplicationDetailsForm />
+              <CommunityApplicationAddressForm />
             </Stack>
             <Center>
-              <Button type="submit" color="red" mt="xl">
+              <Button type="button" color="red" mt="xl" onClick={submitForm}>
                 Submit
               </Button>
             </Center>
