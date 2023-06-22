@@ -1,12 +1,5 @@
 import { useParams } from "react-router-dom";
-import MainContent from "../common/MainContent";
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import {
-  communityApplicationState,
-  getOneCommunityApplication,
-  updateOneCommunityApplication,
-} from "../../features/communityApplication/CommunityApplicationSlice";
+import { useEffect, useRef } from "react";
 import {
   Text,
   Divider,
@@ -20,15 +13,28 @@ import {
   Container,
   Badge,
 } from "@mantine/core";
+import mapboxgl, { Map, Marker } from "mapbox-gl";
+
+import MainContent from "../common/MainContent";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  communityApplicationState,
+  getOneCommunityApplication,
+  updateOneCommunityApplication,
+} from "../../features/communityApplication/CommunityApplicationSlice";
 import { createCommunity } from "../../features/community/communitySlice";
 import LoaderState from "../common/LoaderState";
 import { communityState } from "../../features/community/communitySlice";
-import { CommunityApplicationStatus } from "../../features/communityApplication/types";
+import {
+  CommunityApplication,
+  CommunityApplicationStatus,
+} from "../../features/communityApplication/types";
 import { modals } from "@mantine/modals";
 import {
   NotificationVariant,
   showNotification,
 } from "../../utils/notifications";
+import { formatCommunityAddress } from "../../utils/community";
 
 //TODO: Add community application status in UI
 
@@ -47,6 +53,10 @@ function CommunityRequestsDetails() {
   const { isLoading: communityLoading } = useAppSelector(communityState);
 
   const { classes } = useStyles();
+
+  // Mapbox
+  const mapboxMap = useRef<Map | null>(null);
+  const mapMarker = useRef<Marker | null>(null);
 
   // TODO: Handle Error from Promise.all
   const acceptCommunityRequest = () => {
@@ -106,6 +116,20 @@ function CommunityRequestsDetails() {
     );
   }, [communityApplicationId, dispatch]);
 
+  // useEffect(() => {
+  //   if (mapboxMap.current) return; // initialize map only once
+  //   mapboxMap.current = new Map({
+  //     container: "community-application-map",
+  //     style: import.meta.env.VITE_MAPBOX_MAP_STYLE,
+  //     center: [101.68904509676878, 3.136788620294628],
+  //     zoom: 12,
+  //   });
+
+  //   mapMarker.current = new Marker({
+  //     color: "red",
+  //   });
+  // });
+
   return (
     <MainContent heading={"Community Request Details"}>
       {communityAppLoading || communityLoading ? (
@@ -160,6 +184,35 @@ function CommunityRequestsDetails() {
                   <Text size="sm">{communityApplication?.description}</Text>
                 </Card.Section>
               </Card>
+              <Card withBorder padding="xl">
+                <Card.Section withBorder p="xl">
+                  <Title order={4} size="h5" weight={600}>
+                    Community address
+                  </Title>
+                </Card.Section>
+                <Card.Section p="xl">
+                  <Text size="sm">
+                    {communityApplication &&
+                      formatCommunityAddress(
+                        communityApplication as CommunityApplication
+                      )}
+                  </Text>
+                </Card.Section>
+                {/* <Card.Section>
+                  <Container
+                    fluid
+                    px={0}
+                    id="community-application-map"
+                    className="map-container"
+                    sx={(theme) => ({
+                      position: "relative",
+                      height: "400px",
+                      width: "100%",
+                      borderRadius: theme.radius.xs,
+                    })}
+                  />
+                </Card.Section> */}
+              </Card>
               <Card withBorder>
                 <Card.Section withBorder p="xl">
                   <Title order={4} size="h5" weight={600}>
@@ -168,7 +221,7 @@ function CommunityRequestsDetails() {
                 </Card.Section>
                 <Card.Section p="xl">
                   <Group tt="capitalize">
-                    {["Non-halal", "Halal", "Canned goods"].map((item) => (
+                    {communityApplication?.foodPreferences.map((item) => (
                       <Badge
                         key={item}
                         color="red"
