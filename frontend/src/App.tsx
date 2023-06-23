@@ -17,7 +17,8 @@ import CommunityRequests from "./pages/CommunityRequests";
 import AdminDashboard from "./pages/AdminDashboard";
 import CommunityRequestsDetails from "./components/CommunityRequests/CommunityRequestsDetails";
 import Chat from "./pages/Chat";
-import PublicUserHome from "./components/Home/PublicUserHome";
+import PublicUserHome from "./components/Home/PublicUser/PublicUserHome";
+import CommunityDetails from "./components/Home/PublicUser/CommunityDetails";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
@@ -89,6 +90,14 @@ function App() {
                 <Route
                   path="/community-requests/:communityApplicationId"
                   element={<CommunityRequestsDetails />}
+                />
+              </Route>
+              <Route
+                element={<AuthorizeUser acceptedRoles={[UserRole.PUBLIC]} />}
+              >
+                <Route
+                  path="/communities/:communityId"
+                  element={<CommunityDetails />}
                 />
               </Route>
             </Route>
