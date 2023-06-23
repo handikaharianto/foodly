@@ -25,10 +25,7 @@ import {
 import { createCommunity } from "../../features/community/communitySlice";
 import LoaderState from "../common/LoaderState";
 import { communityState } from "../../features/community/communitySlice";
-import {
-  CommunityApplication,
-  CommunityApplicationStatus,
-} from "../../features/communityApplication/types";
+import { CommunityApplicationStatus } from "../../features/communityApplication/types";
 import { modals } from "@mantine/modals";
 import {
   NotificationVariant,
@@ -199,9 +196,7 @@ function CommunityRequestsDetails() {
                 <Card.Section p="xl">
                   <Text size="sm">
                     {communityApplication &&
-                      formatCommunityAddress(
-                        communityApplication as CommunityApplication
-                      )}
+                      formatCommunityAddress(communityApplication.address)}
                   </Text>
                 </Card.Section>
                 {/* <Card.Section>
