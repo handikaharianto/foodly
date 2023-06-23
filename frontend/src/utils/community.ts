@@ -1,8 +1,6 @@
-import { CommunityApplication } from "../features/communityApplication/types";
+import { CommunityAddress } from "../features/community/types";
 
-export const formatCommunityAddress = ({
-  address,
-}: CommunityApplication): string => {
+export const formatCommunityAddress = (address: CommunityAddress): string => {
   const communityAddress = `${address.addressLine1}, ${address.city}, ${address.postalCode}`;
 
   return address.addressLine2

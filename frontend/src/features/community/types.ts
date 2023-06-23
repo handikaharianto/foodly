@@ -6,16 +6,8 @@ export type Community = {
   type: string;
   foodPreferences: string[];
   description: string;
-  address: {
-    addressLine1: string;
-    addressLine2?: string;
-    city: string;
-    postalCode: string;
-  };
-  coordinate: {
-    latitude: number;
-    longitude: number;
-  };
+  address: CommunityAddress;
+  coordinate: CommunityCoordinate;
   user: User;
   createdAt: Date;
   updatedAt: Date;
@@ -26,17 +18,21 @@ export type NewCommunity = {
   type: string;
   foodPreferences: string[];
   description: string;
-  address: {
-    addressLine1: string;
-    addressLine2?: string;
-    city: string;
-    postalCode: string;
-  };
-  coordinate: {
-    latitude: number;
-    longitude: number;
-  };
+  address: CommunityAddress;
+  coordinate: CommunityCoordinate;
   user: string;
+};
+
+export type CommunityAddress = {
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  postalCode: string;
+};
+
+export type CommunityCoordinate = {
+  latitude: number;
+  longitude: number;
 };
 
 export type UpdateCommunity = {
