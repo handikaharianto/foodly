@@ -102,12 +102,15 @@ class CommunityApplicationService {
     communityApplicationId: string,
     communityApplicationData: Pick<CommunityApplication, "status">
   ): Promise<CommunityApplication> => {
-    const communityApplication =
-      await communityApplicationModel.findByIdAndUpdate(
-        communityApplicationId,
-        communityApplicationData,
-        { runValidators: true, new: true }
-      );
+    const communityApplication = await communityApplicationModel
+      .findByIdAndUpdate(communityApplicationId, communityApplicationData, {
+        runValidators: true,
+        new: true,
+      })
+      .populate<{ user: UserWithoutPassword }>({
+        path: "user",
+        select: "-password",
+      });
     if (!communityApplication)
       throw new ApiError(
         HTTP_STATUS.NOT_FOUND_404,
