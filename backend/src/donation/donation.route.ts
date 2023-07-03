@@ -27,12 +27,12 @@ donationRouter
   .route("/:donationId")
   .put(
     verifyJWT,
-    authorizeUser(UserRole.ADMINISTRATOR, UserRole.PUBLIC),
+    authorizeUser(UserRole.ADMINISTRATOR, UserRole.COMMUNITY, UserRole.PUBLIC),
     donationController.updateOneDonation
   )
   .get(
     verifyJWT,
-    authorizeUser(UserRole.ADMINISTRATOR, UserRole.PUBLIC),
+    authorizeUser(UserRole.ADMINISTRATOR, UserRole.COMMUNITY, UserRole.PUBLIC),
     donationController.getOneDonation
   );
 

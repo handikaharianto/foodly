@@ -5,8 +5,8 @@ import { UserWithoutPassword } from "src/user/types";
 export enum DonationStatus {
   PENDING = "pending",
   IN_PROGRESS = "in_progress",
-  ACCEPTED = "accepted",
   REJECTED = "rejected",
+  RECEIVED = "received",
 }
 
 export type Donation = {
