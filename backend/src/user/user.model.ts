@@ -32,6 +32,10 @@ const userSchema = new Schema<User>(
       enum: Object.values(UserRole),
       default: UserRole.PUBLIC,
     },
+    community: {
+      type: Schema.Types.ObjectId,
+      ref: "Community",
+    },
   },
   { timestamps: true }
 );

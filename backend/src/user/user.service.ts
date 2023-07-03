@@ -38,6 +38,16 @@ class UserService {
     return user;
   };
 
+  updateOneUser = async (
+    userId: string,
+    userData: Pick<User, "community" | "role">
+  ): Promise<void> => {
+    await userModel.findByIdAndUpdate(userId, userData, {
+      runValidators: true,
+      new: true,
+    });
+  };
+
   loginUser = async (email: string, password: string): Promise<LoginUser> => {
     let user = await userModel.findOne({
       email,
