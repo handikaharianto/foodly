@@ -53,7 +53,7 @@ class CommunityController {
     } = req.body;
 
     try {
-      await this._communityService.createCommunity({
+      const data = await this._communityService.createCommunity({
         name,
         type,
         foodPreferences,
@@ -62,7 +62,7 @@ class CommunityController {
         coordinate,
         user,
       });
-      return res.status(HTTP_STATUS.CREATED_201).send();
+      return res.status(HTTP_STATUS.CREATED_201).json(data);
     } catch (error: any) {
       next(error);
     }
