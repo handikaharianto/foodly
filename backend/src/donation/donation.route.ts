@@ -19,7 +19,7 @@ donationRouter.post(
 donationRouter.post(
   "/list",
   verifyJWT,
-  authorizeUser(UserRole.ADMINISTRATOR, UserRole.PUBLIC),
+  authorizeUser(UserRole.ADMINISTRATOR, UserRole.COMMUNITY, UserRole.PUBLIC),
   donationController.getAllDonations
 );
 
