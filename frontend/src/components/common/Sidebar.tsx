@@ -13,6 +13,7 @@ import {
   IconDashboard,
   IconFiles,
   IconMessage,
+  IconHeartHandshake,
 } from "@tabler/icons-react";
 import { UserRole } from "../../features/user/types";
 import { NavLink } from "react-router-dom";
@@ -97,6 +98,11 @@ const communityUserLinks = [
   { link: "/home", label: "Home", icon: IconHome },
   { link: "/notifications", label: "Notifications", icon: IconBellRinging },
   { link: "/chat", label: "Chat", icon: IconMessage },
+  {
+    link: "/donation-requests",
+    label: "Donation Requests",
+    icon: IconHeartHandshake,
+  },
 ];
 
 const administratorLinks = [
