@@ -23,6 +23,7 @@ export const loginUser = executeAsyncThunk<LoginUserRequest, LoginUserResponse>(
     const response = await publicAxios.post("/users/login", req);
     const data = (await response.data) as LoginUserResponse;
 
+    privateAxios.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
     window.localStorage.setItem("refreshToken", data.refreshToken);
     return response;
   }
