@@ -24,7 +24,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function CommunityAddressForm() {
+function CommunityApplicationAddressForm() {
   const [showCommunityLocationError, setShowCommunityLocationError] =
     useState<boolean>(false);
 
@@ -123,4 +123,4 @@ function CommunityAddressForm() {
   );
 }
 
-export default CommunityAddressForm;
+export default CommunityApplicationAddressForm;

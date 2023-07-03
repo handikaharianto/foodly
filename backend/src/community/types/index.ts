@@ -5,7 +5,10 @@ export type Community = {
   _id: string;
   name: string;
   type: string;
+  foodPreferences: string[];
   description: string;
+  address: CommunityAddress;
+  coordinate: CommunityCoordinate;
   user: Types.ObjectId | UserWithoutPassword;
   createdAt: Date;
   updatedAt: Date;
@@ -26,6 +29,9 @@ export type CommunityCoordinate = {
 export type NewCommunity = {
   name: string;
   type: string;
+  foodPreferences: string[];
   description: string;
+  address: CommunityAddress;
+  coordinate: CommunityCoordinate;
   user: string;
 };

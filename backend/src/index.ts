@@ -13,6 +13,7 @@ import communityRouter from "./community/community.route";
 import communityApplicationRouter from "./communityApplication/communityApplication.route";
 import chatRouter from "./chat/routes/chat.route";
 import connectSocket, { SOCKET_CONNECTED } from "./socket";
+import donationRouter from "./donation/donation.route";
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.use("/api/users", userRouter);
 app.use("/api/communities", communityRouter);
 app.use("/api/community-applications", communityApplicationRouter);
 app.use("/api/chats", chatRouter);
+app.use("/api/donations", donationRouter);
 
 // error handler
 app.use(handleError);

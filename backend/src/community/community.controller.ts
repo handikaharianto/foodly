@@ -42,13 +42,24 @@ class CommunityController {
   }
 
   createCommunity = async (req: Request, res: Response, next: NextFunction) => {
-    const { name, type, description, user } = req.body;
+    const {
+      name,
+      type,
+      foodPreferences,
+      description,
+      address,
+      coordinate,
+      user,
+    } = req.body;
 
     try {
       await this._communityService.createCommunity({
         name,
         type,
+        foodPreferences,
         description,
+        address,
+        coordinate,
         user,
       });
       return res.status(HTTP_STATUS.CREATED_201).send();

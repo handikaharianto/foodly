@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import {
   Text,
@@ -12,29 +12,19 @@ import {
   Card,
   Container,
   Badge,
+  Modal,
 } from "@mantine/core";
 import mapboxgl, { Map, Marker } from "mapbox-gl";
 
-import MainContent from "../common/MainContent";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import {
-  communityApplicationState,
-  getOneCommunityApplication,
-  updateOneCommunityApplication,
-} from "../../features/communityApplication/CommunityApplicationSlice";
-import { createCommunity } from "../../features/community/communitySlice";
-import LoaderState from "../common/LoaderState";
-import { communityState } from "../../features/community/communitySlice";
-import { CommunityApplicationStatus } from "../../features/communityApplication/types";
-import { modals } from "@mantine/modals";
-import {
-  NotificationVariant,
-  showNotification,
-} from "../../utils/notifications";
-import { formatCommunityAddress } from "../../utils/community";
-import { NewCommunity } from "../../features/community/types";
+import MainContent from "../../common/MainContent";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 
-//TODO: Add community application status in UI
+import { getOneCommunity } from "../../../features/community/communitySlice";
+import LoaderState from "../../common/LoaderState";
+import { communityState } from "../../../features/community/communitySlice";
+import { formatCommunityAddress } from "../../../utils/community";
+import { useDisclosure } from "@mantine/hooks";
+import DonationCreation from "../../Donation/DonationCreation";
 
 const useStyles = createStyles((theme) => ({
   contentGrid: {
@@ -42,82 +32,28 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function CommunityRequestsDetails() {
-  const { communityApplicationId } = useParams();
+function CommunityDetails() {
+  const { communityId } = useParams();
+  const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
-  const { communityApplication, isLoading: communityAppLoading } =
-    useAppSelector(communityApplicationState);
-  const { isLoading: communityLoading } = useAppSelector(communityState);
+  const { isLoading, community } = useAppSelector(communityState);
 
   const { classes } = useStyles();
+  const [opened, { open: openDonateModal, close: closeDonateModal }] =
+    useDisclosure(false);
 
   // Mapbox
   const mapboxMap = useRef<Map | null>(null);
   const mapMarker = useRef<Marker | null>(null);
 
-  // TODO: Handle Error from Promise.all
-  const acceptCommunityRequest = () => {
-    if (!communityApplication) return;
-
-    Promise.all([
-      dispatch(
-        createCommunity({
-          name: communityApplication.name,
-          type: communityApplication.type,
-          foodPreferences: communityApplication.foodPreferences,
-          description: communityApplication.description,
-          address: communityApplication.address,
-          coordinate: communityApplication.coordinate,
-          user: communityApplication.user._id,
-        } as NewCommunity)
-      ),
-      dispatch(
-        updateOneCommunityApplication({
-          communityApplicationId: communityApplication!._id,
-          status: CommunityApplicationStatus.ACCEPTED,
-        })
-      ),
-    ]);
-  };
-
-  const rejectCommunityRequest = () => {
-    dispatch(
-      updateOneCommunityApplication({
-        communityApplicationId: communityApplication!._id,
-        status: CommunityApplicationStatus.REJECTED,
-      })
-    ).then((res) => {
-      if (res.meta.requestStatus === "fulfilled") {
-        showNotification({
-          message: "Community request has been rejected!",
-          variant: NotificationVariant.SUCCESS,
-        });
-      }
-    });
-  };
-
-  const openRejectCommunityRequestModal = () =>
-    modals.openConfirmModal({
-      title: <Text weight={600}>Reject community application</Text>,
-      centered: true,
-      children: (
-        <Text size="sm" mb="2.5rem">
-          Are you sure you want to reject this community request?
-        </Text>
-      ),
-      labels: { confirm: "Reject", cancel: "Cancel" },
-      confirmProps: { color: "red" },
-      onConfirm: rejectCommunityRequest,
-    });
-
   useEffect(() => {
     dispatch(
-      getOneCommunityApplication({
-        communityApplicationId: communityApplicationId as string,
+      getOneCommunity({
+        communityId: communityId as string,
       })
     );
-  }, [communityApplicationId, dispatch]);
+  }, [communityId, dispatch]);
 
   // useEffect(() => {
   //   if (mapboxMap.current) return; // initialize map only once
@@ -134,8 +70,8 @@ function CommunityRequestsDetails() {
   // });
 
   return (
-    <MainContent heading={"Community Request Details"}>
-      {communityAppLoading || communityLoading ? (
+    <MainContent heading="Community Details">
+      {isLoading ? (
         <LoaderState />
       ) : (
         <>
@@ -148,31 +84,34 @@ function CommunityRequestsDetails() {
                 size="h4"
                 weight={600}
               >
-                {communityApplication?.name}
+                {community?.name}
               </Title>
               <Text color="dimmed" size="sm">
-                {communityApplication?.type}
+                {community?.type}
               </Text>
             </Stack>
-            {communityApplication?.status ===
-              CommunityApplicationStatus.PENDING && (
-              <Group>
-                <Button
-                  variant="filled"
-                  color="red"
-                  onClick={acceptCommunityRequest}
-                >
-                  Accept
-                </Button>
-                <Button
-                  variant="subtle"
-                  color="red"
-                  onClick={openRejectCommunityRequestModal}
-                >
-                  Reject
-                </Button>
-              </Group>
-            )}
+            <Group>
+              <Modal
+                centered
+                withCloseButton={false}
+                size="auto"
+                opened={opened}
+                onClose={closeDonateModal}
+                title={
+                  <Text weight={600} size="xl" mb="xl" px="md">
+                    Fill up your donation details
+                  </Text>
+                }
+              >
+                <DonationCreation closeDonateModal={closeDonateModal} />
+              </Modal>
+              <Button variant="filled" color="red" onClick={openDonateModal}>
+                Donate
+              </Button>
+              <Button variant="default" color="red">
+                Contact owner
+              </Button>
+            </Group>
           </Group>
           <Divider my="xl" color="gray.3" />
           <SimpleGrid className={classes.contentGrid}>
@@ -184,7 +123,7 @@ function CommunityRequestsDetails() {
                   </Title>
                 </Card.Section>
                 <Card.Section p="xl">
-                  <Text size="sm">{communityApplication?.description}</Text>
+                  <Text size="sm">{community?.description}</Text>
                 </Card.Section>
               </Card>
               <Card withBorder padding="xl">
@@ -195,8 +134,7 @@ function CommunityRequestsDetails() {
                 </Card.Section>
                 <Card.Section p="xl">
                   <Text size="sm">
-                    {communityApplication &&
-                      formatCommunityAddress(communityApplication.address)}
+                    {community && formatCommunityAddress(community.address)}
                   </Text>
                 </Card.Section>
                 {/* <Card.Section>
@@ -222,7 +160,7 @@ function CommunityRequestsDetails() {
                 </Card.Section>
                 <Card.Section p="xl">
                   <Group tt="capitalize">
-                    {communityApplication?.foodPreferences.map((item) => (
+                    {community?.foodPreferences.map((item) => (
                       <Badge
                         key={item}
                         color="red"
@@ -241,7 +179,7 @@ function CommunityRequestsDetails() {
               <Card withBorder>
                 <Card.Section withBorder p="xl">
                   <Title order={4} size="h5" weight={600}>
-                    Submitted by
+                    Community owner
                   </Title>
                 </Card.Section>
                 <Card.Section p="xl">
@@ -257,8 +195,7 @@ function CommunityRequestsDetails() {
                         Full name
                       </Title>
                       <Text transform="capitalize" size="sm">
-                        {communityApplication?.user.firstName}{" "}
-                        {communityApplication?.user.lastName}
+                        {community?.user.firstName} {community?.user.lastName}
                       </Text>
                     </Stack>
                     <Stack spacing={0}>
@@ -271,7 +208,7 @@ function CommunityRequestsDetails() {
                       >
                         Email
                       </Title>
-                      <Text size="sm">{communityApplication?.user.email}</Text>
+                      <Text size="sm">{community?.user.email}</Text>
                     </Stack>
                     <Stack spacing={0}>
                       <Title
@@ -296,4 +233,4 @@ function CommunityRequestsDetails() {
   );
 }
 
-export default CommunityRequestsDetails;
+export default CommunityDetails;
