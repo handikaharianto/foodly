@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import {
   Text,
@@ -12,6 +12,7 @@ import {
   Card,
   Container,
   Badge,
+  Modal,
 } from "@mantine/core";
 import mapboxgl, { Map, Marker } from "mapbox-gl";
 
@@ -22,6 +23,8 @@ import { getOneCommunity } from "../../../features/community/communitySlice";
 import LoaderState from "../../common/LoaderState";
 import { communityState } from "../../../features/community/communitySlice";
 import { formatCommunityAddress } from "../../../utils/community";
+import { useDisclosure } from "@mantine/hooks";
+import DonationCreation from "../../Donation/DonationCreation";
 
 const useStyles = createStyles((theme) => ({
   contentGrid: {
@@ -31,13 +34,14 @@ const useStyles = createStyles((theme) => ({
 
 function CommunityDetails() {
   const { communityId } = useParams();
+  const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
-  // const { communityApplication, isLoading: communityAppLoading } =
-  //   useAppSelector(communityApplicationState);
   const { isLoading, community } = useAppSelector(communityState);
 
   const { classes } = useStyles();
+  const [opened, { open: openDonateModal, close: closeDonateModal }] =
+    useDisclosure(false);
 
   // Mapbox
   const mapboxMap = useRef<Map | null>(null);
@@ -87,15 +91,25 @@ function CommunityDetails() {
               </Text>
             </Stack>
             <Group>
-              <Button variant="filled" color="red">
+              <Modal
+                centered
+                withCloseButton={false}
+                size="auto"
+                opened={opened}
+                onClose={closeDonateModal}
+                title={
+                  <Text weight={600} size="xl" mb="xl" px="md">
+                    Fill up your donation details
+                  </Text>
+                }
+              >
+                <DonationCreation closeDonateModal={closeDonateModal} />
+              </Modal>
+              <Button variant="filled" color="red" onClick={openDonateModal}>
                 Donate
               </Button>
-              <Button
-                variant="outline"
-                color="red"
-                // onClick={openRejectCommunityRequestModal}
-              >
-                Start a chart
+              <Button variant="default" color="red">
+                Contact owner
               </Button>
             </Group>
           </Group>
@@ -165,7 +179,7 @@ function CommunityDetails() {
               <Card withBorder>
                 <Card.Section withBorder p="xl">
                   <Title order={4} size="h5" weight={600}>
-                    Submitted by
+                    Community owner
                   </Title>
                 </Card.Section>
                 <Card.Section p="xl">
