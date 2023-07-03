@@ -13,7 +13,11 @@ class DonationController {
     const { items, community, donor } = req.body;
 
     try {
-      await this._donationService.createDonation({ items, community, donor });
+      await this._donationService.createDonation({
+        ...items,
+        community,
+        donor,
+      });
       return res.sendStatus(HTTP_STATUS.CREATED_201);
     } catch (error) {
       next(error);
