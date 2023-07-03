@@ -22,8 +22,8 @@ class ChatController {
     const { users } = req.body;
 
     try {
-      await this._chatService.createChat(users);
-      res.sendStatus(HTTP_STATUS.CREATED_201);
+      const data = await this._chatService.createChat(users);
+      res.status(HTTP_STATUS.CREATED_201).json(data);
     } catch (error: any) {
       next(error);
     }
