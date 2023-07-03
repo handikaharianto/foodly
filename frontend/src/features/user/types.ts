@@ -27,6 +27,7 @@ export type LoginUserResponse = {
   lastName: string;
   email: string;
   role: string;
+  community?: string;
   accessToken: string;
   refreshToken: string;
   createdAt: Date;

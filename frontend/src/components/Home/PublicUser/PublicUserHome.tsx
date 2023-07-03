@@ -109,7 +109,7 @@ function PublicUserHome() {
                 <Group mt="xl">
                   <IconMail stroke={1} size={18} />
                   <Text color="dimmed" fz="sm">
-                    {community.user.email}
+                    {community.user?.email}
                   </Text>
                 </Group>
                 <Group mt="sm">
