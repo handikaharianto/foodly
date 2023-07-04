@@ -19,6 +19,8 @@ import CommunityRequestsDetails from "./components/CommunityRequests/CommunityRe
 import Chat from "./pages/Chat";
 import PublicUserHome from "./components/Home/PublicUser/PublicUserHome";
 import CommunityDetails from "./components/Home/PublicUser/CommunityDetails";
+import DonationRequests from "./pages/DonationRequests";
+import DonationRequestsDetails from "./components/DonationRequests/DonationRequestsDetails";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
@@ -98,6 +100,26 @@ function App() {
                 <Route
                   path="/communities/:communityId"
                   element={<CommunityDetails />}
+                />
+              </Route>
+              <Route
+                element={<AuthorizeUser acceptedRoles={[UserRole.COMMUNITY]} />}
+              >
+                <Route
+                  path="/donation-requests"
+                  element={<DonationRequests />}
+                />
+              </Route>
+              <Route
+                element={
+                  <AuthorizeUser
+                    acceptedRoles={[UserRole.COMMUNITY, UserRole.PUBLIC]}
+                  />
+                }
+              >
+                <Route
+                  path="/donation-requests/:donationId"
+                  element={<DonationRequestsDetails />}
                 />
               </Route>
             </Route>

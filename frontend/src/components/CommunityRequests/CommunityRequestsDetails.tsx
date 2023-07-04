@@ -33,6 +33,8 @@ import {
 } from "../../utils/notifications";
 import { formatCommunityAddress } from "../../utils/community";
 import { NewCommunity } from "../../features/community/types";
+import { updateOneUser, userState } from "../../features/user/UserSlice";
+import { UserRole } from "../../features/user/types";
 
 //TODO: Add community application status in UI
 
@@ -71,14 +73,24 @@ function CommunityRequestsDetails() {
           coordinate: communityApplication.coordinate,
           user: communityApplication.user._id,
         } as NewCommunity)
-      ),
+      ).unwrap(),
       dispatch(
         updateOneCommunityApplication({
           communityApplicationId: communityApplication!._id,
           status: CommunityApplicationStatus.ACCEPTED,
         })
       ),
-    ]);
+    ]).then((res) => {
+      const [createCommunityRes, updateOneCommunityApplicationRes] = res;
+
+      dispatch(
+        updateOneUser({
+          userId: communityApplication.user._id,
+          community: createCommunityRes._id,
+          role: UserRole.COMMUNITY,
+        })
+      );
+    });
   };
 
   const rejectCommunityRequest = () => {

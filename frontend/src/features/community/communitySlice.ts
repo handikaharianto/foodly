@@ -6,7 +6,7 @@ import { RootState } from "../../app/store";
 import { showNotification } from "../../utils/notifications";
 import { NotificationVariant } from "../../utils/notifications";
 
-export const createCommunity = executeAsyncThunk<NewCommunity, void>(
+export const createCommunity = executeAsyncThunk<NewCommunity, Community>(
   "community/createCommunity",
   (req) => privateAxios.post("/communities", req)
 );

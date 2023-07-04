@@ -4,6 +4,7 @@ import {
   LoginUserRequest,
   LoginUserResponse,
   RegisterUserRequest,
+  UserRole,
 } from "./types";
 import { executeAsyncThunk, privateAxios, publicAxios } from "../../api/axios";
 import { RootState } from "../../app/store";
@@ -15,6 +16,16 @@ import {
 export const registerUser = executeAsyncThunk<RegisterUserRequest, void>(
   "user/registerUser",
   (req) => publicAxios.post("/users/register", req)
+);
+
+export const updateOneUser = executeAsyncThunk<
+  { userId: string; community?: string; role: UserRole },
+  void
+>("user/updateOneUser", (req) =>
+  privateAxios.put(`/users/${req.userId}`, {
+    community: req.community,
+    role: req.role,
+  })
 );
 
 export const loginUser = executeAsyncThunk<LoginUserRequest, LoginUserResponse>(

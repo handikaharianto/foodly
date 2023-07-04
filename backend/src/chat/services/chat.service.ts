@@ -7,15 +7,27 @@ import { Message } from "../../chat/types/index";
 import { UserWithoutPassword } from "src/user/types";
 
 class ChatService {
-  createChat = async (users: string[]): Promise<void> => {
-    const chat = await chatModel.findOne({
-      users: { $all: users },
-    });
-    if (chat) throw new ApiError(HTTP_STATUS.CONFLICT_409, CHAT_EXISTS_ERROR);
+  createChat = async (users: string[]): Promise<Chat> => {
+    const chat = await chatModel
+      .findOne({
+        users: { $all: users },
+      })
+      .populate<{ latestMessage: Message }>({ path: "latestMessage" })
+      .populate<{ users: UserWithoutPassword[] }>({
+        path: "users",
+        select: "-password",
+      });
+    if (chat) return chat;
 
-    await chatModel.create({
+    let newChat = await chatModel.create({
       users,
     });
+    newChat = await newChat.populate<{ users: UserWithoutPassword[] }>({
+      path: "users",
+      select: "-password",
+    });
+
+    return newChat;
   };
 
   getAllChats = async (userId: string): Promise<Chat[]> => {

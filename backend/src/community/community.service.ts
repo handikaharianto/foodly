@@ -11,14 +11,15 @@ import setPagination from "../utils/pagination";
 import { PaginatedData } from "../common/types";
 
 class CommunityService {
-  createCommunity = async (communityData: NewCommunity): Promise<void> => {
+  createCommunity = async (communityData: NewCommunity): Promise<Community> => {
     const communityFound = await communityModel.findOne({
       user: communityData.user,
     });
     if (communityFound)
       throw new ApiError(HTTP_STATUS.CONFLICT_409, COMMUNITY_EXISTS_FOR_USER);
 
-    await communityModel.create(communityData);
+    const community = await communityModel.create(communityData);
+    return community;
   };
 
   getAllCommunities = async (

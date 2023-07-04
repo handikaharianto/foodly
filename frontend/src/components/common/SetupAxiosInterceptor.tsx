@@ -19,6 +19,7 @@ const SetupAxiosInterceptor = ({ children }: { children: JSX.Element }) => {
       socket.disconnect();
     };
 
+    // TODO: backend returns invalid access token although the access token is not expired yet.
     const responseInterceptor = privateAxios.interceptors.response.use(
       (response) => response,
       async (error) => {
@@ -28,7 +29,6 @@ const SetupAxiosInterceptor = ({ children }: { children: JSX.Element }) => {
             logoutUser();
             return Promise.reject(error);
           }
-          console.log(error.response);
 
           try {
             // call API endpoint to generate new access token

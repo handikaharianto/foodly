@@ -30,7 +30,7 @@ class DonationService {
   };
 
   getAllDonations = async (
-    filter: Partial<Pick<Donation, "community" | "donor">>,
+    filter: Partial<Pick<Donation, "community" | "donor" | "status">>,
     limit: number,
     page: number
   ): Promise<PaginatedData<Donation>> => {

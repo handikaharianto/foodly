@@ -65,6 +65,23 @@ class UserController {
     }
   };
 
+  updateOneUser = async (req: Request, res: Response, next: NextFunction) => {
+    const { community, role } = req.body;
+    const { userId } = req.params;
+
+    try {
+      await this._userService.updateOneUser(userId, {
+        community,
+        role,
+      });
+      return res.status(HTTP_STATUS.NO_CONTENT_204).send();
+    } catch (error: any) {
+      console.log(error);
+
+      next(error);
+    }
+  };
+
   loginUser = async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
 

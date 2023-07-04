@@ -24,7 +24,7 @@ export const getAllDonations = executeAsyncThunk<
 export const updateOneDonation = executeAsyncThunk<UpdateOneDonation, Donation>(
   "donation/updateOneDonation",
   (req) =>
-    privateAxios.post(`/donations/${req.donationId}`, {
+    privateAxios.put(`/donations/${req.donationId}`, {
       status: req.status,
       items: req.items,
     })
@@ -34,7 +34,7 @@ export const getOneDonation = executeAsyncThunk<
   { donationId: string },
   Donation
 >("donation/getOneDonation", (req) =>
-  privateAxios.post(`/donations/${req.donationId}`)
+  privateAxios.get(`/donations/${req.donationId}`)
 );
 
 export type DonationState = {

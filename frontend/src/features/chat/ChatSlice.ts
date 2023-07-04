@@ -3,7 +3,7 @@ import { Chat, Message } from "./types";
 import { executeAsyncThunk, privateAxios } from "../../api/axios";
 import { RootState } from "../../app/store";
 
-export const createChat = executeAsyncThunk<{ users: string[] }, void>(
+export const createChat = executeAsyncThunk<{ users: string[] }, Chat>(
   "chat/createChat",
   (req) => privateAxios.post("/chats", req)
 );
@@ -75,6 +75,7 @@ export const chatSlice = createSlice({
     builder
       .addCase(createChat.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.chat = action.payload;
       })
       .addCase(getAllChats.fulfilled, (state, action) => {
         state.isLoading = false;
