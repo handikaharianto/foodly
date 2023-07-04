@@ -1,44 +1,66 @@
-import { useEffect } from "react";
+import { Tabs } from "@mantine/core";
 
 import MainContent from "../components/common/MainContent";
-import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { DonationStatus } from "../features/donation/types";
+import DonationListPanel from "../components/DonationRequests/DonationListPanel";
 import {
-  donationState,
-  getAllDonations,
-} from "../features/donation/donationSlice";
-import { userState } from "../features/user/UserSlice";
-import LoaderState from "../components/common/LoaderState";
-import { DonationCard } from "../components/DonationRequests/DonationCard";
-import { SimpleGrid } from "@mantine/core";
+  IconCircleCheck,
+  IconCircleX,
+  IconLoader,
+  IconProgressCheck,
+} from "@tabler/icons-react";
 
 function DonationRequests() {
-  const dispatch = useAppDispatch();
-
-  const { loggedInUser } = useAppSelector(userState);
-  const { donationList, isLoading } = useAppSelector(donationState);
-  console.log(donationList);
-
-  useEffect(() => {
-    dispatch(
-      getAllDonations({
-        community: loggedInUser?.community,
-        limit: 10,
-        page: 1,
-      })
-    );
-  }, []);
-
   return (
     <MainContent heading="Donation Requests">
-      {isLoading ? (
-        <LoaderState />
-      ) : (
-        <SimpleGrid cols={3}>
-          {donationList.map((donation) => (
-            <DonationCard key={donation._id} {...donation} />
-          ))}
-        </SimpleGrid>
-      )}
+      <Tabs
+        keepMounted={false}
+        defaultValue={DonationStatus.PENDING}
+        color="red"
+      >
+        <Tabs.List mb="xl">
+          <Tabs.Tab
+            value={DonationStatus.PENDING}
+            icon={<IconLoader size="0.8rem" />}
+          >
+            Pending
+          </Tabs.Tab>
+          <Tabs.Tab
+            value={DonationStatus.IN_PROGRESS}
+            icon={<IconProgressCheck size="0.8rem" />}
+          >
+            In progress
+          </Tabs.Tab>
+          <Tabs.Tab
+            value={DonationStatus.RECEIVED}
+            icon={<IconCircleCheck size="0.8rem" />}
+          >
+            Received
+          </Tabs.Tab>
+          <Tabs.Tab
+            value={DonationStatus.REJECTED}
+            icon={<IconCircleX size="0.8rem" />}
+          >
+            Rejected
+          </Tabs.Tab>
+        </Tabs.List>
+
+        <Tabs.Panel value={DonationStatus.PENDING}>
+          <DonationListPanel status={DonationStatus.PENDING} />
+        </Tabs.Panel>
+
+        <Tabs.Panel value={DonationStatus.IN_PROGRESS}>
+          <DonationListPanel status={DonationStatus.IN_PROGRESS} />
+        </Tabs.Panel>
+
+        <Tabs.Panel value={DonationStatus.RECEIVED}>
+          <DonationListPanel status={DonationStatus.RECEIVED} />
+        </Tabs.Panel>
+
+        <Tabs.Panel value={DonationStatus.REJECTED}>
+          <DonationListPanel status={DonationStatus.REJECTED} />
+        </Tabs.Panel>
+      </Tabs>
     </MainContent>
   );
 }

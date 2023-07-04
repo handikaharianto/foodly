@@ -5,8 +5,9 @@ import {
   RingProgress,
   Group,
   Stack,
+  DefaultMantineColor,
 } from "@mantine/core";
-import { Donation } from "../../features/donation/types";
+import { Donation, DonationStatus } from "../../features/donation/types";
 import { getTimeFromNow } from "../../utils/DateAndTime";
 import { Link } from "react-router-dom";
 
@@ -24,13 +25,22 @@ const useStyles = createStyles((theme) => ({
 
 type DonationCardProps = Donation;
 
-export function DonationCard({
-  _id,
-  status,
-  createdAt,
-  donor,
-}: DonationCardProps) {
+function DonationCard({ _id, status, createdAt, donor }: DonationCardProps) {
   const { classes } = useStyles();
+
+  const progressValue =
+    status === DonationStatus.PENDING
+      ? 0
+      : status === DonationStatus.IN_PROGRESS
+      ? 50
+      : 100;
+
+  const progressColor: DefaultMantineColor =
+    status === DonationStatus.PENDING || status === DonationStatus.IN_PROGRESS
+      ? "blue"
+      : status === DonationStatus.RECEIVED
+      ? "green"
+      : "red";
 
   return (
     <Card
@@ -57,15 +67,13 @@ export function DonationCard({
         <div>
           <RingProgress
             roundCaps
-            thickness={6}
+            thickness={8}
             size={100}
-            sections={[{ value: 0, color: "blue" }]}
+            sections={[{ value: progressValue, color: progressColor }]}
             label={
-              <div>
-                <Text ta="center" fz="sm" transform="capitalize">
-                  {status}
-                </Text>
-              </div>
+              <Text color={progressColor} weight={700} align="center" size="xl">
+                {progressValue}%
+              </Text>
             }
           />
         </div>
@@ -73,3 +81,5 @@ export function DonationCard({
     </Card>
   );
 }
+
+export default DonationCard;

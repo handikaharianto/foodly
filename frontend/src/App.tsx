@@ -19,10 +19,11 @@ import CommunityRequestsDetails from "./components/CommunityRequests/CommunityRe
 import Chat from "./pages/Chat";
 import PublicUserHome from "./components/Home/PublicUser/PublicUserHome";
 import CommunityDetails from "./components/Home/PublicUser/CommunityDetails";
+import DonationRequests from "./pages/DonationRequests";
+import DonationRequestsDetails from "./components/DonationRequests/DonationRequestsDetails";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
-import DonationRequests from "./pages/DonationRequests";
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -107,6 +108,18 @@ function App() {
                 <Route
                   path="/donation-requests"
                   element={<DonationRequests />}
+                />
+              </Route>
+              <Route
+                element={
+                  <AuthorizeUser
+                    acceptedRoles={[UserRole.COMMUNITY, UserRole.PUBLIC]}
+                  />
+                }
+              >
+                <Route
+                  path="/donation-requests/:donationId"
+                  element={<DonationRequestsDetails />}
                 />
               </Route>
             </Route>
