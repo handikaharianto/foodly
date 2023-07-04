@@ -4,8 +4,8 @@ import { User } from "../user/types";
 export enum DonationStatus {
   PENDING = "pending",
   IN_PROGRESS = "in_progress",
-  ACCEPTED = "accepted",
   REJECTED = "rejected",
+  RECEIVED = "received",
 }
 
 export type Donation = {
@@ -33,6 +33,7 @@ export type NewDonation = {
 export type GetAllDonations = {
   community?: string;
   donor?: string;
+  status?: DonationStatus;
   limit: number;
   page: number;
 };
