@@ -15,6 +15,8 @@ type DonationListPanelProps = {
   status: DonationStatus;
 };
 
+// TODO: fix loader
+// TODO: add empty state
 function DonationListPanel({ status }: DonationListPanelProps) {
   const dispatch = useAppDispatch();
 
