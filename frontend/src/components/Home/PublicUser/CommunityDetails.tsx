@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import {
   Text,
@@ -14,7 +14,7 @@ import {
   Badge,
   Modal,
 } from "@mantine/core";
-import mapboxgl, { Map, Marker } from "mapbox-gl";
+import { LngLatLike, Map, Marker } from "mapbox-gl";
 
 import MainContent from "../../common/MainContent";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
@@ -34,7 +34,6 @@ const useStyles = createStyles((theme) => ({
 
 function CommunityDetails() {
   const { communityId } = useParams();
-  const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
   const { isLoading, community } = useAppSelector(communityState);
@@ -55,19 +54,36 @@ function CommunityDetails() {
     );
   }, [communityId, dispatch]);
 
-  // useEffect(() => {
-  //   if (mapboxMap.current) return; // initialize map only once
-  //   mapboxMap.current = new Map({
-  //     container: "community-application-map",
-  //     style: import.meta.env.VITE_MAPBOX_MAP_STYLE,
-  //     center: [101.68904509676878, 3.136788620294628],
-  //     zoom: 12,
-  //   });
+  useEffect(() => {
+    // TODO: may not be the best solution as the map will be created on every render
+    if (isLoading) return;
+    mapboxMap.current = new Map({
+      container: "community-application-map",
+      style: import.meta.env.VITE_MAPBOX_MAP_STYLE,
+      center: [101.68904509676878, 3.136788620294628],
+      zoom: 12,
+    });
 
-  //   mapMarker.current = new Marker({
-  //     color: "red",
-  //   });
-  // });
+    mapboxMap.current.scrollZoom.disable();
+    mapboxMap.current.doubleClickZoom.disable();
+    mapboxMap.current.dragPan.disable();
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (community) {
+      const latLng: LngLatLike = [
+        community.coordinate.longitude,
+        community.coordinate.latitude,
+      ];
+
+      mapMarker.current = new Marker({
+        color: "red",
+      })
+        .setLngLat(latLng)
+        .addTo(mapboxMap.current as Map);
+      mapboxMap.current?.jumpTo({ center: latLng }).zoomTo(15);
+    }
+  }, [community]);
 
   return (
     <MainContent heading="Community Details">
@@ -137,7 +153,7 @@ function CommunityDetails() {
                     {community && formatCommunityAddress(community.address)}
                   </Text>
                 </Card.Section>
-                {/* <Card.Section>
+                <Card.Section px="xl" pb="xl">
                   <Container
                     fluid
                     px={0}
@@ -150,7 +166,7 @@ function CommunityDetails() {
                       borderRadius: theme.radius.xs,
                     })}
                   />
-                </Card.Section> */}
+                </Card.Section>
               </Card>
               <Card withBorder>
                 <Card.Section withBorder p="xl">
