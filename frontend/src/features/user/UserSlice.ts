@@ -4,6 +4,7 @@ import {
   LoginUserRequest,
   LoginUserResponse,
   RegisterUserRequest,
+  UserRole,
 } from "./types";
 import { executeAsyncThunk, privateAxios, publicAxios } from "../../api/axios";
 import { RootState } from "../../app/store";
@@ -17,12 +18,23 @@ export const registerUser = executeAsyncThunk<RegisterUserRequest, void>(
   (req) => publicAxios.post("/users/register", req)
 );
 
+export const updateOneUser = executeAsyncThunk<
+  { userId: string; community?: string; role: UserRole },
+  void
+>("user/updateOneUser", (req) =>
+  privateAxios.put(`/users/${req.userId}`, {
+    community: req.community,
+    role: req.role,
+  })
+);
+
 export const loginUser = executeAsyncThunk<LoginUserRequest, LoginUserResponse>(
   "user/loginUser",
   async (req) => {
     const response = await publicAxios.post("/users/login", req);
     const data = (await response.data) as LoginUserResponse;
 
+    privateAxios.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
     window.localStorage.setItem("refreshToken", data.refreshToken);
     return response;
   }
@@ -37,7 +49,7 @@ export const testPage = executeAsyncThunk<void, void>("user/testPage", () => {
   return privateAxios.get("/users/test");
 });
 
-export interface UserState {
+interface UserState {
   loggedInUser: LoginUserResponse | null;
   isLoggedIn: boolean;
   isLoading: boolean;

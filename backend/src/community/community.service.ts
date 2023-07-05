@@ -11,24 +11,33 @@ import setPagination from "../utils/pagination";
 import { PaginatedData } from "../common/types";
 
 class CommunityService {
-  createCommunity = async (communityData: NewCommunity): Promise<void> => {
+  createCommunity = async (communityData: NewCommunity): Promise<Community> => {
     const communityFound = await communityModel.findOne({
       user: communityData.user,
     });
     if (communityFound)
       throw new ApiError(HTTP_STATUS.CONFLICT_409, COMMUNITY_EXISTS_FOR_USER);
 
-    await communityModel.create(communityData);
+    const community = await communityModel.create(communityData);
+    return community;
   };
 
   getAllCommunities = async (
+    userId: string,
     limit: number,
     page: number
   ): Promise<PaginatedData<Community>> => {
-    const paginationData = await setPagination(communityModel, limit, page);
+    let query = { user: { $ne: userId } };
+
+    const paginationData = await setPagination(
+      communityModel,
+      limit,
+      page,
+      query
+    );
 
     const data = await communityModel
-      .find({}, null, {
+      .find(query, null, {
         skip: (page - 1) * limit,
         limit,
       })

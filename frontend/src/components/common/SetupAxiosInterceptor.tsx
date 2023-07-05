@@ -2,13 +2,10 @@ import { useEffect, useState } from "react";
 import { privateAxios, publicAxios } from "../../api/axios";
 import { LoginUserResponse } from "../../features/user/types";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../app/hooks";
-import { userState } from "../../features/user/UserSlice";
+import { USER_OFFLINE, socket } from "../../socket/socket";
 
 const SetupAxiosInterceptor = ({ children }: { children: JSX.Element }) => {
   const [isSet, setIsSet] = useState(false);
-
-  const { loggedInUser } = useAppSelector(userState);
 
   const navigate = useNavigate();
 
@@ -17,18 +14,12 @@ const SetupAxiosInterceptor = ({ children }: { children: JSX.Element }) => {
       delete privateAxios.defaults.headers.common.Authorization;
       window.localStorage.clear();
       navigate("/sign-in", { replace: true });
+
+      socket.emit(USER_OFFLINE);
+      socket.disconnect();
     };
 
-    const requestInterceptor = privateAxios.interceptors.request.use(
-      (config) => {
-        if (!config.headers.Authorization) {
-          config.headers.Authorization = loggedInUser?.accessToken;
-        }
-        return config;
-      },
-      (error) => Promise.reject(error)
-    );
-
+    // TODO: backend returns invalid access token although the access token is not expired yet.
     const responseInterceptor = privateAxios.interceptors.response.use(
       (response) => response,
       async (error) => {
@@ -44,10 +35,11 @@ const SetupAxiosInterceptor = ({ children }: { children: JSX.Element }) => {
             const response = await publicAxios.post("/users/refresh", {
               refreshToken,
             });
-            const userData: LoginUserResponse = response.data;
+            const userData: LoginUserResponse = await response.data;
 
             window.localStorage.setItem("refreshToken", userData.refreshToken);
-            privateAxios.defaults.headers.common.Authorization = `Bearer ${userData.accessToken}`;
+            error.response.config.headers.Authorization = `Bearer ${userData.accessToken}`;
+
             return privateAxios(error.config);
           } catch (error) {
             logoutUser();
@@ -59,7 +51,7 @@ const SetupAxiosInterceptor = ({ children }: { children: JSX.Element }) => {
     setIsSet(true);
 
     return () => {
-      privateAxios.interceptors.request.eject(requestInterceptor);
+      // privateAxios.interceptors.request.eject(requestInterceptor);
       privateAxios.interceptors.response.eject(responseInterceptor);
     };
   }, []);

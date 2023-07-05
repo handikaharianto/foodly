@@ -1,3 +1,4 @@
+import { CommunityAddress, CommunityCoordinate } from "../community/types";
 import { User } from "../user/types";
 
 export enum CommunityApplicationStatus {
@@ -11,34 +12,28 @@ export type CommunityApplication = {
   _id: string;
   name: string;
   type: string;
+  foodPreferences: string[];
   description: string;
+  address: CommunityAddress;
+  coordinate: CommunityCoordinate;
+  status: CommunityApplicationStatus;
   user: User;
   createdAt: string;
   updatedAt: string;
 };
 
-export type createCommunityApplicationRequest = {
+export type NewCommunityApplication = {
   name: string;
   type: string;
+  foodPreferences: string[];
   description: string;
-};
-
-export type createCommunityApplicationResponse = {
-  _id: string;
-  name: string;
-  type: string;
-  description: string;
-  user: User;
-  createdAt: string;
-  updatedAt: string;
+  address: CommunityAddress;
+  coordinate: CommunityCoordinate;
 };
 
 export type getOneCommunityApplicationRequest = {
   communityApplicationId: string;
 };
-
-export type getOneCommunityApplicationResponse =
-  createCommunityApplicationResponse;
 
 export type getAllCommunityApplicationsRequest = {
   status?: CommunityApplicationStatus;

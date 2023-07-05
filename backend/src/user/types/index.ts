@@ -1,5 +1,7 @@
 import { Types } from "mongoose";
 
+import { Community } from "src/community/types";
+
 export enum UserRole {
   PUBLIC = "PUBLIC",
   COMMUNITY = "COMMUNITY",
@@ -13,6 +15,7 @@ export type User = {
   email: string;
   password: string;
   role: UserRole;
+  community?: Types.ObjectId | Community;
   createdAt: Date;
   updatedAt: Date;
 };

@@ -1,4 +1,6 @@
 import { Types } from "mongoose";
+
+import { CommunityAddress, CommunityCoordinate } from "src/community/types";
 import { UserWithoutPassword } from "src/user/types";
 
 export enum CommunityApplicationStatus {
@@ -11,7 +13,10 @@ export type CommunityApplication = {
   _id: string;
   name: string;
   type: string;
+  foodPreferences: string[];
   description: string;
+  address: CommunityAddress;
+  coordinate: CommunityCoordinate;
   status: CommunityApplicationStatus;
   user: Types.ObjectId | UserWithoutPassword;
   createdAt: Date;
@@ -21,6 +26,9 @@ export type CommunityApplication = {
 export type NewCommunityApplication = {
   name: string;
   type: string;
+  foodPreferences: string[];
   description: string;
+  address: CommunityAddress;
+  coordinate: CommunityCoordinate;
   user: string;
 };

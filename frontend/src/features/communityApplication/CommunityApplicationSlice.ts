@@ -2,12 +2,10 @@ import { createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { executeAsyncThunk } from "../../api/axios";
 import {
   CommunityApplication,
-  createCommunityApplicationRequest,
-  createCommunityApplicationResponse,
+  NewCommunityApplication,
   getAllCommunityApplicationsRequest,
   getAllCommunityApplicationsResponse,
   getOneCommunityApplicationRequest,
-  getOneCommunityApplicationResponse,
 } from "./types";
 import { privateAxios } from "../../api/axios";
 import { RootState } from "../../app/store";
@@ -15,17 +13,18 @@ import {
   NotificationVariant,
   showNotification,
 } from "../../utils/notifications";
+import { CommunityApplicationStatus } from "./types";
 
 export const createCommunityApplication = executeAsyncThunk<
-  createCommunityApplicationRequest,
-  createCommunityApplicationResponse
+  NewCommunityApplication,
+  CommunityApplication
 >("communityApplication/createCommunityApplication", (req) =>
   privateAxios.post("/community-applications", req)
 );
 
 export const getOneCommunityApplication = executeAsyncThunk<
   getOneCommunityApplicationRequest,
-  getOneCommunityApplicationResponse
+  CommunityApplication
 >("communityApplication/getOneCommunityApplication", (req) =>
   privateAxios.get(`/community-applications/${req.communityApplicationId}`)
 );
@@ -37,8 +36,17 @@ export const getAllCommunityApplications = executeAsyncThunk<
   privateAxios.post("/community-applications/list", req)
 );
 
+export const updateOneCommunityApplication = executeAsyncThunk<
+  { communityApplicationId: string; status?: CommunityApplicationStatus },
+  CommunityApplication
+>("communityApplication/updateOneCommunityApplication", (req) =>
+  privateAxios.put(`/community-applications/${req.communityApplicationId}`, {
+    status: req.status,
+  })
+);
+
 export interface communityApplicationState {
-  communityApplication: getOneCommunityApplicationResponse | null;
+  communityApplication: CommunityApplication | null;
   communityApplications: CommunityApplication[];
   currentPage: number | null;
   totalPages: number | null;
@@ -84,11 +92,16 @@ export const communityApplicationSlice = createSlice({
         state.totalPages = action.payload.totalPages;
         state.totalData = action.payload.totalData;
       })
+      .addCase(updateOneCommunityApplication.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.communityApplication = action.payload;
+      })
       .addMatcher(
         isAnyOf(
           createCommunityApplication.pending,
           getOneCommunityApplication.pending,
-          getAllCommunityApplications.pending
+          getAllCommunityApplications.pending,
+          updateOneCommunityApplication.pending
         ),
         (state, action) => {
           state.isLoading = true;
@@ -97,10 +110,15 @@ export const communityApplicationSlice = createSlice({
       .addMatcher(
         isAnyOf(
           getOneCommunityApplication.rejected,
-          getAllCommunityApplications.rejected
+          getAllCommunityApplications.rejected,
+          updateOneCommunityApplication.rejected
         ),
         (state, action) => {
           state.isLoading = false;
+          showNotification({
+            message: action.payload?.error as string,
+            variant: NotificationVariant.ERROR,
+          });
         }
       );
   },

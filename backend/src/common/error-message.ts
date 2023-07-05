@@ -2,8 +2,9 @@
  * GLOBAL
  */
 export const INTERNAL_SERVER_ERROR = "Internal Server Error.";
-export const INVALID_ACCESS_TOKEN = "Invalid access token";
-export const INVALID_REFRESH_TOKEN = "Invalid refresh token";
+export const INVALID_ACCESS_TOKEN = "Invalid access token.";
+export const EXPIRED_ACCESS_TOKEN = "Access token is expired.";
+export const INVALID_REFRESH_TOKEN = "Invalid refresh token.";
 export const FORBIDDEN_ACCESS = "Access forbidden.";
 
 /**
@@ -27,3 +28,19 @@ export const COMMUNITY_APPLICATION_EXISTS_ERROR =
   "Community application exists.";
 export const COMMUNITY_APPLICATION_NOT_FOUND =
   "Community application not found.";
+
+/**
+ * CHAT
+ */
+export const CHAT_NOT_FOUND = "Chat not found.";
+export const CHAT_EXISTS_ERROR = "Chat exists.";
+
+/**
+ * MESSAGE
+ */
+export const MESSAGE_NOT_FOUND = "Message not found.";
+
+/**
+ * DONATION
+ */
+export const DONATION_NOT_FOUND = "Donation not found.";
