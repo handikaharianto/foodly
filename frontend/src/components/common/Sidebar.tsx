@@ -87,6 +87,7 @@ const publicUserLinks = [
   { link: "/home", label: "Home", icon: IconHome },
   { link: "/notifications", label: "Notifications", icon: IconBellRinging },
   { link: "/chat", label: "Chat", icon: IconMessage },
+  { link: "/donations", label: "Donations", icon: IconHeartHandshake },
   {
     link: "/community-applications",
     label: "Community Applications",
