@@ -68,6 +68,21 @@ class DonationController {
       next(error);
     }
   };
+
+  deleteOneDonation = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { donationId } = req.params;
+
+    try {
+      await this._donationService.deleteOneDonation(donationId);
+      return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default DonationController;

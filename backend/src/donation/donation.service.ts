@@ -97,6 +97,12 @@ class DonationService {
 
     return donation;
   };
+
+  deleteOneDonation = async (donationId: string): Promise<void> => {
+    const donation = await donationModel.findByIdAndDelete(donationId);
+    if (!donation)
+      throw new ApiError(HTTP_STATUS.NOT_FOUND_404, DONATION_NOT_FOUND);
+  };
 }
 
 export default DonationService;

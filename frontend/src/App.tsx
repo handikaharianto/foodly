@@ -24,6 +24,8 @@ import DonationRequestsDetails from "./components/DonationRequests/DonationReque
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import Donations from "./pages/Donations";
+import DonationDetails from "./components/Donations/DonationDetails";
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -111,15 +113,24 @@ function App() {
                 />
               </Route>
               <Route
-                element={
-                  <AuthorizeUser
-                    acceptedRoles={[UserRole.COMMUNITY, UserRole.PUBLIC]}
-                  />
-                }
+                element={<AuthorizeUser acceptedRoles={[UserRole.COMMUNITY]} />}
               >
                 <Route
                   path="/donation-requests/:donationId"
                   element={<DonationRequestsDetails />}
+                />
+              </Route>
+              <Route
+                element={<AuthorizeUser acceptedRoles={[UserRole.PUBLIC]} />}
+              >
+                <Route path="/donations" element={<Donations />} />
+              </Route>
+              <Route
+                element={<AuthorizeUser acceptedRoles={[UserRole.PUBLIC]} />}
+              >
+                <Route
+                  path="/donations/:donationId"
+                  element={<DonationDetails />}
                 />
               </Route>
             </Route>

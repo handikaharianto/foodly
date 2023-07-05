@@ -2,7 +2,7 @@ import { Tabs, createStyles } from "@mantine/core";
 
 import MainContent from "../components/common/MainContent";
 import { DonationStatus } from "../features/donation/types";
-import DonationListPanel from "../components/DonationRequests/DonationListPanel";
+import DonationListPanel from "../components/Donations/DonationListPanel";
 import {
   IconCircleCheck,
   IconCircleX,
@@ -25,7 +25,7 @@ function DonationRequests() {
   const { classes } = useStyles();
 
   return (
-    <MainContent heading="Donation Requests">
+    <MainContent heading="Donations">
       <Tabs
         keepMounted={false}
         defaultValue={DonationStatus.PENDING}
@@ -35,7 +35,7 @@ function DonationRequests() {
           panel: classes.tabsPanel,
         }}
       >
-        <Tabs.List mb="xl">
+        <Tabs.List>
           <Tabs.Tab
             value={DonationStatus.PENDING}
             icon={<IconLoader size="0.8rem" />}

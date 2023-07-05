@@ -17,8 +17,6 @@ type DonationListPanelProps = {
   status: DonationStatus;
 };
 
-// TODO: fix loader
-// TODO: add empty state
 function DonationListPanel({ status }: DonationListPanelProps) {
   const dispatch = useAppDispatch();
 
@@ -42,15 +40,12 @@ function DonationListPanel({ status }: DonationListPanelProps) {
 
   if (!isLoading && donationList.length < 1) {
     return (
-      <EmptyState
-        Icon={IconHeartHandshake}
-        title={"No donation requests found."}
-      />
+      <EmptyState Icon={IconHeartHandshake} title={"No donations found."} />
     );
   }
 
   return (
-    <SimpleGrid cols={3}>
+    <SimpleGrid cols={3} mt="xl">
       {donationList.map((donation) => (
         <DonationCard key={donation._id} {...donation} />
       ))}

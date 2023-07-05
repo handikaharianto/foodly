@@ -37,6 +37,13 @@ export const getOneDonation = executeAsyncThunk<
   privateAxios.get(`/donations/${req.donationId}`)
 );
 
+export const deleteOneDonation = executeAsyncThunk<
+  { donationId: string },
+  void
+>("donation/deleteOneDonation", (req) =>
+  privateAxios.delete(`/donations/${req.donationId}`)
+);
+
 export type DonationState = {
   donation: Donation | null;
   donationList: Donation[];
@@ -79,12 +86,16 @@ export const donationSlice = createSlice({
         state.isLoading = false;
         state.donation = action.payload;
       })
+      .addCase(deleteOneDonation.fulfilled, (state, action) => {
+        state.isLoading = false;
+      })
       .addMatcher(
         isAnyOf(
           createDonation.pending,
           getAllDonations.pending,
           updateOneDonation.pending,
-          getOneDonation.pending
+          getOneDonation.pending,
+          deleteOneDonation.pending
         ),
         (state, action) => {
           state.isLoading = true;
@@ -95,7 +106,8 @@ export const donationSlice = createSlice({
           createDonation.rejected,
           getAllDonations.rejected,
           updateOneDonation.rejected,
-          getOneDonation.rejected
+          getOneDonation.rejected,
+          deleteOneDonation.rejected
         ),
         (state, action) => {
           state.isLoading = false;
