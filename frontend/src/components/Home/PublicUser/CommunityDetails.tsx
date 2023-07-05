@@ -24,7 +24,7 @@ import LoaderState from "../../common/LoaderState";
 import { communityState } from "../../../features/community/communitySlice";
 import { formatCommunityAddress } from "../../../utils/community";
 import { useDisclosure } from "@mantine/hooks";
-import DonationCreation from "../../Donation/DonationCreation";
+import DonationCreation from "../../DonationCreation/DonationCreation";
 
 const useStyles = createStyles((theme) => ({
   contentGrid: {
