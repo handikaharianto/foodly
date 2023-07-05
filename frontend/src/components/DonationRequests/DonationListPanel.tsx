@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { SimpleGrid } from "@mantine/core";
+import { IconHeartHandshake } from "@tabler/icons-react";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { userState } from "../../features/user/UserSlice";
@@ -10,6 +11,7 @@ import {
 import DonationCard from "./DonationCard";
 import { DonationStatus } from "../../features/donation/types";
 import LoaderState from "../common/LoaderState";
+import EmptyState from "../common/EmptyState";
 
 type DonationListPanelProps = {
   status: DonationStatus;
@@ -22,7 +24,6 @@ function DonationListPanel({ status }: DonationListPanelProps) {
 
   const { loggedInUser } = useAppSelector(userState);
   const { donationList, isLoading } = useAppSelector(donationState);
-  console.log(donationList);
 
   useEffect(() => {
     dispatch(
@@ -37,6 +38,15 @@ function DonationListPanel({ status }: DonationListPanelProps) {
 
   if (isLoading) {
     return <LoaderState />;
+  }
+
+  if (!isLoading && donationList.length < 1) {
+    return (
+      <EmptyState
+        Icon={IconHeartHandshake}
+        title={"No donation requests found."}
+      />
+    );
   }
 
   return (
