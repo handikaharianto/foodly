@@ -1,55 +1,54 @@
 import { Container, Paper, Text } from "@mantine/core";
 import Chart from "react-apexcharts";
+import { useAppSelector } from "../../app/hooks";
+import { dashboardState } from "../../features/dashboard/DashboardSlice";
 
 function LineChart() {
+  const { donationByMonths } = useAppSelector(dashboardState);
+
+  const values = donationByMonths.map((donation) => donation.count);
+  const months = donationByMonths.map((donation) => donation.month);
+
   return (
     <Container fluid px={0}>
       <Text weight={600} mb="xs">
-        Food donation overview
+        Donation overview
       </Text>
       <Paper withBorder p="md" radius="md">
-        <Text color="dimmed" mb={"2.5rem"} size="sm">
-          This month statistics
-        </Text>
         <Chart
-          type="line"
+          type="area"
           width="100%"
           series={[
             {
-              name: "Desktops",
-              data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
+              name: "Donations",
+              data: values,
             },
           ]}
           options={{
             colors: ["#fa5252"],
-            // dataLabels: {
-            //   enabled: false,
-            // },
+            fill: {
+              type: "gradient",
+              gradient: {
+                opacityFrom: 0.91,
+                opacityTo: 0.1,
+              },
+            },
+            dataLabels: {
+              enabled: false,
+            },
             stroke: {
               curve: "smooth",
             },
-            // title: {
-            //   text: "Product Trends by Month",
-            //   align: "left",
-            // },
-            // grid: {
-            //   row: {
-            //     colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-            //     opacity: 0.5,
-            //   },
-            // },
+            chart: {
+              toolbar: { show: false },
+              zoom: { enabled: false },
+            },
+            title: {
+              text: `Total donations by Month in ${new Date().getFullYear()}`,
+              align: "left",
+            },
             xaxis: {
-              categories: [
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-              ],
+              categories: months,
             },
           }}
         />
