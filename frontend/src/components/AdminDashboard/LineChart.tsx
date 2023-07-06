@@ -8,8 +8,6 @@ function LineChart() {
 
   const values = donationByMonths.map((donation) => donation.count);
   const months = donationByMonths.map((donation) => donation.month);
-  console.log(values);
-  console.log(months);
 
   return (
     <Container fluid px={0}>

@@ -16,16 +16,23 @@ function PieChart() {
       <Text weight={600} mb="xs">
         Donation status
       </Text>
-      <Paper withBorder p="xl" radius="md" h="100%">
-        <Text mb={"2.5rem"} size="sm" align="center">
-          All time donation status
-        </Text>
+      <Paper
+        withBorder
+        p="xl"
+        radius="md"
+        h="100%"
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+      >
         <Chart
           type="pie"
           width="100%"
           style={{ flexGrow: 1 }}
           series={donationStatusValues}
           options={{
+            title: {
+              text: "All time donation status",
+              align: "center",
+            },
             colors: [
               theme.colors.gray[5],
               theme.colors.blue[5],
