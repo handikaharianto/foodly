@@ -1,22 +1,38 @@
-import { Container, Paper, Stack, Text, createStyles } from "@mantine/core";
+import { Paper, Stack, Text, useMantineTheme } from "@mantine/core";
 import Chart from "react-apexcharts";
 
+import { useAppSelector } from "../../app/hooks";
+import { dashboardState } from "../../features/dashboard/DashboardSlice";
+
 function PieChart() {
+  const theme = useMantineTheme();
+
+  const { donationStatus } = useAppSelector(dashboardState);
+
+  const donationStatusValues = donationStatus.map((donation) => donation.count);
+
   return (
     <Stack spacing={0} h="100%">
       <Text weight={600} mb="xs">
-        Food donation status
+        Donation status
       </Text>
-      <Paper withBorder p="md" radius="md" h="100%">
-        <Text color="dimmed" mb={"2.5rem"} size="sm">
-          This month statistics
+      <Paper withBorder p="xl" radius="md" h="100%">
+        <Text mb={"2.5rem"} size="sm" align="center">
+          All time donation status
         </Text>
         <Chart
           type="pie"
           width="100%"
-          series={[45, 52, 38]}
+          style={{ flexGrow: 1 }}
+          series={donationStatusValues}
           options={{
-            labels: ["Pending", "Accepted", "Rejected"],
+            colors: [
+              theme.colors.gray[5],
+              theme.colors.blue[5],
+              theme.colors.red[5],
+              theme.colors.green[5],
+            ],
+            labels: ["Pending", "In Progress", "Rejected", "Received"],
             legend: {
               position: "bottom",
             },
