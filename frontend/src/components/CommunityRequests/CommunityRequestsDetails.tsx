@@ -13,7 +13,7 @@ import {
   Container,
   Badge,
 } from "@mantine/core";
-import mapboxgl, { Map, Marker } from "mapbox-gl";
+import { LngLatLike, Map, Marker } from "mapbox-gl";
 
 import MainContent from "../common/MainContent";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -131,19 +131,40 @@ function CommunityRequestsDetails() {
     );
   }, [communityApplicationId, dispatch]);
 
-  // useEffect(() => {
-  //   if (mapboxMap.current) return; // initialize map only once
-  //   mapboxMap.current = new Map({
-  //     container: "community-application-map",
-  //     style: import.meta.env.VITE_MAPBOX_MAP_STYLE,
-  //     center: [101.68904509676878, 3.136788620294628],
-  //     zoom: 12,
-  //   });
+  useEffect(() => {
+    if (communityAppLoading || communityLoading) return;
+    // if (mapboxMap.current) return; // initialize map only once
+    mapboxMap.current = new Map({
+      container: "community-application-map",
+      style: import.meta.env.VITE_MAPBOX_MAP_STYLE,
+      center: [101.68904509676878, 3.136788620294628],
+      zoom: 12,
+    });
 
-  //   mapMarker.current = new Marker({
-  //     color: "red",
-  //   });
-  // });
+    mapMarker.current = new Marker({
+      color: "red",
+    });
+
+    mapboxMap.current.scrollZoom.disable();
+    mapboxMap.current.doubleClickZoom.disable();
+    mapboxMap.current.dragPan.disable();
+  });
+
+  useEffect(() => {
+    if (communityApplication) {
+      const latLng: LngLatLike = [
+        communityApplication.coordinate.longitude,
+        communityApplication.coordinate.latitude,
+      ];
+
+      mapMarker.current = new Marker({
+        color: "red",
+      })
+        .setLngLat(latLng)
+        .addTo(mapboxMap.current as Map);
+      mapboxMap.current?.jumpTo({ center: latLng }).zoomTo(15);
+    }
+  }, [communityApplication]);
 
   return (
     <MainContent heading={"Community Request Details"}>
@@ -211,7 +232,7 @@ function CommunityRequestsDetails() {
                       formatCommunityAddress(communityApplication.address)}
                   </Text>
                 </Card.Section>
-                {/* <Card.Section>
+                <Card.Section px="xl" pb="xl">
                   <Container
                     fluid
                     px={0}
@@ -224,7 +245,7 @@ function CommunityRequestsDetails() {
                       borderRadius: theme.radius.xs,
                     })}
                   />
-                </Card.Section> */}
+                </Card.Section>
               </Card>
               <Card withBorder>
                 <Card.Section withBorder p="xl">
