@@ -14,6 +14,7 @@ import {
   IconFiles,
   IconMessage,
   IconHeartHandshake,
+  IconBuildingCommunity,
 } from "@tabler/icons-react";
 import { UserRole } from "../../features/user/types";
 import { NavLink } from "react-router-dom";
@@ -84,7 +85,11 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const publicUserLinks = [
-  { link: "/home", label: "Home", icon: IconHome },
+  {
+    link: "/communities",
+    label: "Browse Communities",
+    icon: IconBuildingCommunity,
+  },
   { link: "/notifications", label: "Notifications", icon: IconBellRinging },
   { link: "/chat", label: "Chat", icon: IconMessage },
   { link: "/donations", label: "Donations", icon: IconHeartHandshake },

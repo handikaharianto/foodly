@@ -17,7 +17,7 @@ import CommunityRequests from "./pages/CommunityRequests";
 import AdminDashboard from "./pages/AdminDashboard";
 import CommunityRequestsDetails from "./components/CommunityRequests/CommunityRequestsDetails";
 import Chat from "./pages/Chat";
-import PublicUserHome from "./components/Home/PublicUser/PublicUserHome";
+import Communities from "./pages/Communities";
 import CommunityDetails from "./components/Home/PublicUser/CommunityDetails";
 import DonationRequests from "./pages/DonationRequests";
 import DonationRequestsDetails from "./components/DonationRequests/DonationRequestsDetails";
@@ -50,7 +50,7 @@ function App() {
                   />
                 }
               >
-                <Route path="/home" element={<PublicUserHome />} />
+                <Route path="/communities" element={<Communities />} />
               </Route>
               <Route
                 element={
