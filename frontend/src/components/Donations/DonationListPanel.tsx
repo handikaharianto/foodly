@@ -56,7 +56,6 @@ function DonationListPanel({ status }: DonationListPanelProps) {
       {donationList.length > 0 && (
         <Pagination
           total={totalPages || 1}
-          firstIcon={IconHeartHandshake}
           value={currentPage}
           onChange={setCurrentPage}
           color="red"
