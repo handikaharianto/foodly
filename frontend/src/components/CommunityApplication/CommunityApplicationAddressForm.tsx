@@ -14,7 +14,6 @@ import { communityApplicationState } from "../../features/communityApplication/C
 import { IconMap } from "@tabler/icons-react";
 import CommunityApplicationMap from "./CommunityApplicationMap";
 import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
 
 const useStyles = createStyles((theme) => ({
   cardGrid: {
@@ -25,9 +24,6 @@ const useStyles = createStyles((theme) => ({
 }));
 
 function CommunityApplicationAddressForm() {
-  const [showCommunityLocationError, setShowCommunityLocationError] =
-    useState<boolean>(false);
-
   const { isLoading } = useAppSelector(communityApplicationState);
 
   const { classes } = useStyles();
@@ -35,6 +31,9 @@ function CommunityApplicationAddressForm() {
   const [opened, { open, close }] = useDisclosure(false);
 
   const form = useCommunityApplicationFormContext();
+
+  const showCommunityLocationError =
+    form.errors["coordinate.latitude"] && form.errors["coordinate.longitude"];
 
   return (
     <Paper withBorder p="xl" className={classes.cardGrid} radius="md">
@@ -88,13 +87,19 @@ function CommunityApplicationAddressForm() {
           </Text>
         </Group>
         <Button
-          variant="default"
+          variant={showCommunityLocationError ? "outline" : "default"}
           color="red"
           leftIcon={<IconMap size="0.8rem" />}
           onClick={open}
+          mb={"0.3125rem"}
         >
           Open map
         </Button>
+        {showCommunityLocationError && (
+          <Text color="red" size="xs">
+            Exact community location is required.
+          </Text>
+        )}
         <Modal
           centered
           size={800}
@@ -104,10 +109,7 @@ function CommunityApplicationAddressForm() {
             <Text weight={600}>What is the exact community location?</Text>
           }
         >
-          <CommunityApplicationMap
-            closeModal={close}
-            showCommunityLocationError={showCommunityLocationError}
-          />
+          <CommunityApplicationMap closeModal={close} />
         </Modal>
       </div>
     </Paper>

@@ -50,13 +50,9 @@ const useStyles = createStyles((theme) => ({
 
 type CommunityApplicationMapProps = {
   closeModal: () => void;
-  showCommunityLocationError?: boolean;
 };
 
-function CommunityApplicationMap({
-  closeModal,
-  showCommunityLocationError,
-}: CommunityApplicationMapProps) {
+function CommunityApplicationMap({ closeModal }: CommunityApplicationMapProps) {
   const [locationResults, setLocationResults] = useState<
     LocationAutoCompleteType[]
   >([]);
