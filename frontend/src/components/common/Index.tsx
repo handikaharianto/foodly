@@ -14,7 +14,7 @@ function Index() {
   return loggedInUser?.role === UserRole.PUBLIC ? (
     <Navigate to="/communities" replace />
   ) : loggedInUser?.role === UserRole.COMMUNITY ? (
-    <Navigate to="/home" replace />
+    <Navigate to="/communities" replace />
   ) : (
     <Navigate to="/dashboard" replace />
   );

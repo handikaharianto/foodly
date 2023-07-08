@@ -101,7 +101,11 @@ const publicUserLinks = [
 ];
 
 const communityUserLinks = [
-  { link: "/home", label: "Home", icon: IconHome },
+  {
+    link: "/communities",
+    label: "Browse Communities",
+    icon: IconBuildingCommunity,
+  },
   { link: "/notifications", label: "Notifications", icon: IconBellRinging },
   { link: "/chat", label: "Chat", icon: IconMessage },
   {
