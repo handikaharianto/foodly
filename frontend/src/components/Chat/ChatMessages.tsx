@@ -57,7 +57,7 @@ function ChatMessages() {
 
   const dispatch = useAppDispatch();
   const { loggedInUser } = useAppSelector(userState);
-  const { chat, messages } = useAppSelector(chatState);
+  const { chat, messages, isLoading } = useAppSelector(chatState);
 
   const { scrollIntoView, targetRef, scrollableRef } = useScrollIntoView<
     HTMLDivElement,
@@ -111,8 +111,10 @@ function ChatMessages() {
   }, []);
 
   useEffect(() => {
-    scrollIntoView();
-  }, []);
+    if (!isLoading) {
+      scrollIntoView();
+    }
+  }, [isLoading, scrollIntoView]);
 
   return (
     <>
