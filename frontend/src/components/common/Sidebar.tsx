@@ -117,6 +117,7 @@ const communityUserLinks = [
 
 const administratorLinks = [
   { link: "/dashboard", label: "Dashboard", icon: IconDashboard },
+  { link: "/notifications", label: "Notifications", icon: IconBellRinging },
   { link: "/community-requests", label: "Community requests", icon: IconFiles },
 ];
 
