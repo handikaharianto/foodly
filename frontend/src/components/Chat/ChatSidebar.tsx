@@ -1,18 +1,28 @@
-import { Input, Paper, ScrollArea, Title, createStyles } from "@mantine/core";
+import {
+  Input,
+  Paper,
+  ScrollArea,
+  TextInput,
+  Title,
+  createStyles,
+} from "@mantine/core";
 import { IconMessage, IconSearch } from "@tabler/icons-react";
 import UserContact from "./UserContact";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { chatState, getAllChats } from "../../features/chat/ChatSlice";
 import LoaderState from "../common/LoaderState";
 import EmptyState from "../common/EmptyState";
+import { useDebouncedValue } from "@mantine/hooks";
 
 const useStyles = createStyles((theme) => ({
   chatSidebar: {
     display: "flex",
     flexDirection: "column",
+    borderTopLeftRadius: theme.radius.md,
     borderTopRightRadius: 0,
     borderBottomRightRadius: 0,
+    borderBottomLeftRadius: theme.radius.md,
   },
   scrollAreaRoot: {
     position: "relative",
@@ -32,24 +42,29 @@ const useStyles = createStyles((theme) => ({
 }));
 
 function ChatSidebar() {
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearchInput] = useDebouncedValue(searchInput, 200);
+
   const { classes } = useStyles();
 
   const { isLoading, chats } = useAppSelector(chatState);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getAllChats());
-  }, [dispatch]);
+    dispatch(getAllChats({ searchInput: debouncedSearchInput }));
+  }, [debouncedSearchInput]);
 
   return (
     <Paper withBorder h={"100%"} className={classes.chatSidebar}>
       <Title order={4} size={"h5"} weight={"600"} p={"lg"}>
         Messages
       </Title>
-      <Input
+      <TextInput
         icon={<IconSearch size={"0.8rem"} />}
         placeholder="Search"
         mx={"lg"}
+        value={searchInput}
+        onChange={(e) => setSearchInput(e.currentTarget.value)}
       />
       <ScrollArea
         offsetScrollbars

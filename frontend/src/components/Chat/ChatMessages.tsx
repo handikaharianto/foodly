@@ -110,6 +110,10 @@ function ChatMessages() {
     };
   }, []);
 
+  useEffect(() => {
+    scrollIntoView();
+  }, []);
+
   return (
     <>
       <Paper withBorder bg={"gray.0"} className={classes.chatMessages}>
@@ -128,7 +132,12 @@ function ChatMessages() {
           <div ref={targetRef}></div>
         </Container>
       </Paper>
-      <Paper withBorder p={"md"} className={classes.chatInputContainer}>
+      <Paper
+        withBorder
+        p={"md"}
+        className={classes.chatInputContainer}
+        radius="md"
+      >
         <form onSubmit={submitMessage}>
           <Group noWrap spacing={0}>
             <Textarea

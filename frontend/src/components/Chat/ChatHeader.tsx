@@ -19,6 +19,7 @@ const useStyles = createStyles((theme) => ({
   headerWrapper: {
     borderLeftWidth: "0!important",
     borderTopLeftRadius: 0,
+    borderTopRightRadius: theme.radius.md,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
   },
@@ -34,10 +35,10 @@ function ChatHeader() {
     <Paper withBorder className={classes.headerWrapper} p={"lg"}>
       <Group>
         <Group>
-          <ActionIcon>
+          {/* <ActionIcon>
             <IconLayoutSidebarLeftCollapse />
           </ActionIcon>
-          <Divider orientation="vertical" />
+          <Divider orientation="vertical" /> */}
           <Avatar radius="xl" />
           <Stack spacing={0}>
             <Title order={4} size={"h6"} weight={"600"} transform="capitalize">
