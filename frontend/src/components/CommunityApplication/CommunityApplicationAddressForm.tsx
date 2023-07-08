@@ -36,15 +36,6 @@ function CommunityApplicationAddressForm() {
 
   const form = useCommunityApplicationFormContext();
 
-  const closeMapModal = () => {
-    if (!form.values.coordinate.latitude && !form.values.coordinate.longitude) {
-      setShowCommunityLocationError(true);
-      return;
-    }
-
-    close();
-  };
-
   return (
     <Paper withBorder p="xl" className={classes.cardGrid}>
       <div>
@@ -108,13 +99,13 @@ function CommunityApplicationAddressForm() {
           centered
           size={800}
           opened={opened}
-          onClose={closeMapModal}
+          onClose={close}
           title={
             <Text weight={600}>What is the exact community location?</Text>
           }
         >
           <CommunityApplicationMap
-            closeModal={closeMapModal}
+            closeModal={close}
             showCommunityLocationError={showCommunityLocationError}
           />
         </Modal>

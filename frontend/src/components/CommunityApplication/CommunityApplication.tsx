@@ -22,6 +22,10 @@ import {
   useCommunityApplicationForm,
 } from "./community-application-context";
 import CommunityApplicationAddressForm from "./CommunityApplicationAddressForm";
+import {
+  NotificationVariant,
+  showNotification,
+} from "../../utils/notifications";
 
 const CommunityApplication = () => {
   const { isLoading, communityApplications } = useAppSelector(
@@ -86,7 +90,17 @@ const CommunityApplication = () => {
     }
 
     try {
-      dispatch(createCommunityApplication(formData as NewCommunityApplication));
+      const res = await dispatch(
+        createCommunityApplication(formData as NewCommunityApplication)
+      );
+
+      if (res.meta.requestStatus === "fulfilled") {
+        showNotification({
+          message:
+            "Community application form has successfully been submitted.",
+          variant: NotificationVariant.SUCCESS,
+        });
+      }
     } catch (error) {
       // display error dialog here
       console.log(error);
