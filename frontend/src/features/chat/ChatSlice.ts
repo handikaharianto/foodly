@@ -8,7 +8,7 @@ export const createChat = executeAsyncThunk<{ users: string[] }, Chat>(
   (req) => privateAxios.post("/chats", req)
 );
 
-export const getAllChats = executeAsyncThunk<void, Chat[]>(
+export const getAllChats = executeAsyncThunk<{ searchInput?: string }, Chat[]>(
   "chat/getAllChats",
   (req) => privateAxios.post("/chats/list", req)
 );
