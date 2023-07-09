@@ -5,7 +5,7 @@ import { RootState } from "../../app/store";
 
 export const getAllNotifications = executeAsyncThunk<
   {
-    isRead: boolean;
+    isRead?: boolean;
   },
   Notification[]
 >("notification/getAllNotifications", (req) =>
@@ -15,7 +15,7 @@ export const getAllNotifications = executeAsyncThunk<
 export const updateOneNotification = executeAsyncThunk<
   {
     notificationId: string;
-    isRead: boolean;
+    isRead?: boolean;
   },
   Notification
 >("notification/updateOneNotification", (req) =>
@@ -26,6 +26,7 @@ export const updateOneNotification = executeAsyncThunk<
 
 export const updateManyNotifications = executeAsyncThunk<
   {
+    receiver?: string;
     isRead: boolean;
   },
   Notification

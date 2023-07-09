@@ -68,6 +68,7 @@ function CommunityRequestsDetails() {
       content: "Congratulations! Your community application has been acepted!",
       sender: loggedInUser?._id,
       receiver: communityApplication.user._id,
+      target: UserRole.COMMUNITY,
     });
 
     Promise.all([
@@ -109,6 +110,7 @@ function CommunityRequestsDetails() {
         "Your community application has been rejected. Please check and submit again later.",
       sender: loggedInUser?._id,
       receiver: communityApplication.user._id,
+      target: UserRole.PUBLIC,
     });
 
     dispatch(

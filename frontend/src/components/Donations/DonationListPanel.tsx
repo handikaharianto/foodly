@@ -34,7 +34,7 @@ function DonationListPanel({ status }: DonationListPanelProps) {
         page: currentPage,
       })
     );
-  }, [currentPage, status]);
+  }, [currentPage, loggedInUser, status]);
 
   return (
     <Stack justify="space-between" h="100%">

@@ -27,6 +27,7 @@ import {
   updateOneNotification,
 } from "../../features/notification/notificationSlice";
 import { Notification as Notification } from "../../features/notification/types";
+import { userState } from "../../features/user/UserSlice";
 
 enum NotificationSegment {
   UNREAD = "unread",
@@ -75,6 +76,7 @@ function NotificationButton() {
 
   const dispatch = useAppDispatch();
   const { notificationList, isLoading } = useAppSelector(NotificationState);
+  const { loggedInUser } = useAppSelector(userState);
 
   const { classes, theme } = useStyles();
 
@@ -132,6 +134,7 @@ function NotificationButton() {
             currentSegment === NotificationSegment.UNREAD &&
             notificationList.length > 0 && (
               <ActionIcon
+                component="div"
                 color="dark"
                 radius="xl"
                 variant="filled"
@@ -211,7 +214,13 @@ function NotificationButton() {
                       </Text>
                       <Tooltip
                         withinPortal
-                        label={<Text size="0.7rem">Mark as read</Text>}
+                        label={
+                          <Text size="0.7rem">
+                            {currentSegment === NotificationSegment.UNREAD
+                              ? "Mark as read"
+                              : "Mark as unread"}
+                          </Text>
+                        }
                         position="bottom"
                       >
                         <ActionIcon

@@ -19,6 +19,8 @@ import {
 } from "../../utils/notifications";
 import { createChat } from "../../features/chat/ChatSlice";
 import { userState } from "../../features/user/UserSlice";
+import { NOTIFICATION, socket } from "../../socket/socket";
+import { UserRole } from "../../features/user/types";
 
 function DonationRequestsDetails() {
   const { donationId } = useParams();
@@ -34,6 +36,16 @@ function DonationRequestsDetails() {
 
   const acceptDonation = async () => {
     try {
+      socket.emit(NOTIFICATION, {
+        content: `${donation?.community.name} has accepted your donation request.`,
+        sender: loggedInUser?._id,
+        receiver: donation?.donor._id,
+        target:
+          loggedInUser?.role === UserRole.COMMUNITY
+            ? UserRole.COMMUNITY
+            : UserRole.PUBLIC,
+      });
+
       const res = await dispatch(
         updateOneDonation({
           donationId: donationId as string,
@@ -57,6 +69,16 @@ function DonationRequestsDetails() {
   };
 
   const rejectDonation = async () => {
+    socket.emit(NOTIFICATION, {
+      content: `${donation?.community.name} has rejected your donation request.`,
+      sender: loggedInUser?._id,
+      receiver: donation?.donor._id,
+      target:
+        loggedInUser?.role === UserRole.COMMUNITY
+          ? UserRole.COMMUNITY
+          : UserRole.PUBLIC,
+    });
+
     try {
       const res = await dispatch(
         updateOneDonation({
@@ -82,6 +104,16 @@ function DonationRequestsDetails() {
 
   const donationReceived = async () => {
     try {
+      socket.emit(NOTIFICATION, {
+        content: `${donation?.community.name} has received your donation. Thank you for donating!`,
+        sender: loggedInUser?._id,
+        receiver: donation?.donor._id,
+        target:
+          loggedInUser?.role === UserRole.COMMUNITY
+            ? UserRole.COMMUNITY
+            : UserRole.PUBLIC,
+      });
+
       const res = await dispatch(
         updateOneDonation({
           donationId: donationId as string,

@@ -26,8 +26,12 @@ import {
   NotificationVariant,
   showNotification,
 } from "../../utils/notifications";
+import { NOTIFICATION, socket } from "../../socket/socket";
+import { userState } from "../../features/user/UserSlice";
+import { UserRole } from "../../features/user/types";
 
 const CommunityApplication = () => {
+  const { loggedInUser } = useAppSelector(userState);
   const { isLoading, communityApplications } = useAppSelector(
     communityApplicationState
   );
@@ -90,6 +94,12 @@ const CommunityApplication = () => {
     }
 
     try {
+      socket.emit(NOTIFICATION, {
+        content: `${loggedInUser?.firstName} ${loggedInUser?.lastName} just submitted a community application.`,
+        sender: loggedInUser?._id,
+        target: UserRole.ADMINISTRATOR,
+      });
+
       const res = await dispatch(
         createCommunityApplication(formData as NewCommunityApplication)
       );
