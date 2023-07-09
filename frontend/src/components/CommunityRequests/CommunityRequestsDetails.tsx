@@ -102,6 +102,15 @@ function CommunityRequestsDetails() {
   };
 
   const rejectCommunityRequest = () => {
+    if (!communityApplication) return;
+
+    socket.emit(NOTIFICATION, {
+      content:
+        "Your community application has been rejected. Please check and submit again later.",
+      sender: loggedInUser?._id,
+      receiver: communityApplication.user._id,
+    });
+
     dispatch(
       updateOneCommunityApplication({
         communityApplicationId: communityApplication!._id,
