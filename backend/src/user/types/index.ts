@@ -13,6 +13,7 @@ export type User = {
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber: string;
   password: string;
   role: UserRole;
   community?: Types.ObjectId | Community;
@@ -24,6 +25,7 @@ export type NewUser = {
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber: string;
   password: string;
   role?: UserRole;
 };

@@ -55,6 +55,7 @@ function SignUp() {
       firstName: "",
       lastName: "",
       email: "",
+      phoneNumber: "",
       password: "",
       confirmPassword: "",
     },
@@ -62,6 +63,10 @@ function SignUp() {
       firstName: isNotEmpty("First name is required."),
       lastName: isNotEmpty("Last name is required."),
       email: isEmail("Invalid email."),
+      phoneNumber: (value) =>
+        /^(01)[0-46-9]*[0-9]{7,8}$/.test(value)
+          ? null
+          : "Invalid phone number.",
       password: isNotEmpty("Password is required."),
       confirmPassword: (value, values) =>
         value.length === 0
@@ -123,6 +128,14 @@ function SignUp() {
               mt="md"
               disabled={isLoading}
               {...form.getInputProps("email")}
+            />
+            <TextInput
+              withAsterisk
+              label="Phone number"
+              placeholder="0123456789"
+              mt="md"
+              disabled={isLoading}
+              {...form.getInputProps("phoneNumber")}
             />
             <div className={classes.twoColumnsWrapper}>
               <PasswordInput

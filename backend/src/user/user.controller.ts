@@ -49,13 +49,15 @@ class UserController {
   }
 
   createUser = async (req: Request, res: Response, next: NextFunction) => {
-    const { firstName, lastName, email, password, role } = req.body;
+    const { firstName, lastName, email, phoneNumber, password, role } =
+      req.body;
 
     try {
       await this._userService.createUser({
         firstName,
         lastName,
         email,
+        phoneNumber,
         password,
         role,
       });

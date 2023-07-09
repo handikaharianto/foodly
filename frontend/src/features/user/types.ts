@@ -9,6 +9,7 @@ export type User = {
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber: string;
   role: string;
   accessToken: string;
   refreshToken: string;
@@ -26,6 +27,7 @@ export type LoginUserResponse = {
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber: string;
   role: string;
   community?: string;
   accessToken: string;
@@ -38,5 +40,6 @@ export type RegisterUserRequest = {
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber: string;
   password: string;
 };
