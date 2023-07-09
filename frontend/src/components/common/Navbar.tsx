@@ -10,8 +10,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { FoodlyLogo } from "../../utils/Logo";
-import { IconUser } from "@tabler/icons-react";
-import Notification from "../Notification/Notification";
+import NotificationButton from "../Notification/NotificationButton";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -53,7 +52,7 @@ function Navbar({ isSidebarOpen, handleIsSidebarOpen }: NavbarProps) {
           </Text>
         </Group>
         <Group position="right">
-          <Notification />
+          <NotificationButton />
           <Menu position="bottom-end">
             <Menu.Target>
               <Avatar
