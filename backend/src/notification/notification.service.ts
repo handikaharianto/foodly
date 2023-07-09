@@ -33,7 +33,7 @@ class NotificationService {
     isRead: boolean;
   }): Promise<Notification[]> => {
     const data = await notificationModel
-      .find(filter, null, { sort: "createdAt" })
+      .find(filter, null, { sort: "-createdAt" })
       .populate<{ sender: UserWithoutPassword }>({
         path: "sender",
         select: "-password",
