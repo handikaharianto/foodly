@@ -9,6 +9,7 @@ import { useAppSelector } from "../app/hooks";
 import { chatState } from "../features/chat/ChatSlice";
 
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
+import LoaderState from "../components/common/LoaderState";
 
 const useStyles = createStyles((theme) => ({
   chatGrid: {
@@ -19,24 +20,43 @@ const useStyles = createStyles((theme) => ({
     borderBottomLeftRadius: 0,
     borderLeftWidth: "0 !important",
   },
+  messageLoadingState: {
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+    borderLeftWidth: "0 !important",
+  },
 }));
 
 function Chat() {
   const { classes } = useStyles();
 
-  const { chat } = useAppSelector(chatState);
+  const { chat, isLoading } = useAppSelector(chatState);
 
   return (
     <SimpleGrid spacing={0} className={classes.chatGrid} h={"100%"}>
       <ChatSidebar />
       <Stack spacing={0}>
-        {chat ? (
+        {isLoading ? (
+          <Paper
+            withBorder
+            h={"100%"}
+            className={classes.messageLoadingState}
+            radius="md"
+          >
+            <LoaderState />
+          </Paper>
+        ) : chat ? (
           <>
             <ChatHeader />
             <ChatMessages />
           </>
         ) : (
-          <Paper withBorder h={"100%"} className={classes.messageEmptyState}>
+          <Paper
+            withBorder
+            h={"100%"}
+            className={classes.messageEmptyState}
+            radius="md"
+          >
             <EmptyState
               Icon={IconMessage}
               title="No messages, yet."

@@ -1,13 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Grid } from "@mantine/core";
 
 import Stats from "../components/AdminDashboard/Stats";
 import MainContent from "../components/common/MainContent";
 import PieChart from "../components/AdminDashboard/PieChart";
 import LineChart from "../components/AdminDashboard/LineChart";
-import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { useAppDispatch } from "../app/hooks";
 import {
-  dashboardState,
   getCommunityStats,
   getDonationStats,
   getDonationStatus,
@@ -18,16 +17,17 @@ import LoaderState from "../components/common/LoaderState";
 
 function AdminDashboard() {
   const dispatch = useAppDispatch();
-  const { isLoading } = useAppSelector(dashboardState);
+  const [isLoading, setisLoading] = useState(true);
 
   useEffect(() => {
+    setisLoading(true);
     Promise.all([
       dispatch(getUserStats()),
       dispatch(getCommunityStats()),
       dispatch(getDonationStats()),
       dispatch(getDonationStatus()),
       dispatch(getTotalDonationsByMonth()),
-    ]);
+    ]).then(() => setisLoading(false));
   }, []);
 
   return (

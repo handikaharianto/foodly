@@ -61,6 +61,9 @@ function DonationCard({
     >
       <Group position="apart" align="stretch">
         <Stack spacing={0}>
+          <Text fz="xs" color="dimmed">
+            Donated to:
+          </Text>
           <Text fz="md" transform="capitalize" weight={600}>
             {community.name}
           </Text>

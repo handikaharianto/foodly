@@ -132,7 +132,7 @@ function CommunityDetails() {
           <Divider my="xl" color="gray.3" />
           <SimpleGrid className={classes.contentGrid}>
             <Stack>
-              <Card withBorder padding="xl">
+              <Card withBorder padding="xl" radius="md">
                 <Card.Section withBorder p="xl">
                   <Title order={4} size="h5" weight={600}>
                     Community description
@@ -142,7 +142,7 @@ function CommunityDetails() {
                   <Text size="sm">{community?.description}</Text>
                 </Card.Section>
               </Card>
-              <Card withBorder padding="xl">
+              <Card withBorder padding="xl" radius="md">
                 <Card.Section withBorder p="xl">
                   <Title order={4} size="h5" weight={600}>
                     Community address
@@ -168,7 +168,7 @@ function CommunityDetails() {
                   />
                 </Card.Section>
               </Card>
-              <Card withBorder>
+              <Card withBorder radius="md">
                 <Card.Section withBorder p="xl">
                   <Title order={4} size="h5" weight={600}>
                     Food preferences
@@ -192,7 +192,7 @@ function CommunityDetails() {
               </Card>
             </Stack>
             <Container fluid w="100%" p={0}>
-              <Card withBorder>
+              <Card withBorder radius="md">
                 <Card.Section withBorder p="xl">
                   <Title order={4} size="h5" weight={600}>
                     Community owner

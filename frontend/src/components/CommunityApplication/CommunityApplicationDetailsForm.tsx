@@ -34,7 +34,7 @@ function CommunityApplicationDetailsForm() {
   );
 
   return (
-    <Paper withBorder p="xl" className={classes.cardGrid}>
+    <Paper withBorder p="xl" className={classes.cardGrid} radius="md">
       <div>
         <Text weight={600} mb="xs">
           Community details

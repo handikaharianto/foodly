@@ -21,7 +21,6 @@ import {
   getAllCommunityApplications,
 } from "../features/communityApplication/CommunityApplicationSlice";
 import { setDate } from "../utils/DateAndTime";
-import { IconFilter } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
@@ -38,14 +37,18 @@ function CommunityRequests() {
     useState<CommunityApplicationStatus>(CommunityApplicationStatus.PENDING);
 
   const dispatch = useAppDispatch();
-  const { totalPages, communityApplications, isLoading } = useAppSelector(
-    communityApplicationState
-  );
+  const { totalPages, totalData, communityApplications, isLoading } =
+    useAppSelector(communityApplicationState);
 
   const theme = useMantineTheme();
   const { classes } = useStyles();
 
   const navigate = useNavigate();
+
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 5, //customize the default page size
+  });
 
   const columns = useMemo<MRT_ColumnDef<CommunityApplication>[]>(
     () => [
@@ -113,13 +116,13 @@ function CommunityRequests() {
 
     dispatch(
       getAllCommunityApplications({
-        limit: 10,
-        page: 1,
+        limit: pagination.pageSize,
+        page: pagination.pageIndex + 1,
         searchInput: searchInput || "",
         status,
       })
     );
-  }, [filterByStatus, searchInput]);
+  }, [filterByStatus, searchInput, pagination]);
 
   return (
     <MainContent heading="Community Requests">
@@ -135,7 +138,6 @@ function CommunityRequests() {
               label: "Rejected",
             },
           ]}
-          icon={<IconFilter size="0.8rem" />}
           value={filterByStatus}
           onChange={(value) =>
             setFilterByStatus(value as CommunityApplicationStatus)
@@ -145,6 +147,7 @@ function CommunityRequests() {
       </Group>
       <MantineReactTable
         manualFiltering
+        manualPagination
         enableRowNumbers
         rowNumberMode="original"
         columns={columns}
@@ -157,6 +160,7 @@ function CommunityRequests() {
         state={{
           showSkeletons: isLoading,
           globalFilter: searchInput,
+          pagination,
         }}
         // Table
         mantinePaperProps={{
@@ -197,10 +201,9 @@ function CommunityRequests() {
             <MRT_TablePagination table={table} />
           </Group>
         )}
-        mantinePaginationProps={{
-          rowsPerPageOptions: ["10", "20", "50"],
-        }}
         enableSorting={false}
+        rowCount={totalData || 0}
+        onPaginationChange={setPagination}
       />
     </MainContent>
   );

@@ -10,7 +10,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { FoodlyLogo } from "../../utils/Logo";
-import { IconUser } from "@tabler/icons-react";
+import NotificationButton from "../Notification/NotificationButton";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -29,8 +29,7 @@ function Navbar({ isSidebarOpen, handleIsSidebarOpen }: NavbarProps) {
 
   return (
     <Header
-      height={{ base: 70 }}
-      p="md"
+      height={{ base: 56 }}
       px="xl"
       className={classes.header}
       zIndex={120}
@@ -48,25 +47,28 @@ function Navbar({ isSidebarOpen, handleIsSidebarOpen }: NavbarProps) {
         </MediaQuery>
         <Group position="left" mr="auto">
           <FoodlyLogo width={30} height={30} />
-          <Text fz="xl" fw="bolder">
+          <Text fz="md" fw="bolder">
             Foodly
           </Text>
-          {/* <Code sx={{ fontWeight: 700 }}>v3.1.2</Code> */}
         </Group>
-        <Menu position="bottom-end">
-          <Menu.Target>
-            <Avatar
-              radius="xl"
-              size="md"
-              styles={{
-                root: { cursor: "pointer", boxShadow: theme.shadows.xs },
-              }}
-            />
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Item icon={<IconUser size={14} />}>User profile</Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
+        <Group position="right">
+          <NotificationButton />
+          <Menu position="bottom-end">
+            <Menu.Target>
+              <Avatar
+                radius="xl"
+                size={28}
+                styles={{
+                  root: { cursor: "pointer", boxShadow: theme.shadows.xs },
+                }}
+              />
+            </Menu.Target>
+            <Menu.Dropdown>
+              {/* <Menu.Item icon={<IconUser size={14} />}>User profile</Menu.Item>
+              <Menu.Item icon={<IconUser size={14} />}>User Settings</Menu.Item> */}
+            </Menu.Dropdown>
+          </Menu>
+        </Group>
       </div>
     </Header>
   );

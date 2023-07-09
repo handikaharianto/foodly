@@ -15,6 +15,7 @@ import chatRouter from "./chat/routes/chat.route";
 import connectSocket, { SOCKET_CONNECTED } from "./socket";
 import donationRouter from "./donation/donation.route";
 import dashboardRouter from "./dashboard/dashboard.route";
+import notificationRouter from "./notification/notification.route";
 
 dotenv.config();
 
@@ -47,6 +48,7 @@ app.use("/api/community-applications", communityApplicationRouter);
 app.use("/api/chats", chatRouter);
 app.use("/api/donations", donationRouter);
 app.use("/api/dashboard", dashboardRouter);
+app.use("/api/notifications", notificationRouter);
 
 // error handler
 app.use(handleError);

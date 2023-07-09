@@ -15,12 +15,12 @@ const AuthGuard = () => {
   const dispatch = useAppDispatch();
 
   const logoutUser = () => {
+    socket.emit(USER_OFFLINE, loggedInUser?._id);
+    socket.disconnect();
+
     delete privateAxios.defaults.headers.common.Authorization;
     window.localStorage.clear();
     navigate("/sign-in", { replace: true });
-
-    socket.emit(USER_OFFLINE);
-    socket.disconnect();
   };
 
   useEffect(() => {
