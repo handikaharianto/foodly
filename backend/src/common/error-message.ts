@@ -44,3 +44,8 @@ export const MESSAGE_NOT_FOUND = "Message not found.";
  * DONATION
  */
 export const DONATION_NOT_FOUND = "Donation not found.";
+
+/**
+ * NOTIFICATION
+ */
+export const NOTIFICATION_NOT_FOUND = "Notification not found.";
