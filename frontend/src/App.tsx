@@ -41,8 +41,6 @@ function App() {
           <Route element={<AuthGuard />}>
             <Route element={<SharedLayout />}>
               <Route path="/" element={<Index />} />
-              <Route path="/notifications" element={<TestPage />} />
-
               <Route
                 element={
                   <AuthorizeUser

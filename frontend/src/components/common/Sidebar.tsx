@@ -90,7 +90,6 @@ const publicUserLinks = [
     label: "Browse Communities",
     icon: IconBuildingCommunity,
   },
-  { link: "/notifications", label: "Notifications", icon: IconBellRinging },
   { link: "/chat", label: "Chat", icon: IconMessage },
   { link: "/donations", label: "Donations", icon: IconHeartHandshake },
   {
@@ -106,7 +105,6 @@ const communityUserLinks = [
     label: "Browse Communities",
     icon: IconBuildingCommunity,
   },
-  { link: "/notifications", label: "Notifications", icon: IconBellRinging },
   { link: "/chat", label: "Chat", icon: IconMessage },
   {
     link: "/donation-requests",
@@ -117,7 +115,6 @@ const communityUserLinks = [
 
 const administratorLinks = [
   { link: "/dashboard", label: "Dashboard", icon: IconDashboard },
-  { link: "/notifications", label: "Notifications", icon: IconBellRinging },
   { link: "/community-requests", label: "Community requests", icon: IconFiles },
 ];
 
