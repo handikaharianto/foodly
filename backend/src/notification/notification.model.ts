@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 
 import { Notification } from "./types";
+import { UserRole } from "../user/types";
 
 const notificationSchema = new Schema<Notification>(
   {
@@ -20,6 +21,10 @@ const notificationSchema = new Schema<Notification>(
     receiver: {
       type: Schema.Types.ObjectId,
       ref: "User",
+    },
+    target: {
+      type: String,
+      enum: Object.values(UserRole),
       required: true,
     },
   },

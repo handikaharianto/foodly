@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import NotificationService from "./notification.service";
 import { NewNotification, Notification } from "./types";
 import HTTP_STATUS from "../common/http-status-code";
+import { UserRole } from "../user/types";
 
 class NotificationController {
   private readonly _notificationService;
@@ -28,13 +29,19 @@ class NotificationController {
     next: NextFunction
   ) => {
     const { isRead } = req.body;
-    const { _id } = req.user;
+    const { _id, role } = req.user;
+
+    const filter: any = {
+      isRead,
+    };
+    if (role === UserRole.ADMINISTRATOR) {
+      filter.target = UserRole.ADMINISTRATOR;
+    } else {
+      filter.receiver = _id;
+    }
 
     try {
-      const data = await this._notificationService.getAllNotifications({
-        receiver: _id,
-        isRead,
-      });
+      const data = await this._notificationService.getAllNotifications(filter);
       return res.status(HTTP_STATUS.OK_200).json(data);
     } catch (error) {
       next(error);
@@ -67,12 +74,11 @@ class NotificationController {
     res: Response,
     next: NextFunction
   ) => {
-    const { isRead } = req.body;
-    const { _id } = req.user;
+    const { isRead, receiver, target } = req.body;
 
     try {
       await this._notificationService.updateManyNotifications(
-        { receiver: _id },
+        { receiver },
         { isRead }
       );
       return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);

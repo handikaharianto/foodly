@@ -1,5 +1,5 @@
 import ApiError from "../common/api-error";
-import { UserWithoutPassword } from "../user/types";
+import { UserRole, UserWithoutPassword } from "../user/types";
 import notificationModel from "./notification.model";
 import { NewNotification, Notification } from "./types";
 import HTTP_STATUS from "../common/http-status-code";
@@ -29,11 +29,14 @@ class NotificationService {
   };
 
   getAllNotifications = async (filter: {
-    receiver: string;
-    isRead: boolean;
+    receiver?: string;
+    isRead?: boolean;
+    target?: UserRole;
   }): Promise<Notification[]> => {
     const data = await notificationModel
-      .find(filter, null, { sort: "-createdAt" })
+      .find(filter, null, {
+        sort: "-createdAt",
+      })
       .populate<{ sender: UserWithoutPassword }>({
         path: "sender",
         select: "-password",
