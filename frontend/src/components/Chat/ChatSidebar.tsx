@@ -1,5 +1,4 @@
 import {
-  Input,
   Paper,
   ScrollArea,
   TextInput,
@@ -9,11 +8,14 @@ import {
 import { IconMessage, IconSearch } from "@tabler/icons-react";
 import UserContact from "./UserContact";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { chatState, getAllChats } from "../../features/chat/ChatSlice";
 import LoaderState from "../common/LoaderState";
 import EmptyState from "../common/EmptyState";
 import { useDebouncedValue } from "@mantine/hooks";
+import { getSender } from "../../utils/chat";
+import { userState } from "../../features/user/UserSlice";
+import { LoginUserResponse } from "../../features/user/types";
 
 const useStyles = createStyles((theme) => ({
   chatSidebar: {
@@ -47,12 +49,29 @@ function ChatSidebar() {
 
   const { classes } = useStyles();
 
-  const { isLoading, chats } = useAppSelector(chatState);
   const dispatch = useAppDispatch();
+  const { isLoading, chats } = useAppSelector(chatState);
+  const { loggedInUser } = useAppSelector(userState);
+
+  const memoizedChats = useMemo(
+    () =>
+      chats.filter((chat) => {
+        const contactName = getSender(
+          loggedInUser as LoginUserResponse,
+          chat.users
+        );
+
+        if (contactName.includes(debouncedSearchInput.toLowerCase())) {
+          return true;
+        }
+        return false;
+      }),
+    [chats, debouncedSearchInput, loggedInUser]
+  );
 
   useEffect(() => {
-    dispatch(getAllChats({ searchInput: debouncedSearchInput }));
-  }, [debouncedSearchInput]);
+    dispatch(getAllChats({}));
+  }, []);
 
   return (
     <Paper withBorder h={"100%"} className={classes.chatSidebar}>
@@ -77,8 +96,8 @@ function ChatSidebar() {
       >
         {isLoading ? (
           <LoaderState />
-        ) : chats.length > 0 ? (
-          chats.map((chat) => <UserContact key={chat._id} {...chat} />)
+        ) : memoizedChats.length > 0 ? (
+          memoizedChats.map((chat) => <UserContact key={chat._id} {...chat} />)
         ) : (
           <EmptyState Icon={IconMessage} title="Chat is empty." />
         )}
