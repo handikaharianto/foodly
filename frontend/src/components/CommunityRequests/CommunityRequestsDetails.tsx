@@ -35,6 +35,7 @@ import { formatCommunityAddress } from "../../utils/community";
 import { NewCommunity } from "../../features/community/types";
 import { updateOneUser, userState } from "../../features/user/UserSlice";
 import { UserRole } from "../../features/user/types";
+import { NOTIFICATION, socket } from "../../socket/socket";
 
 //TODO: Add community application status in UI
 
@@ -51,6 +52,7 @@ function CommunityRequestsDetails() {
   const { communityApplication, isLoading: communityAppLoading } =
     useAppSelector(communityApplicationState);
   const { isLoading: communityLoading } = useAppSelector(communityState);
+  const { loggedInUser } = useAppSelector(userState);
 
   const { classes } = useStyles();
 
@@ -61,6 +63,12 @@ function CommunityRequestsDetails() {
   // TODO: Handle Error from Promise.all
   const acceptCommunityRequest = () => {
     if (!communityApplication) return;
+
+    socket.emit(NOTIFICATION, {
+      content: "Congratulations! Your community application has been acepted!",
+      sender: loggedInUser?._id,
+      receiver: communityApplication.user._id,
+    });
 
     Promise.all([
       dispatch(
