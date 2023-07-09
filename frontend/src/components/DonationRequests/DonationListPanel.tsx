@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { SimpleGrid } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { Pagination, SimpleGrid, Stack } from "@mantine/core";
 import { IconHeartHandshake } from "@tabler/icons-react";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -20,21 +20,22 @@ type DonationListPanelProps = {
 // TODO: fix loader
 // TODO: add empty state
 function DonationListPanel({ status }: DonationListPanelProps) {
-  const dispatch = useAppDispatch();
+  const [currentPage, setCurrentPage] = useState(1);
 
+  const dispatch = useAppDispatch();
   const { loggedInUser } = useAppSelector(userState);
-  const { donationList, isLoading } = useAppSelector(donationState);
+  const { donationList, isLoading, totalPages } = useAppSelector(donationState);
 
   useEffect(() => {
     dispatch(
       getAllDonations({
         status,
         community: loggedInUser?.community,
-        limit: 10,
-        page: 1,
+        limit: 9,
+        page: currentPage,
       })
     );
-  }, [status]);
+  }, [currentPage, loggedInUser, status]);
 
   if (isLoading) {
     return <LoaderState />;
@@ -50,11 +51,23 @@ function DonationListPanel({ status }: DonationListPanelProps) {
   }
 
   return (
-    <SimpleGrid cols={3}>
-      {donationList.map((donation) => (
-        <DonationCard key={donation._id} {...donation} />
-      ))}
-    </SimpleGrid>
+    <Stack justify="space-between" h="100%">
+      <SimpleGrid cols={3}>
+        {donationList.map((donation) => (
+          <DonationCard key={donation._id} {...donation} />
+        ))}
+      </SimpleGrid>
+      {donationList.length > 0 && (
+        <Pagination
+          total={totalPages || 1}
+          value={currentPage}
+          onChange={setCurrentPage}
+          color="red"
+          position="right"
+          mt="xl"
+        />
+      )}
+    </Stack>
   );
 }
 

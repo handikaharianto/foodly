@@ -53,7 +53,7 @@ function DonationCard({ _id, status, createdAt, donor }: DonationCardProps) {
     >
       <Group position="apart" align="stretch">
         <Stack spacing={0}>
-          <Text fz="sm" color="dimmed">
+          <Text fz="xs" color="dimmed">
             Donated by
           </Text>
           <Text fz="md" transform="capitalize" weight={600}>
