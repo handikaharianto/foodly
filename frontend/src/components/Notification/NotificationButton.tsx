@@ -128,17 +128,19 @@ function NotificationButton() {
           className={classes.notificationButton}
         >
           <IconBell size="1.125rem" />
-          {notificationList.length > 0 && (
-            <ActionIcon
-              color="dark"
-              radius="xl"
-              variant="filled"
-              size={15}
-              className={classes.notificationCount}
-            >
-              <Text size={10}>{notificationList.length}</Text>
-            </ActionIcon>
-          )}
+          {!isLoading &&
+            currentSegment === NotificationSegment.UNREAD &&
+            notificationList.length > 0 && (
+              <ActionIcon
+                color="dark"
+                radius="xl"
+                variant="filled"
+                size={15}
+                className={classes.notificationCount}
+              >
+                <Text size={10}>{notificationList.length}</Text>
+              </ActionIcon>
+            )}
         </ActionIcon>
       </Popover.Target>
       <Popover.Dropdown px="xl" py="md">
