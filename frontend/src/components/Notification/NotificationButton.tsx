@@ -35,8 +35,14 @@ enum NotificationSegment {
 
 const useStyles = createStyles((theme) => ({
   notificationButton: {
+    position: "relative",
     boxShadow: theme.shadows.xl,
     border: `1px solid ${theme.colors.gray[1]}`,
+  },
+  notificationCount: {
+    position: "absolute",
+    top: "-8px",
+    right: "-8px",
   },
   readAllButton: {
     ":disabled": {
@@ -122,6 +128,17 @@ function NotificationButton() {
           className={classes.notificationButton}
         >
           <IconBell size="1.125rem" />
+          {notificationList.length > 0 && (
+            <ActionIcon
+              color="dark"
+              radius="xl"
+              variant="filled"
+              size={15}
+              className={classes.notificationCount}
+            >
+              <Text size={10}>{notificationList.length}</Text>
+            </ActionIcon>
+          )}
         </ActionIcon>
       </Popover.Target>
       <Popover.Dropdown px="xl" py="md">
@@ -138,6 +155,7 @@ function NotificationButton() {
           />
         </Group>
         <Divider color="gray.2" my="md" />
+
         {!isLoading && currentSegment === NotificationSegment.UNREAD && (
           <Group position="right">
             <Button
