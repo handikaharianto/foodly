@@ -81,13 +81,13 @@ class DashboardService {
         "Dec",
       ];
 
-      const donationByMonthFound = donations.find(
-        (donation) => donation._id === i
+      const donationByMonth = donations.find(
+        (donation) => donation._id === i + 1
       );
 
       standardizedData.push({
         month: months[i],
-        count: donationByMonthFound ? donationByMonthFound.count : 0,
+        count: donationByMonth ? donationByMonth.count : 0,
       });
     }
 
