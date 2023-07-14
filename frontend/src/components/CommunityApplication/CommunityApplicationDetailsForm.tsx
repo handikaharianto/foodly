@@ -56,21 +56,11 @@ function CommunityApplicationDetailsForm() {
           disabled={isLoading}
           mt="md"
           withinPortal
-          data={["Orphanage", "Nursing home", "Others"]}
+          data={["Orphanage", "Nursing home"]}
           placeholder="Pick one"
           label="Community type"
           {...form.getInputProps("type")}
         />
-        {isOthersSelected && (
-          <TextInput
-            withAsterisk
-            disabled={isLoading}
-            label="Community type (Others)"
-            placeholder=""
-            mt="md"
-            {...form.getInputProps("typeOthers")}
-          />
-        )}
         <MultiSelect
           withAsterisk
           disabled={isLoading}

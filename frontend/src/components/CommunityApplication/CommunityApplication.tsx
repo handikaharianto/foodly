@@ -41,7 +41,6 @@ const CommunityApplication = () => {
     initialValues: {
       name: "",
       type: "",
-      typeOthers: "",
       foodPreferences: [],
       description: "",
       address: {
@@ -59,12 +58,6 @@ const CommunityApplication = () => {
     validate: {
       name: isNotEmpty("Community name is required."),
       type: isNotEmpty("Community type is required."),
-      typeOthers: (value, values) =>
-        values.type !== "Others"
-          ? null
-          : value?.trim() === ""
-          ? "Community type is required"
-          : null,
       foodPreferences: isNotEmpty("Food preferences are required."),
       description: isNotEmpty("Community description is required."),
       address: {
