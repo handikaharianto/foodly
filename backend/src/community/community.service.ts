@@ -9,6 +9,7 @@ import {
 import { UserWithoutPassword } from "../user/types";
 import setPagination from "../utils/pagination";
 import { PaginatedData } from "../common/types";
+import { setMongoRegex } from "../utils/regex";
 
 class CommunityService {
   createCommunity = async (communityData: NewCommunity): Promise<Community> => {
@@ -25,9 +26,14 @@ class CommunityService {
   getAllCommunities = async (
     userId: string,
     limit: number,
-    page: number
+    page: number,
+    searchInput: string
   ): Promise<PaginatedData<Community>> => {
-    let query = { user: { $ne: userId } };
+    let query: any = { user: { $ne: userId } };
+
+    if (searchInput) {
+      query.name = setMongoRegex(searchInput);
+    }
 
     const paginationData = await setPagination(
       communityModel,
