@@ -255,7 +255,7 @@ function CommunityDetails() {
                       >
                         Phone number
                       </Title>
-                      <Text size="sm">+1 (950) 654-1602</Text>
+                      <Text size="sm">{community?.user.phoneNumber}</Text>
                     </Stack>
                   </Stack>
                 </Card.Section>

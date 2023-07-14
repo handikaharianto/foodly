@@ -101,7 +101,7 @@ function CommunityCard({
         <Group mt="sm">
           <IconPhone stroke={1} size={18} />
           <Text color="dimmed" fz="sm">
-            +1 (950) 654-1602
+            {user.phoneNumber}
           </Text>
         </Group>
         <Group mt="xl" spacing="0.4rem" tt="capitalize">
