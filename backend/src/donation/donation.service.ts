@@ -45,6 +45,7 @@ class DonationService {
       .find(filter, null, {
         skip: (page - 1) * limit,
         limit,
+        sort: "-createdAt",
       })
       .populate<{ community: Community }>({
         path: "community",
