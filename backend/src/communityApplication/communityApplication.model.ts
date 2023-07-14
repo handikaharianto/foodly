@@ -17,7 +17,6 @@ const communityApplicationSchema = new Schema<CommunityApplication>(
       type: String,
       required: true,
       trim: true,
-      uppercase: true,
     },
     foodPreferences: [
       {
