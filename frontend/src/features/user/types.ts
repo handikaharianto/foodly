@@ -1,7 +1,7 @@
 export enum UserRole {
-  PUBLIC = "PUBLIC",
-  COMMUNITY = "COMMUNITY",
-  ADMINISTRATOR = "ADMINISTRATOR",
+  PUBLIC = "public",
+  COMMUNITY = "community",
+  ADMINISTRATOR = "administrator",
 }
 
 export type User = {
