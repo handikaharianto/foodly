@@ -17,8 +17,6 @@ type DonationListPanelProps = {
   status: DonationStatus;
 };
 
-// TODO: fix loader
-// TODO: add empty state
 function DonationListPanel({ status }: DonationListPanelProps) {
   const [currentPage, setCurrentPage] = useState(1);
 

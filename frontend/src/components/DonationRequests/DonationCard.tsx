@@ -6,10 +6,13 @@ import {
   Group,
   Stack,
   DefaultMantineColor,
+  Center,
 } from "@mantine/core";
+import { Link } from "react-router-dom";
+import { IconX } from "@tabler/icons-react";
+
 import { Donation, DonationStatus } from "../../features/donation/types";
 import { getTimeFromNow } from "../../utils/DateAndTime";
-import { Link } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -26,7 +29,7 @@ const useStyles = createStyles((theme) => ({
 type DonationCardProps = Donation;
 
 function DonationCard({ _id, status, createdAt, donor }: DonationCardProps) {
-  const { classes } = useStyles();
+  const { classes, theme } = useStyles();
 
   const progressValue =
     status === DonationStatus.PENDING
@@ -71,9 +74,20 @@ function DonationCard({ _id, status, createdAt, donor }: DonationCardProps) {
             size={100}
             sections={[{ value: progressValue, color: progressColor }]}
             label={
-              <Text color={progressColor} weight={700} align="center" size="xl">
-                {progressValue}%
-              </Text>
+              status === DonationStatus.REJECTED ? (
+                <Center>
+                  <IconX size={40} color={theme.colors.red[7]} stroke={3} />
+                </Center>
+              ) : (
+                <Text
+                  color={progressColor}
+                  weight={700}
+                  align="center"
+                  size="xl"
+                >
+                  {progressValue}%
+                </Text>
+              )
             }
           />
         </div>
