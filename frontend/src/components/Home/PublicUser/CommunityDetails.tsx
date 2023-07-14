@@ -115,17 +115,21 @@ function CommunityDetails() {
                 align="left"
                 size="h4"
                 weight={600}
+                mb="xs"
               >
                 {community?.name}
               </Title>
-              <Text color="dimmed" size="sm">
-                {community?.type}
-              </Text>
-              <Group spacing={"0.3rem"} mt="sm" noWrap position="left">
-                <IconMapPin stroke={1} size={18} />
-                <Text color="dimmed" size="xs">
-                  {distance && `${distance} km`}
-                </Text>
+              <Group align="center">
+                <Badge color="red" size="md" radius="sm" variant="outline">
+                  {community?.type}
+                </Badge>
+                <Divider orientation="vertical" />
+                <Group spacing={"0.3rem"} noWrap position="left">
+                  <IconMapPin stroke={1} size={18} />
+                  <Text color="dimmed" size="xs">
+                    {distance && `${distance} km`}
+                  </Text>
+                </Group>
               </Group>
             </Stack>
             <Group>
