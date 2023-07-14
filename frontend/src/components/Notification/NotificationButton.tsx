@@ -1,7 +1,6 @@
 import {
   ActionIcon,
   Button,
-  Card,
   Center,
   Divider,
   Group,
@@ -11,11 +10,9 @@ import {
   SegmentedControl,
   Stack,
   Text,
-  Tooltip,
   createStyles,
-  rem,
 } from "@mantine/core";
-import { IconBell, IconCheck, IconCircleCheck } from "@tabler/icons-react";
+import { IconBell, IconCircleCheck } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { NOTIFICATION, socket } from "../../socket/socket";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -24,12 +21,11 @@ import {
   addNotification,
   getAllNotifications,
   updateManyNotifications,
-  updateOneNotification,
 } from "../../features/notification/notificationSlice";
 import { Notification as Notification } from "../../features/notification/types";
-import { userState } from "../../features/user/UserSlice";
+import NotificationCard from "./NotificationCard";
 
-enum NotificationSegment {
+export enum NotificationSegment {
   UNREAD = "unread",
   READ = "read",
 }
@@ -56,17 +52,6 @@ const useStyles = createStyles((theme) => ({
   readAllIcon: {
     marginRight: "0.3rem",
   },
-  notificationCard: {
-    padding: theme.spacing.xl,
-    ":hover": {
-      backgroundColor: theme.colors.gray[1],
-    },
-  },
-  readOneIcon: {
-    ":hover": {
-      backgroundColor: "transparent",
-    },
-  },
 }));
 
 function NotificationButton() {
@@ -76,18 +61,8 @@ function NotificationButton() {
 
   const dispatch = useAppDispatch();
   const { notificationList, isLoading } = useAppSelector(NotificationState);
-  const { loggedInUser } = useAppSelector(userState);
 
   const { classes, theme } = useStyles();
-
-  const updateOneNotificationStatus = (notificationId: string) => {
-    dispatch(
-      updateOneNotification({
-        notificationId,
-        isRead: currentSegment === NotificationSegment.UNREAD ? true : false,
-      })
-    );
-  };
 
   const markAllNotificationsAsRead = () => {
     dispatch(updateManyNotifications({ isRead: true }));
@@ -203,46 +178,11 @@ function NotificationButton() {
           <>
             <ScrollArea.Autosize offsetScrollbars mah={260} mt="md">
               {notificationList.map((notification) => (
-                <Card
+                <NotificationCard
                   key={notification._id}
-                  className={classes.notificationCard}
-                >
-                  <Card.Section p="xs">
-                    <Group position="apart" spacing="xl">
-                      <Text size={rem(13)} maw="220px">
-                        {notification.content}
-                      </Text>
-                      <Tooltip
-                        withinPortal
-                        label={
-                          <Text size="0.7rem">
-                            {currentSegment === NotificationSegment.UNREAD
-                              ? "Mark as read"
-                              : "Mark as unread"}
-                          </Text>
-                        }
-                        position="bottom"
-                      >
-                        <ActionIcon
-                          component="div"
-                          radius="xl"
-                          variant="outline"
-                          color="dark"
-                          size={13}
-                          p={"0.1rem"}
-                          className={classes.readOneIcon}
-                          onClick={() =>
-                            updateOneNotificationStatus(notification._id)
-                          }
-                        >
-                          {currentSegment === NotificationSegment.READ && (
-                            <IconCheck />
-                          )}
-                        </ActionIcon>
-                      </Tooltip>
-                    </Group>
-                  </Card.Section>
-                </Card>
+                  notification={notification}
+                  currentSegment={currentSegment}
+                />
               ))}
             </ScrollArea.Autosize>
           </>
