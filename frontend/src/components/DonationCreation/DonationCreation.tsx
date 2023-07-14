@@ -52,8 +52,6 @@ function DonationCreation({ closeDonateModal }: DonationCreationProps) {
     control,
     name: "items",
   });
-  console.log({ errors });
-  console.log({ fields });
 
   const theme = useMantineTheme();
 

@@ -3,7 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { refreshAccessToken, userState } from "../../features/user/UserSlice";
-import Loader from "./LoaderWithOverlay";
+import LoaderWithOverlay from "./LoaderWithOverlay";
 import { privateAxios } from "../../api/axios";
 import { USER_OFFLINE, USER_ONLINE, socket } from "../../socket/socket";
 
@@ -51,7 +51,7 @@ const AuthGuard = () => {
   }, [loggedInUser]);
 
   if (isLoading) {
-    return <Loader />;
+    return <LoaderWithOverlay />;
   }
 
   return <Outlet />;

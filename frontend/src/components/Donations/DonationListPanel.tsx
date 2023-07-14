@@ -29,7 +29,7 @@ function DonationListPanel({ status }: DonationListPanelProps) {
     dispatch(
       getAllDonations({
         status,
-        community: loggedInUser?.community,
+        donor: loggedInUser?._id,
         limit: 9,
         page: currentPage,
       })

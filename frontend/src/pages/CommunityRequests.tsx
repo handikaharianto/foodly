@@ -10,6 +10,7 @@ import {
 import MainContent from "../components/common/MainContent";
 import { MantineReactTable } from "mantine-react-table";
 import { MRT_ColumnDef, MRT_TablePagination } from "mantine-react-table";
+import { useNavigate } from "react-router-dom";
 
 import {
   CommunityApplication,
@@ -21,7 +22,6 @@ import {
   getAllCommunityApplications,
 } from "../features/communityApplication/CommunityApplicationSlice";
 import { setDate } from "../utils/DateAndTime";
-import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
   statusSelect: {
