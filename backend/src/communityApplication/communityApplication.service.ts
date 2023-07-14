@@ -67,7 +67,7 @@ class CommunityApplicationService {
       .find(query, null, {
         skip: (page - 1) * limit,
         limit,
-        sort: "createdAt",
+        sort: "-createdAt",
       })
       .populate<{ user: UserWithoutPassword }>({
         path: "user",
