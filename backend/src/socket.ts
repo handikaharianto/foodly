@@ -5,7 +5,7 @@ import { NewNotification } from "./notification/types";
 import NotificationController from "./notification/notification.controller";
 import NotificationService from "./notification/notification.service";
 import { io } from "../src";
-import { UserWithoutPassword } from "./user/types";
+import { UserRole, UserWithoutPassword } from "./user/types";
 
 export const SOCKET_CONNECTED = "connection";
 export const SOCKET_DISCONNECTED = "disconnect";
@@ -13,6 +13,7 @@ export const SEND_CHAT_MESSAGE = "send_chat_message";
 export const USER_ONLINE = "user_online";
 export const USER_OFFLINE = "user_offline";
 export const NOTIFICATION = "notification";
+export const ADMIN_ROOM = "admin_room";
 
 const notificationController = new NotificationController(
   new NotificationService()
@@ -31,10 +32,13 @@ const connectSocket = (socket: Socket) => {
   });
 
   // user online
-  socket.on(USER_ONLINE, ({ userId }) => {
+  socket.on(USER_ONLINE, ({ userId, userRole }) => {
     console.log(`user ${userId} is online`);
     users[userId] = socket.id;
 
+    if (userRole === UserRole.ADMINISTRATOR) {
+      socket.join(ADMIN_ROOM);
+    }
     socket.broadcast.emit(USER_ONLINE, users);
   });
 
@@ -58,7 +62,11 @@ const connectSocket = (socket: Socket) => {
 
       if (newNotification) {
         const receiver = newNotification.receiver as UserWithoutPassword;
-        io.to(users[receiver._id]).emit(NOTIFICATION, newNotification);
+        if (receiver) {
+          io.to(users[receiver._id]).emit(NOTIFICATION, newNotification);
+          return;
+        }
+        io.to(ADMIN_ROOM).emit(NOTIFICATION, newNotification);
       }
     } catch (error) {
       console.error(error);

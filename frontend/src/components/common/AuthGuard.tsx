@@ -43,7 +43,10 @@ const AuthGuard = () => {
   useEffect(() => {
     if (loggedInUser?.accessToken) {
       socket.connect();
-      socket.emit(USER_ONLINE, { userId: loggedInUser._id });
+      socket.emit(USER_ONLINE, {
+        userId: loggedInUser._id,
+        userRole: loggedInUser.role,
+      });
     }
   }, [loggedInUser]);
 
