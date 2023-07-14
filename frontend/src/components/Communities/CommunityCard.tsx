@@ -1,5 +1,4 @@
 import {
-  ActionIcon,
   Text,
   Badge,
   Card,
@@ -9,10 +8,12 @@ import {
   createStyles,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
-import { IconDotsVertical, IconMail, IconPhone } from "@tabler/icons-react";
+import { IconMail, IconMapPin, IconPhone } from "@tabler/icons-react";
 
-import { getTimeFromNow } from "../../utils/DateAndTime";
 import { Community } from "../../features/community/types";
+import { useAppSelector } from "../../app/hooks";
+import { userState } from "../../features/user/UserSlice";
+import { CoordinateType, calculateDistance } from "../../utils/community";
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -36,11 +37,20 @@ function CommunityCard({
   _id,
   name,
   type,
+  foodPreferences,
   description,
   user,
-  createdAt,
+  coordinate: { latitude, longitude },
 }: CommunityCardProps) {
   const { classes } = useStyles();
+
+  const { location } = useAppSelector(userState);
+
+  const distance = calculateDistance(
+    location as CoordinateType,
+    [longitude, latitude] as CoordinateType,
+    { units: "kilometers" }
+  );
 
   return (
     <Card
@@ -56,6 +66,7 @@ function CommunityCard({
         <Group noWrap align="center" position="apart">
           <Container p={0} m={0} miw="0%">
             <Title
+              mt="xs"
               truncate
               transform="capitalize"
               order={3}
@@ -65,19 +76,16 @@ function CommunityCard({
             >
               {name}
             </Title>
-            <Badge color="red" size="md" mt="xs" radius="sm" variant="outline">
+            <Badge color="red" size="sm" radius="sm" variant="outline">
               {type}
             </Badge>
+            <Group spacing={"0.3rem"} mt="sm" noWrap position="left">
+              <IconMapPin stroke={1} size={18} />
+              <Text color="dimmed" size="xs">
+                {distance && `${distance} km`}
+              </Text>
+            </Group>
           </Container>
-          {/* <ActionIcon
-            miw="0%"
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-            }}
-          >
-            <IconDotsVertical size="1.125rem" />
-          </ActionIcon> */}
         </Group>
       </Card.Section>
       <Card.Section p="lg" h="100%" className={classes.cardBody}>
@@ -97,7 +105,7 @@ function CommunityCard({
           </Text>
         </Group>
         <Group mt="xl" spacing="0.4rem" tt="capitalize">
-          {["Non-halal", "Halal", "Canned goods"].map((item) => (
+          {foodPreferences.map((item) => (
             <Badge
               key={item}
               color="gray.5"
@@ -109,9 +117,6 @@ function CommunityCard({
             </Badge>
           ))}
         </Group>
-        <Text align="right" size="xs" color="dimmed" mt="xl">
-          {getTimeFromNow(createdAt.toString())}
-        </Text>
       </Card.Section>
     </Card>
   );

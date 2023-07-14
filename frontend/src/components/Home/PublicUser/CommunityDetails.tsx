@@ -22,9 +22,15 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { getOneCommunity } from "../../../features/community/communitySlice";
 import LoaderState from "../../common/LoaderState";
 import { communityState } from "../../../features/community/communitySlice";
-import { formatCommunityAddress } from "../../../utils/community";
+import {
+  CoordinateType,
+  calculateDistance,
+  formatCommunityAddress,
+} from "../../../utils/community";
 import { useDisclosure } from "@mantine/hooks";
 import DonationCreation from "../../DonationCreation/DonationCreation";
+import { IconMapPin } from "@tabler/icons-react";
+import { userState } from "../../../features/user/UserSlice";
 
 const useStyles = createStyles((theme) => ({
   contentGrid: {
@@ -37,6 +43,7 @@ function CommunityDetails() {
 
   const dispatch = useAppDispatch();
   const { isLoading, community } = useAppSelector(communityState);
+  const { location } = useAppSelector(userState);
 
   const { classes } = useStyles();
   const [opened, { open: openDonateModal, close: closeDonateModal }] =
@@ -45,6 +52,15 @@ function CommunityDetails() {
   // Mapbox
   const mapboxMap = useRef<Map | null>(null);
   const mapMarker = useRef<Marker | null>(null);
+
+  const distance = calculateDistance(
+    location as CoordinateType,
+    [
+      community?.coordinate.longitude,
+      community?.coordinate.latitude,
+    ] as CoordinateType,
+    { units: "kilometers" }
+  );
 
   useEffect(() => {
     dispatch(
@@ -105,6 +121,12 @@ function CommunityDetails() {
               <Text color="dimmed" size="sm">
                 {community?.type}
               </Text>
+              <Group spacing={"0.3rem"} mt="sm" noWrap position="left">
+                <IconMapPin stroke={1} size={18} />
+                <Text color="dimmed" size="xs">
+                  {distance && `${distance} km`}
+                </Text>
+              </Group>
             </Stack>
             <Group>
               <Modal
@@ -123,9 +145,6 @@ function CommunityDetails() {
               </Modal>
               <Button variant="filled" color="red" onClick={openDonateModal}>
                 Donate
-              </Button>
-              <Button variant="default" color="red">
-                Contact owner
               </Button>
             </Group>
           </Group>

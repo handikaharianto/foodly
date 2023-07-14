@@ -1,4 +1,4 @@
-import { createSlice, isAnyOf } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice, isAnyOf } from "@reduxjs/toolkit";
 
 import {
   LoginUserRequest,
@@ -52,19 +52,28 @@ export const testPage = executeAsyncThunk<void, void>("user/testPage", () => {
 interface UserState {
   loggedInUser: LoginUserResponse | null;
   isLoggedIn: boolean;
+  location: [number, number] | null;
   isLoading: boolean;
 }
 
 const initialState: UserState = {
   loggedInUser: null,
   isLoggedIn: false,
+  location: null,
   isLoading: false,
 };
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    setCurrentUserLocation: (
+      state,
+      action: PayloadAction<[number, number]>
+    ) => {
+      state.location = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.fulfilled, (state, action) => {
@@ -119,7 +128,7 @@ export const userSlice = createSlice({
   },
 });
 
-// export const {} = authSlice.actions
+export const { setCurrentUserLocation } = userSlice.actions;
 export const userState = (state: RootState) => state.user;
 
 export default userSlice.reducer;

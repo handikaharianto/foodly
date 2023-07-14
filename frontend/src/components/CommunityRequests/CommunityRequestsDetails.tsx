@@ -14,6 +14,7 @@ import {
   Badge,
 } from "@mantine/core";
 import { LngLatLike, Map, Marker } from "mapbox-gl";
+import { IconMapPin } from "@tabler/icons-react";
 
 import MainContent from "../common/MainContent";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -31,7 +32,11 @@ import {
   NotificationVariant,
   showNotification,
 } from "../../utils/notifications";
-import { formatCommunityAddress } from "../../utils/community";
+import {
+  CoordinateType,
+  calculateDistance,
+  formatCommunityAddress,
+} from "../../utils/community";
 import { NewCommunity } from "../../features/community/types";
 import { updateOneUser, userState } from "../../features/user/UserSlice";
 import { UserRole } from "../../features/user/types";
@@ -52,13 +57,22 @@ function CommunityRequestsDetails() {
   const { communityApplication, isLoading: communityAppLoading } =
     useAppSelector(communityApplicationState);
   const { isLoading: communityLoading } = useAppSelector(communityState);
-  const { loggedInUser } = useAppSelector(userState);
+  const { loggedInUser, location } = useAppSelector(userState);
 
   const { classes } = useStyles();
 
   // Mapbox
   const mapboxMap = useRef<Map | null>(null);
   const mapMarker = useRef<Marker | null>(null);
+
+  const distance = calculateDistance(
+    location as CoordinateType,
+    [
+      communityApplication?.coordinate.longitude,
+      communityApplication?.coordinate.latitude,
+    ] as CoordinateType,
+    { units: "kilometers" }
+  );
 
   // TODO: Handle Error from Promise.all
   const acceptCommunityRequest = () => {
@@ -205,6 +219,12 @@ function CommunityRequestsDetails() {
               <Text color="dimmed" size="sm">
                 {communityApplication?.type}
               </Text>
+              <Group spacing={"0.3rem"} mt="sm" noWrap position="left">
+                <IconMapPin stroke={1} size={18} />
+                <Text color="dimmed" size="xs">
+                  {distance && `${distance} km`}
+                </Text>
+              </Group>
             </Stack>
             {communityApplication?.status ===
               CommunityApplicationStatus.PENDING && (
