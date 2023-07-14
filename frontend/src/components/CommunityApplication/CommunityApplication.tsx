@@ -78,13 +78,7 @@ const CommunityApplication = () => {
       return;
     }
 
-    let formData = form.values;
-    if (formData.type !== "Others") {
-      delete formData.typeOthers;
-    } else {
-      formData = { ...formData, type: formData.typeOthers! };
-      delete formData.typeOthers;
-    }
+    const formData = form.values;
 
     try {
       socket.emit(NOTIFICATION, {
