@@ -13,6 +13,7 @@ export type Message = {
   content: string;
   sender: User;
   chat: Chat;
+  isRead: boolean;
   createdAt: string;
   updatedAt: string;
 };

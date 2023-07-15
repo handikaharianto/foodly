@@ -61,6 +61,25 @@ class MessageService {
 
     return chatMessage;
   };
+
+  updateManyMessages = async (
+    filter: {
+      chat: string;
+      receiver: string;
+    },
+    updateBody: Pick<Message, "isRead">
+  ) => {
+    let query: any = {
+      chat: filter.chat,
+      sender: { $ne: filter.receiver },
+    };
+
+    await messageModel.updateMany(query, updateBody, {
+      sort: "createdAt",
+      runValidators: true,
+      new: true,
+    });
+  };
 }
 
 export default MessageService;
