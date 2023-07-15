@@ -4,6 +4,7 @@ import {
 } from "@chatscope/chat-ui-kit-react";
 import { Text } from "@mantine/core";
 import { Message } from "../../features/chat/types";
+import { setChatMessageTime } from "../../utils/DateAndTime";
 
 type SingleMessageProps = {
   message: Message;
@@ -17,9 +18,13 @@ function SingleMessage({ message, isSenderCurrentUser }: SingleMessageProps) {
       style={{ width: "75%" }}
     >
       <MessageGroup.Header>
-        <Text transform="capitalize" weight={500}>
+        <Text
+          transform="capitalize"
+          weight={500}
+          style={{ marginLeft: isSenderCurrentUser ? "auto" : "0" }}
+        >
           {message.sender.firstName} {message.sender.lastName}
-          {isSenderCurrentUser && " (Me)"}
+          {isSenderCurrentUser && "(Me)"}
         </Text>
       </MessageGroup.Header>
       <MessageGroup.Messages>
@@ -32,8 +37,10 @@ function SingleMessage({ message, isSenderCurrentUser }: SingleMessageProps) {
           <MessageUI.TextContent text={message.content} />
         </MessageUI>
       </MessageGroup.Messages>
-      <MessageGroup.Footer style={{ marginLeft: "auto" }}>
-        2 hr ago
+      <MessageGroup.Footer
+        style={{ marginLeft: isSenderCurrentUser ? "auto" : "0" }}
+      >
+        {setChatMessageTime(message.createdAt)}
       </MessageGroup.Footer>
     </MessageGroup>
   );
