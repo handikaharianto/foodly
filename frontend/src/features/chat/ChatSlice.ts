@@ -49,7 +49,6 @@ export const getOneMessage = executeAsyncThunk<
 
 type ChatState = {
   chats: Chat[];
-  temporaryChats: Chat[];
   chat: Chat | null;
   messages: Message[];
   message: Message | null;
@@ -58,7 +57,6 @@ type ChatState = {
 
 const initialState: ChatState = {
   chats: [],
-  temporaryChats: [],
   chat: null,
   messages: [],
   message: null,
@@ -95,7 +93,6 @@ export const chatSlice = createSlice({
       .addCase(createChat.fulfilled, (state, action) => {
         state.isLoading = false;
         state.chat = action.payload;
-        state.temporaryChats.unshift(action.payload);
       })
       .addCase(getAllChats.fulfilled, (state, action) => {
         state.isLoading = false;

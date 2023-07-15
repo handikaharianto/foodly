@@ -17,6 +17,7 @@ import { userState } from "../../features/user/UserSlice";
 import {
   chatState,
   createMessage,
+  getAllMessages,
   updateChatLatestMessage,
 } from "../../features/chat/ChatSlice";
 import SingleMessage from "./SingleMessage";
@@ -117,10 +118,16 @@ function ChatMessages() {
   };
 
   useEffect(() => {
+    if (chat) {
+      dispatch(getAllMessages({ chatId: chat._id }));
+    }
+  }, [chat]);
+
+  useEffect(() => {
     if (!isLoading) {
       scrollIntoView();
     }
-  }, [isLoading, scrollIntoView]);
+  }, [isLoading, scrollIntoView, messages]);
 
   return (
     <>

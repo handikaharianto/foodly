@@ -136,17 +136,13 @@ function DonationRequestsDetails() {
     }
   };
 
-  const contactDonor = async () => {
-    try {
-      await dispatch(
-        createChat({
-          users: [loggedInUser?._id, donation?.donor._id] as string[],
-        })
-      );
-      navigate("/chat");
-    } catch (error) {
-      console.log(error);
-    }
+  const contactDonor = () => {
+    dispatch(
+      createChat({
+        users: [loggedInUser?._id, donation?.donor._id] as string[],
+      })
+    );
+    navigate("/chat");
   };
 
   return (

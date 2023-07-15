@@ -42,19 +42,13 @@ function DonationDetails() {
     dispatch(getOneDonation({ donationId: donationId as string }));
   }, []);
 
-  const contactDonor = async () => {
-    try {
-      const createChatRes = await dispatch(
-        createChat({
-          users: [loggedInUser?._id, donation?.community.user] as string[],
-        })
-      ).unwrap();
-      await dispatch(getAllMessages({ chatId: createChatRes._id }));
-
-      navigate("/chat", { state: { previousPath: location.pathname } });
-    } catch (error) {
-      console.log(error);
-    }
+  const contactOwner = () => {
+    dispatch(
+      createChat({
+        users: [loggedInUser?._id, donation?.community.user] as string[],
+      })
+    );
+    navigate("/chat", { state: { previousPath: location.pathname } });
   };
 
   const cancelDonation = async () => {
@@ -117,7 +111,7 @@ function DonationDetails() {
               </Badge>
             </Stack>
             {donation?.status === DonationStatus.IN_PROGRESS && (
-              <Button variant="filled" color="red" onClick={contactDonor}>
+              <Button variant="filled" color="red" onClick={contactOwner}>
                 Contact owner
               </Button>
             )}

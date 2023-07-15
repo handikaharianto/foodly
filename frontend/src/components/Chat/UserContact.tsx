@@ -58,10 +58,7 @@ function UserContact({
   const dispatch = useAppDispatch();
 
   const handleChatClick = () => {
-    Promise.all([
-      dispatch(getOneChat({ chatId: _id })),
-      dispatch(getAllMessages({ chatId: _id })),
-    ]);
+    dispatch(getOneChat({ chatId: _id }));
   };
 
   return (
