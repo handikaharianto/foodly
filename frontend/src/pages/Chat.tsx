@@ -93,8 +93,6 @@ function Chat() {
       location.state?.previousPath.includes("/donations");
     const fromDonationRequestsPage =
       location.state?.previousPath.includes("/donation-requests");
-    console.log(fromDonationsPage);
-    console.log(fromDonationRequestsPage);
 
     if (fromDonationsPage || fromDonationRequestsPage) {
       return;
