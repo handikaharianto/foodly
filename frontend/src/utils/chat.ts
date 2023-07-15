@@ -5,3 +5,7 @@ export const getSender = (loggedInUser: User, users: User[]): string => {
     ? `${users[1].firstName} ${users[1].lastName}`
     : `${users[0].firstName} ${users[0].lastName}`;
 };
+
+export const getChatReceiverId = (loggedInUser: User, users: User[]) => {
+  return users[0]._id === loggedInUser._id ? users[1]._id : users[0]._id;
+};

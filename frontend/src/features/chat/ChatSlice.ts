@@ -49,6 +49,7 @@ export const getOneMessage = executeAsyncThunk<
 
 type ChatState = {
   chats: Chat[];
+  temporaryChats: Chat[];
   chat: Chat | null;
   messages: Message[];
   message: Message | null;
@@ -57,6 +58,7 @@ type ChatState = {
 
 const initialState: ChatState = {
   chats: [],
+  temporaryChats: [],
   chat: null,
   messages: [],
   message: null,
@@ -70,12 +72,30 @@ export const chatSlice = createSlice({
     addNewMessage(state, action: PayloadAction<Message>) {
       state.messages = [...state.messages, action.payload];
     },
+    addNewChatWithMessage(state, action: PayloadAction<Chat>) {
+      state.chats.unshift(action.payload);
+    },
+    updateChatLatestMessage(state, action: PayloadAction<Message>) {
+      if (state.chat) {
+        state.chat = { ...state.chat, latestMessage: action.payload } as Chat;
+      }
+      state.chats = state.chats.map((chat) => {
+        if (chat._id === action.payload.chat._id) {
+          return {
+            ...chat,
+            latestMessage: action.payload,
+          };
+        }
+        return chat;
+      });
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(createChat.fulfilled, (state, action) => {
         state.isLoading = false;
         state.chat = action.payload;
+        state.temporaryChats.unshift(action.payload);
       })
       .addCase(getAllChats.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -125,7 +145,8 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { addNewMessage } = chatSlice.actions;
+export const { addNewMessage, addNewChatWithMessage, updateChatLatestMessage } =
+  chatSlice.actions;
 
 export const chatState = (state: RootState) => state.chat;
 

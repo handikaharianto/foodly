@@ -8,7 +8,7 @@ import {
   Title,
   Text,
 } from "@mantine/core";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { modals } from "@mantine/modals";
 
 import MainContent from "../common/MainContent";
@@ -32,6 +32,7 @@ import {
 function DonationDetails() {
   const { donationId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const dispatch = useAppDispatch();
   const { donation, isLoading } = useAppSelector(donationState);
@@ -45,12 +46,12 @@ function DonationDetails() {
     try {
       const createChatRes = await dispatch(
         createChat({
-          users: [loggedInUser?._id, donation?.donor._id] as string[],
+          users: [loggedInUser?._id, donation?.community.user] as string[],
         })
       ).unwrap();
       await dispatch(getAllMessages({ chatId: createChatRes._id }));
 
-      navigate("/chat");
+      navigate("/chat", { state: { previousPath: location.pathname } });
     } catch (error) {
       console.log(error);
     }

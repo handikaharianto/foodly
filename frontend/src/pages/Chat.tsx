@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Paper, SimpleGrid, Stack, createStyles } from "@mantine/core";
 import { IconMessage } from "@tabler/icons-react";
 
@@ -5,11 +6,17 @@ import ChatSidebar from "../components/Chat/ChatSidebar";
 import ChatMessages from "../components/Chat/ChatMessages";
 import ChatHeader from "../components/Chat/ChatHeader";
 import EmptyState from "../components/common/EmptyState";
-import { useAppSelector } from "../app/hooks";
-import { chatState } from "../features/chat/ChatSlice";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import {
+  addNewMessage,
+  chatState,
+  updateChatLatestMessage,
+} from "../features/chat/ChatSlice";
+import { Message } from "../features/chat/types";
 
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import LoaderState from "../components/common/LoaderState";
+import { SEND_CHAT_MESSAGE, socket } from "../socket/socket";
 
 const useStyles = createStyles((theme) => ({
   chatGrid: {
@@ -30,7 +37,21 @@ const useStyles = createStyles((theme) => ({
 function Chat() {
   const { classes } = useStyles();
 
+  const dispatch = useAppDispatch();
   const { chat, isLoading } = useAppSelector(chatState);
+
+  useEffect(() => {
+    const onSendChatMessage = (data: Message) => {
+      dispatch(addNewMessage(data));
+      dispatch(updateChatLatestMessage(data));
+    };
+
+    socket.on(SEND_CHAT_MESSAGE, onSendChatMessage);
+
+    return () => {
+      socket.off(SEND_CHAT_MESSAGE, onSendChatMessage);
+    };
+  }, []);
 
   return (
     <SimpleGrid spacing={0} className={classes.chatGrid} h={"100%"}>
