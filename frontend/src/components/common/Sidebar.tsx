@@ -6,15 +6,14 @@ import {
   UnstyledButton,
 } from "@mantine/core";
 import {
-  IconBellRinging,
   IconLogout,
-  IconHome,
   IconFileDescription,
   IconDashboard,
   IconFiles,
   IconMessage,
   IconHeartHandshake,
   IconBuildingCommunity,
+  IconListDetails,
 } from "@tabler/icons-react";
 import { UserRole } from "../../features/user/types";
 import { NavLink } from "react-router-dom";
@@ -106,10 +105,11 @@ const communityUserLinks = [
     icon: IconBuildingCommunity,
   },
   { link: "/chat", label: "Chat", icon: IconMessage },
+  { link: "/donations", label: "Donations", icon: IconHeartHandshake },
   {
     link: "/donation-requests",
     label: "Donation Requests",
-    icon: IconHeartHandshake,
+    icon: IconListDetails,
   },
 ];
 

@@ -128,7 +128,11 @@ function App() {
                   />
                 </Route>
                 <Route
-                  element={<AuthorizeUser acceptedRoles={[UserRole.PUBLIC]} />}
+                  element={
+                    <AuthorizeUser
+                      acceptedRoles={[UserRole.PUBLIC, UserRole.COMMUNITY]}
+                    />
+                  }
                 >
                   <Route path="/donations" element={<Donations />} />
                 </Route>
