@@ -4,6 +4,7 @@ import {
   Avatar,
   Text,
   createStyles,
+  Stack,
 } from "@mantine/core";
 import { Message } from "../../features/chat/types";
 import { User } from "../../features/user/types";
@@ -11,7 +12,15 @@ import { getSender } from "../../utils/chat";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { userState } from "../../features/user/UserSlice";
 import { setChatMessageTime } from "../../utils/DateAndTime";
-import { chatState, getOneChat } from "../../features/chat/ChatSlice";
+import {
+  chatState,
+  getAllChats,
+  getAllMessages,
+  getOneChat,
+  updateManyMessages,
+} from "../../features/chat/ChatSlice";
+import { IconPointFilled } from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
   user: {
@@ -45,14 +54,32 @@ function UserContact({
   users,
   updatedAt,
 }: UserContactProps) {
-  const { classes } = useStyles();
+  const { classes, theme } = useStyles();
 
   const dispatch = useAppDispatch();
   const { loggedInUser } = useAppSelector(userState);
   const { chat } = useAppSelector(chatState);
 
+  const navigate = useNavigate();
+
+  const isSenderCurrentUser = latestMessage?.sender._id === loggedInUser?._id;
+  const isLatestMessageRead = latestMessage?.isRead;
+
   const handleChatClick = () => {
-    dispatch(getOneChat({ chatId: _id }));
+    Promise.all([
+      dispatch(
+        updateManyMessages({
+          chatId: _id,
+          receiver: loggedInUser?._id as string,
+          isRead: true,
+        })
+      ),
+      dispatch(getOneChat({ chatId: _id })),
+      dispatch(getAllMessages({ chatId: _id })),
+      dispatch(getAllChats({})),
+    ]).then((res) => {
+      navigate("/chat");
+    });
   };
 
   return (
@@ -70,7 +97,7 @@ function UserContact({
     >
       <Group noWrap w={"100%"}>
         <Avatar radius="xl" />
-        <Group w={"100%"} className={classes.userInfo} spacing={0}>
+        <Stack w={"100%"} className={classes.userInfo} spacing={0}>
           <Group noWrap position="apart" miw={"100%"}>
             <Text truncate size="sm" weight={500} transform="capitalize">
               {getSender(loggedInUser!, users)}
@@ -79,10 +106,24 @@ function UserContact({
               {setChatMessageTime(updatedAt)}
             </Text>
           </Group>
-          <Text truncate color="dimmed" size="xs" mih={"1.1625rem"} miw={"1px"}>
-            {latestMessage?.content}
-          </Text>
-        </Group>
+          <Group position="apart" h="100%">
+            <Text
+              truncate
+              color="dimmed"
+              size="xs"
+              mih={"1.1625rem"}
+              miw={"1px"}
+            >
+              {latestMessage?.content}
+            </Text>
+            {latestMessage && !isSenderCurrentUser && !isLatestMessageRead && (
+              <IconPointFilled
+                size={18}
+                style={{ color: theme.colors.red[7] }}
+              />
+            )}
+          </Group>
+        </Stack>
       </Group>
     </UnstyledButton>
   );

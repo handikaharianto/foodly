@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Paper, SimpleGrid, Stack, createStyles } from "@mantine/core";
 import { IconMessage } from "@tabler/icons-react";
+import { useLocation } from "react-router-dom";
 
 import ChatSidebar from "../components/Chat/ChatSidebar";
 import ChatMessages from "../components/Chat/ChatMessages";
@@ -10,14 +11,19 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
   addNewMessage,
   chatState,
+  clearCurrentChat,
+  getAllChats,
+  getAllMessages,
   reorderUserContacts,
   updateChatLatestMessage,
+  updateManyMessages,
 } from "../features/chat/ChatSlice";
 import { Message } from "../features/chat/types";
 
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import LoaderState from "../components/common/LoaderState";
 import { SEND_CHAT_MESSAGE, socket } from "../socket/socket";
+import { userState } from "../features/user/UserSlice";
 
 const useStyles = createStyles((theme) => ({
   chatGrid: {
@@ -36,16 +42,43 @@ const useStyles = createStyles((theme) => ({
 }));
 
 function Chat() {
+  const [isLoading, setIsLoading] = useState(true);
+
   const { classes } = useStyles();
 
   const dispatch = useAppDispatch();
-  const { chat, isLoading } = useAppSelector(chatState);
+  const { chat } = useAppSelector(chatState);
+  const { loggedInUser } = useAppSelector(userState);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    setIsLoading(true);
+    Promise.all([dispatch(getAllChats({}))]).then((res) => {
+      if (chat) {
+        dispatch(getAllMessages({ chatId: chat._id }));
+      }
+      setIsLoading(false);
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     const onSendChatMessage = (data: Message) => {
       dispatch(addNewMessage(data));
-      dispatch(updateChatLatestMessage(data));
+      dispatch(
+        updateChatLatestMessage({
+          ...data,
+          isRead: chat?._id === data.chat._id,
+        })
+      );
       dispatch(reorderUserContacts(data));
+      dispatch(
+        updateManyMessages({
+          chatId: chat?._id as string,
+          isRead: true,
+          receiver: loggedInUser?._id as string,
+        })
+      );
     };
 
     socket.on(SEND_CHAT_MESSAGE, onSendChatMessage);
@@ -53,11 +86,25 @@ function Chat() {
     return () => {
       socket.off(SEND_CHAT_MESSAGE, onSendChatMessage);
     };
-  }, []);
+  }, [chat?._id]);
+
+  useEffect(() => {
+    const fromDonationsPage =
+      location.state?.previousPath.includes("/donations");
+    const fromDonationRequestsPage =
+      location.state?.previousPath.includes("/donation-requests");
+    console.log(fromDonationsPage);
+    console.log(fromDonationRequestsPage);
+
+    if (fromDonationsPage || fromDonationRequestsPage) {
+      return;
+    }
+    dispatch(clearCurrentChat({}));
+  }, [dispatch]);
 
   return (
     <SimpleGrid spacing={0} className={classes.chatGrid} h={"100%"}>
-      <ChatSidebar />
+      <ChatSidebar isLoading={isLoading} />
       <Stack spacing={0}>
         {isLoading ? (
           <Paper
@@ -71,7 +118,7 @@ function Chat() {
         ) : chat ? (
           <>
             <ChatHeader />
-            <ChatMessages />
+            <ChatMessages isLoading={isLoading} />
           </>
         ) : (
           <Paper

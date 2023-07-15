@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Button, Divider, Group, Stack, Text, Title } from "@mantine/core";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import MainContent from "../common/MainContent";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -25,6 +25,7 @@ import { UserRole } from "../../features/user/types";
 function DonationRequestsDetails() {
   const { donationId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const dispatch = useAppDispatch();
   const { donation, isLoading } = useAppSelector(donationState);
@@ -136,13 +137,19 @@ function DonationRequestsDetails() {
     }
   };
 
-  const contactDonor = () => {
-    dispatch(
-      createChat({
-        users: [loggedInUser?._id, donation?.donor._id] as string[],
-      })
-    );
-    navigate("/chat");
+  const contactDonor = async () => {
+    try {
+      await dispatch(
+        createChat({
+          users: [loggedInUser?._id, donation?.donor._id] as string[],
+        })
+      );
+      navigate("/chat", {
+        state: { previousPath: location.pathname },
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

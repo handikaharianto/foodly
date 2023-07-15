@@ -50,7 +50,11 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function ChatSidebar() {
+type ChatSidebarProps = {
+  isLoading: boolean;
+};
+
+function ChatSidebar({ isLoading }: ChatSidebarProps) {
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearchInput] = useDebouncedValue(searchInput, 200);
 
@@ -59,11 +63,11 @@ function ChatSidebar() {
   const { classes } = useStyles();
 
   const dispatch = useAppDispatch();
-  const { isLoading, chats } = useAppSelector(chatState);
+  const { chats } = useAppSelector(chatState);
   const { loggedInUser } = useAppSelector(userState);
 
   const memoizedChats = useMemo(() => {
-    let filteredChats = chats.filter((chat) => {
+    const filteredChats = chats.filter((chat) => {
       const contactName = getSender(
         loggedInUser as LoginUserResponse,
         chat.users
@@ -75,19 +79,16 @@ function ChatSidebar() {
       return false;
     });
 
-    // check whether the chat starts from /donations
-    if (!location.state?.previousPath?.includes("/donations")) {
-      filteredChats = filteredChats.filter(
-        (chat) => chat.latestMessage !== undefined
-      );
+    // check whether the chat starts from /donations and /donation-requests
+    const fromDonations = location.state?.previousPath?.includes("/donations");
+    const fromDonationRequests =
+      location.state?.previousPath?.includes("/donation-requests");
+    if (fromDonations || fromDonationRequests) {
+      return filteredChats;
     }
 
-    return filteredChats;
-  }, [chats, debouncedSearchInput, location.state, loggedInUser]);
-
-  useEffect(() => {
-    dispatch(getAllChats({}));
-  }, []);
+    return filteredChats.filter((chat) => chat.latestMessage !== undefined);
+  }, [chats, debouncedSearchInput, location.state?.previousPath, loggedInUser]);
 
   useEffect(() => {
     const createNewChatWithMessage = (chat: Chat) => {

@@ -22,7 +22,7 @@ import LoaderState from "../common/LoaderState";
 import { DonationStatus } from "../../features/donation/types";
 import DonationStepper from "./DonationStepper";
 import DonationListTable from "./DonationListTable";
-import { createChat, getAllMessages } from "../../features/chat/ChatSlice";
+import { createChat } from "../../features/chat/ChatSlice";
 import { userState } from "../../features/user/UserSlice";
 import {
   NotificationVariant,
@@ -42,13 +42,19 @@ function DonationDetails() {
     dispatch(getOneDonation({ donationId: donationId as string }));
   }, []);
 
-  const contactOwner = () => {
-    dispatch(
-      createChat({
-        users: [loggedInUser?._id, donation?.community.user] as string[],
-      })
-    );
-    navigate("/chat", { state: { previousPath: location.pathname } });
+  const contactOwner = async () => {
+    try {
+      await dispatch(
+        createChat({
+          users: [loggedInUser?._id, donation?.community.user] as string[],
+        })
+      );
+      navigate("/chat", {
+        state: { previousPath: location.pathname },
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const cancelDonation = async () => {

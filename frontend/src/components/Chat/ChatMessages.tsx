@@ -17,7 +17,6 @@ import { userState } from "../../features/user/UserSlice";
 import {
   chatState,
   createMessage,
-  getAllMessages,
   reorderUserContacts,
   updateChatLatestMessage,
 } from "../../features/chat/ChatSlice";
@@ -56,12 +55,16 @@ const useStyles = createStyles((theme) => ({
 
 const SEND_CHAT_MESSAGE = "send_chat_message";
 
-function ChatMessages() {
+type ChatMessagesProps = {
+  isLoading: boolean;
+};
+
+function ChatMessages({ isLoading }: ChatMessagesProps) {
   const { classes } = useStyles();
 
   const dispatch = useAppDispatch();
   const { loggedInUser } = useAppSelector(userState);
-  const { chat, messages, isLoading } = useAppSelector(chatState);
+  const { chat, messages } = useAppSelector(chatState);
 
   const { scrollIntoView, targetRef, scrollableRef } = useScrollIntoView<
     HTMLDivElement,
@@ -118,12 +121,6 @@ function ChatMessages() {
       submitMessage();
     }
   };
-
-  useEffect(() => {
-    if (chat) {
-      dispatch(getAllMessages({ chatId: chat._id }));
-    }
-  }, [chat]);
 
   useEffect(() => {
     if (!isLoading) {
