@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
   addNewMessage,
   chatState,
+  reorderUserContacts,
   updateChatLatestMessage,
 } from "../features/chat/ChatSlice";
 import { Message } from "../features/chat/types";
@@ -44,6 +45,7 @@ function Chat() {
     const onSendChatMessage = (data: Message) => {
       dispatch(addNewMessage(data));
       dispatch(updateChatLatestMessage(data));
+      dispatch(reorderUserContacts(data));
     };
 
     socket.on(SEND_CHAT_MESSAGE, onSendChatMessage);

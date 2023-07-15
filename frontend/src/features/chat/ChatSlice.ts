@@ -87,6 +87,14 @@ export const chatSlice = createSlice({
         return chat;
       });
     },
+    reorderUserContacts(state, action: PayloadAction<Message>) {
+      state.chats.forEach((chat, index) => {
+        if (chat._id === action.payload.chat._id) {
+          const removedChat = state.chats.splice(index, 1)[0];
+          state.chats.unshift(removedChat);
+        }
+      });
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -142,8 +150,12 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { addNewMessage, addNewChatWithMessage, updateChatLatestMessage } =
-  chatSlice.actions;
+export const {
+  addNewMessage,
+  addNewChatWithMessage,
+  updateChatLatestMessage,
+  reorderUserContacts,
+} = chatSlice.actions;
 
 export const chatState = (state: RootState) => state.chat;
 

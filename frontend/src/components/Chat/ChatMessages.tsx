@@ -18,6 +18,7 @@ import {
   chatState,
   createMessage,
   getAllMessages,
+  reorderUserContacts,
   updateChatLatestMessage,
 } from "../../features/chat/ChatSlice";
 import SingleMessage from "./SingleMessage";
@@ -101,6 +102,7 @@ function ChatMessages() {
         );
       }
       dispatch(updateChatLatestMessage(messageData));
+      dispatch(reorderUserContacts(messageData));
 
       messageForm.reset();
 
