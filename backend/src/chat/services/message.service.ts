@@ -30,7 +30,7 @@ class MessageService {
 
   getAllMessages = async (chat: string): Promise<Message[]> => {
     const messages = await messageModel
-      .find({ chat })
+      .find({ chat }, null, { sort: "createdAt" })
       .populate<{ users: UserWithoutPassword }>({
         path: "sender",
         select: "-password",

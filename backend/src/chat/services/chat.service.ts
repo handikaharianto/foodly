@@ -32,9 +32,13 @@ class ChatService {
 
   getAllChats = async (userId: string): Promise<Chat[]> => {
     const chats = await chatModel
-      .find({
-        users: { $in: [userId] },
-      })
+      .find(
+        {
+          users: { $in: [userId] },
+        },
+        null,
+        { sort: "-updatedAt" }
+      )
       .populate<{ latestMessage: Message }>({ path: "latestMessage" })
       .populate<{ users: UserWithoutPassword[] }>({
         path: "users",
