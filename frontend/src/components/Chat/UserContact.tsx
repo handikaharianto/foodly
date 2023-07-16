@@ -48,12 +48,7 @@ type UserContactProps = {
   updatedAt: string;
 };
 
-function UserContact({
-  _id,
-  latestMessage,
-  users,
-  updatedAt,
-}: UserContactProps) {
+function UserContact({ _id, latestMessage, users }: UserContactProps) {
   const { classes, theme } = useStyles();
 
   const dispatch = useAppDispatch();
@@ -66,18 +61,16 @@ function UserContact({
   const isLatestMessageRead = latestMessage?.isRead;
 
   const handleChatClick = () => {
-    Promise.all([
-      dispatch(
-        updateManyMessages({
-          chatId: _id,
-          receiver: loggedInUser?._id as string,
-          isRead: true,
-        })
-      ),
-      dispatch(getOneChat({ chatId: _id })),
-      dispatch(getAllMessages({ chatId: _id })),
-      dispatch(getAllChats({})),
-    ]).then((res) => {
+    dispatch(
+      updateManyMessages({
+        chatId: _id,
+        receiver: loggedInUser?._id as string,
+        isRead: true,
+      })
+    ).then((res) => {
+      dispatch(getOneChat({ chatId: _id }));
+      dispatch(getAllMessages({ chatId: _id }));
+      dispatch(getAllChats({}));
       navigate("/chat");
     });
   };
@@ -103,7 +96,7 @@ function UserContact({
               {getSender(loggedInUser!, users)}
             </Text>
             <Text size={"xs"} color="dimmed" className={classes.userTimestamp}>
-              {setChatMessageTime(updatedAt)}
+              {setChatMessageTime(latestMessage?.createdAt as string)}
             </Text>
           </Group>
           <Group position="apart" h="100%">
@@ -116,7 +109,7 @@ function UserContact({
             >
               {latestMessage?.content}
             </Text>
-            {latestMessage && !isSenderCurrentUser && !isLatestMessageRead && (
+            {!isSenderCurrentUser && latestMessage && !isLatestMessageRead && (
               <IconPointFilled
                 size={18}
                 style={{ color: theme.colors.red[7] }}
