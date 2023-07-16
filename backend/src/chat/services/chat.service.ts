@@ -39,7 +39,10 @@ class ChatService {
         null,
         { sort: "-updatedAt" }
       )
-      .populate<{ latestMessage: Message }>({ path: "latestMessage" })
+      .populate<{ latestMessage: Message }>({
+        path: "latestMessage",
+        populate: { path: "sender" },
+      })
       .populate<{ users: UserWithoutPassword[] }>({
         path: "users",
         select: "-password",
