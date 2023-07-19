@@ -1,7 +1,7 @@
 import { Button, Stack, Center } from "@mantine/core";
 import { isNotEmpty } from "@mantine/form";
 import { useEffect } from "react";
-import { IconReportSearch } from "@tabler/icons-react";
+import { IconBinaryTree2, IconReportSearch } from "@tabler/icons-react";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -105,17 +105,24 @@ const CommunityApplication = () => {
   };
 
   useEffect(() => {
-    dispatch(
-      getAllCommunityApplications({
-        status: CommunityApplicationStatus.PENDING,
-      })
-    );
-  }, [dispatch]);
+    if (loggedInUser?.role === UserRole.PUBLIC) {
+      dispatch(
+        getAllCommunityApplications({
+          status: CommunityApplicationStatus.PENDING,
+        })
+      );
+    }
+  }, [dispatch, loggedInUser?.role]);
 
   return (
     <MainContent heading={"Community Applications"}>
       {isLoading ? (
         <LoaderState />
+      ) : loggedInUser?.role === UserRole.COMMUNITY ? (
+        <EmptyState
+          Icon={IconBinaryTree2}
+          title={"Multi-community feature is coming soon."}
+        />
       ) : communityApplications.length > 0 ? (
         <EmptyState
           Icon={IconReportSearch}

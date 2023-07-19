@@ -61,7 +61,11 @@ function App() {
                   <Route path="/chat" element={<Chat />} />
                 </Route>
                 <Route
-                  element={<AuthorizeUser acceptedRoles={[UserRole.PUBLIC]} />}
+                  element={
+                    <AuthorizeUser
+                      acceptedRoles={[UserRole.PUBLIC, UserRole.COMMUNITY]}
+                    />
+                  }
                 >
                   <Route
                     path="/community-applications"

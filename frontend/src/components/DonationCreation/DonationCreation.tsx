@@ -159,7 +159,14 @@ function DonationCreation({ closeDonateModal }: DonationCreationProps) {
                       min: 1,
                     })}
                   />
-                  <ActionIcon onClick={() => removeItem(index)} mt="1.75rem">
+                  <ActionIcon
+                    disabled={fields.length === 1}
+                    onClick={() => removeItem(index)}
+                    mt="1.75rem"
+                    sx={{
+                      visibility: fields.length === 1 ? "hidden" : "visible",
+                    }}
+                  >
                     <IconTrash size="1rem" color={theme.colors.red[7]} />
                   </ActionIcon>
                 </Group>

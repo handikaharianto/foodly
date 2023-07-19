@@ -111,6 +111,11 @@ const communityUserLinks = [
     label: "Donation Requests",
     icon: IconListDetails,
   },
+  {
+    link: "/community-applications",
+    label: "Community Applications",
+    icon: IconFileDescription,
+  },
 ];
 
 const administratorLinks = [
