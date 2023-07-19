@@ -156,6 +156,7 @@ function DonationCreation({ closeDonateModal }: DonationCreationProps) {
                     {...register(`items.${index}.quantity` as const, {
                       required: "Item quantity is required.",
                       valueAsNumber: true,
+                      min: 1,
                     })}
                   />
                   <ActionIcon onClick={() => removeItem(index)} mt="1.75rem">
