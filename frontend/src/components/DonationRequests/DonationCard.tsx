@@ -39,7 +39,9 @@ function DonationCard({ _id, status, createdAt, donor }: DonationCardProps) {
       : 100;
 
   const progressColor: DefaultMantineColor =
-    status === DonationStatus.PENDING || status === DonationStatus.IN_PROGRESS
+    status === DonationStatus.PENDING
+      ? "grey"
+      : status === DonationStatus.IN_PROGRESS
       ? "blue"
       : status === DonationStatus.RECEIVED
       ? "green"

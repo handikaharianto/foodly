@@ -6,6 +6,7 @@ import {
   Group,
   Title,
   createStyles,
+  Divider,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { IconMail, IconMapPin, IconPhone } from "@tabler/icons-react";
@@ -76,14 +77,17 @@ function CommunityCard({
             >
               {name}
             </Title>
-            <Badge color="red" size="sm" radius="sm" variant="outline">
-              {type}
-            </Badge>
-            <Group spacing={"0.3rem"} mt="sm" noWrap position="left">
-              <IconMapPin stroke={1} size={18} />
-              <Text color="dimmed" size="xs">
-                {distance && `${distance} km`}
-              </Text>
+            <Group mt="sm" align="center">
+              <Badge color="red" size="sm" radius="sm" variant="outline">
+                {type}
+              </Badge>
+              <Divider orientation="vertical" />
+              <Group spacing={"0.3rem"} noWrap position="left">
+                <IconMapPin stroke={1} size={18} />
+                <Text color="dimmed" size="xs">
+                  {distance && `${distance} km`}
+                </Text>
+              </Group>
             </Group>
           </Container>
         </Group>
