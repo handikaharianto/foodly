@@ -12,7 +12,7 @@ export const createCommunity = executeAsyncThunk<NewCommunity, Community>(
 );
 
 export const getAllCommunities = executeAsyncThunk<
-  { limit: number; page: number },
+  { limit: number; page: number; searchInput: string },
   PaginatedData<Community>
 >("community/getAllCommunities", (req) =>
   privateAxios.post("/communities/list", req)

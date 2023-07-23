@@ -34,7 +34,7 @@ function CommunityApplicationDetailsForm() {
   );
 
   return (
-    <Paper withBorder p="xl" className={classes.cardGrid}>
+    <Paper withBorder p="xl" className={classes.cardGrid} radius="md">
       <div>
         <Text weight={600} mb="xs">
           Community details
@@ -56,21 +56,11 @@ function CommunityApplicationDetailsForm() {
           disabled={isLoading}
           mt="md"
           withinPortal
-          data={["Orphanage", "Nursing home", "Others"]}
+          data={["Orphanage", "Nursing home"]}
           placeholder="Pick one"
           label="Community type"
           {...form.getInputProps("type")}
         />
-        {isOthersSelected && (
-          <TextInput
-            withAsterisk
-            disabled={isLoading}
-            label="Community type (Others)"
-            placeholder=""
-            mt="md"
-            {...form.getInputProps("typeOthers")}
-          />
-        )}
         <MultiSelect
           withAsterisk
           disabled={isLoading}

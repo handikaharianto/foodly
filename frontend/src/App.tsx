@@ -3,7 +3,6 @@ import mapboxgl from "mapbox-gl";
 
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import TestPage from "./components/TestPage";
 import SharedLayout from "./components/common/SharedLayout";
 import CommunityApplication from "./components/CommunityApplication/CommunityApplication";
 import SetupAxiosInterceptor from "./components/common/SetupAxiosInterceptor";
@@ -17,13 +16,16 @@ import CommunityRequests from "./pages/CommunityRequests";
 import AdminDashboard from "./pages/AdminDashboard";
 import CommunityRequestsDetails from "./components/CommunityRequests/CommunityRequestsDetails";
 import Chat from "./pages/Chat";
-import PublicUserHome from "./components/Home/PublicUser/PublicUserHome";
+import Communities from "./pages/Communities";
 import CommunityDetails from "./components/Home/PublicUser/CommunityDetails";
 import DonationRequests from "./pages/DonationRequests";
 import DonationRequestsDetails from "./components/DonationRequests/DonationRequestsDetails";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import Donations from "./pages/Donations";
+import DonationDetails from "./components/Donations/DonationDetails";
+import CurrentUserLocation from "./components/common/CurrentUserLocation";
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -37,90 +39,119 @@ function App() {
           <Route path="/unauthorized" element={<Forbidden />} />
 
           <Route element={<AuthGuard />}>
-            <Route element={<SharedLayout />}>
-              <Route path="/" element={<Index />} />
-              <Route path="/notifications" element={<TestPage />} />
-
-              <Route
-                element={
-                  <AuthorizeUser
-                    acceptedRoles={[UserRole.PUBLIC, UserRole.COMMUNITY]}
+            <Route element={<CurrentUserLocation />}>
+              <Route element={<SharedLayout />}>
+                <Route path="/" element={<Index />} />
+                <Route
+                  element={
+                    <AuthorizeUser
+                      acceptedRoles={[UserRole.PUBLIC, UserRole.COMMUNITY]}
+                    />
+                  }
+                >
+                  <Route path="/communities" element={<Communities />} />
+                </Route>
+                <Route
+                  element={
+                    <AuthorizeUser
+                      acceptedRoles={[UserRole.PUBLIC, UserRole.COMMUNITY]}
+                    />
+                  }
+                >
+                  <Route path="/chat" element={<Chat />} />
+                </Route>
+                <Route
+                  element={
+                    <AuthorizeUser
+                      acceptedRoles={[UserRole.PUBLIC, UserRole.COMMUNITY]}
+                    />
+                  }
+                >
+                  <Route
+                    path="/community-applications"
+                    element={<CommunityApplication />}
                   />
-                }
-              >
-                <Route path="/home" element={<PublicUserHome />} />
-              </Route>
-              <Route
-                element={
-                  <AuthorizeUser
-                    acceptedRoles={[UserRole.PUBLIC, UserRole.COMMUNITY]}
+                </Route>
+                <Route
+                  element={
+                    <AuthorizeUser acceptedRoles={[UserRole.ADMINISTRATOR]} />
+                  }
+                >
+                  <Route path="/dashboard" element={<AdminDashboard />} />
+                </Route>
+                <Route
+                  element={
+                    <AuthorizeUser acceptedRoles={[UserRole.ADMINISTRATOR]} />
+                  }
+                >
+                  <Route
+                    path="/community-requests"
+                    element={<CommunityRequests />}
                   />
-                }
-              >
-                <Route path="/chat" element={<Chat />} />
-              </Route>
-              <Route
-                element={<AuthorizeUser acceptedRoles={[UserRole.PUBLIC]} />}
-              >
+                </Route>
                 <Route
-                  path="/community-applications"
-                  element={<CommunityApplication />}
-                />
-              </Route>
-              <Route
-                element={
-                  <AuthorizeUser acceptedRoles={[UserRole.ADMINISTRATOR]} />
-                }
-              >
-                <Route path="/dashboard" element={<AdminDashboard />} />
-              </Route>
-              <Route
-                element={
-                  <AuthorizeUser acceptedRoles={[UserRole.ADMINISTRATOR]} />
-                }
-              >
-                <Route
-                  path="/community-requests"
-                  element={<CommunityRequests />}
-                />
-              </Route>
-              <Route
-                element={
-                  <AuthorizeUser acceptedRoles={[UserRole.ADMINISTRATOR]} />
-                }
-              >
-                <Route
-                  path="/community-requests/:communityApplicationId"
-                  element={<CommunityRequestsDetails />}
-                />
-              </Route>
-              <Route
-                element={<AuthorizeUser acceptedRoles={[UserRole.PUBLIC]} />}
-              >
-                <Route
-                  path="/communities/:communityId"
-                  element={<CommunityDetails />}
-                />
-              </Route>
-              <Route
-                element={<AuthorizeUser acceptedRoles={[UserRole.COMMUNITY]} />}
-              >
-                <Route
-                  path="/donation-requests"
-                  element={<DonationRequests />}
-                />
-              </Route>
-              <Route
-                element={
-                  <AuthorizeUser
-                    acceptedRoles={[UserRole.COMMUNITY, UserRole.PUBLIC]}
+                  element={
+                    <AuthorizeUser acceptedRoles={[UserRole.ADMINISTRATOR]} />
+                  }
+                >
+                  <Route
+                    path="/community-requests/:communityApplicationId"
+                    element={<CommunityRequestsDetails />}
                   />
-                }
-              >
+                </Route>
                 <Route
-                  path="/donation-requests/:donationId"
-                  element={<DonationRequestsDetails />}
-                />
+                  element={
+                    <AuthorizeUser
+                      acceptedRoles={[UserRole.PUBLIC, UserRole.COMMUNITY]}
+                    />
+                  }
+                >
+                  <Route
+                    path="/communities/:communityId"
+                    element={<CommunityDetails />}
+                  />
+                </Route>
+                <Route
+                  element={
+                    <AuthorizeUser acceptedRoles={[UserRole.COMMUNITY]} />
+                  }
+                >
+                  <Route
+                    path="/donation-requests"
+                    element={<DonationRequests />}
+                  />
+                </Route>
+                <Route
+                  element={
+                    <AuthorizeUser acceptedRoles={[UserRole.COMMUNITY]} />
+                  }
+                >
+                  <Route
+                    path="/donation-requests/:donationId"
+                    element={<DonationRequestsDetails />}
+                  />
+                </Route>
+                <Route
+                  element={
+                    <AuthorizeUser
+                      acceptedRoles={[UserRole.PUBLIC, UserRole.COMMUNITY]}
+                    />
+                  }
+                >
+                  <Route path="/donations" element={<Donations />} />
+                </Route>
+                <Route
+                  element={
+                    <AuthorizeUser
+                      acceptedRoles={[UserRole.PUBLIC, UserRole.COMMUNITY]}
+                    />
+                  }
+                >
+                  <Route
+                    path="/donations/:donationId"
+                    element={<DonationDetails />}
+                  />
+                </Route>
               </Route>
             </Route>
           </Route>

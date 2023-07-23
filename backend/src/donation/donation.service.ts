@@ -45,6 +45,7 @@ class DonationService {
       .find(filter, null, {
         skip: (page - 1) * limit,
         limit,
+        sort: "-createdAt",
       })
       .populate<{ community: Community }>({
         path: "community",
@@ -96,6 +97,12 @@ class DonationService {
       throw new ApiError(HTTP_STATUS.NOT_FOUND_404, DONATION_NOT_FOUND);
 
     return donation;
+  };
+
+  deleteOneDonation = async (donationId: string): Promise<void> => {
+    const donation = await donationModel.findByIdAndDelete(donationId);
+    if (!donation)
+      throw new ApiError(HTTP_STATUS.NOT_FOUND_404, DONATION_NOT_FOUND);
   };
 }
 

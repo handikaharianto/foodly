@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Button, Divider, Group, Stack, Text, Title } from "@mantine/core";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import MainContent from "../common/MainContent";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -19,10 +19,13 @@ import {
 } from "../../utils/notifications";
 import { createChat } from "../../features/chat/ChatSlice";
 import { userState } from "../../features/user/UserSlice";
+import { NOTIFICATION, socket } from "../../socket/socket";
+import { UserRole } from "../../features/user/types";
 
 function DonationRequestsDetails() {
   const { donationId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const dispatch = useAppDispatch();
   const { donation, isLoading } = useAppSelector(donationState);
@@ -34,6 +37,16 @@ function DonationRequestsDetails() {
 
   const acceptDonation = async () => {
     try {
+      socket.emit(NOTIFICATION, {
+        content: `${donation?.community.name} has accepted your donation request.`,
+        sender: loggedInUser?._id,
+        receiver: donation?.donor._id,
+        target:
+          loggedInUser?.role === UserRole.COMMUNITY
+            ? UserRole.COMMUNITY
+            : UserRole.PUBLIC,
+      });
+
       const res = await dispatch(
         updateOneDonation({
           donationId: donationId as string,
@@ -57,6 +70,16 @@ function DonationRequestsDetails() {
   };
 
   const rejectDonation = async () => {
+    socket.emit(NOTIFICATION, {
+      content: `${donation?.community.name} has rejected your donation request.`,
+      sender: loggedInUser?._id,
+      receiver: donation?.donor._id,
+      target:
+        loggedInUser?.role === UserRole.COMMUNITY
+          ? UserRole.COMMUNITY
+          : UserRole.PUBLIC,
+    });
+
     try {
       const res = await dispatch(
         updateOneDonation({
@@ -82,6 +105,16 @@ function DonationRequestsDetails() {
 
   const donationReceived = async () => {
     try {
+      socket.emit(NOTIFICATION, {
+        content: `${donation?.community.name} has received your donation. Thank you for donating!`,
+        sender: loggedInUser?._id,
+        receiver: donation?.donor._id,
+        target:
+          loggedInUser?.role === UserRole.COMMUNITY
+            ? UserRole.COMMUNITY
+            : UserRole.PUBLIC,
+      });
+
       const res = await dispatch(
         updateOneDonation({
           donationId: donationId as string,
@@ -111,9 +144,11 @@ function DonationRequestsDetails() {
           users: [loggedInUser?._id, donation?.donor._id] as string[],
         })
       );
-      navigate("/chat");
+      navigate("/chat", {
+        state: { previousPath: location.pathname },
+      });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

@@ -1,5 +1,7 @@
 import { model, Schema } from "mongoose";
+
 import { Community, CommunityAddress, CommunityCoordinate } from "./types";
+import { capitalizeWords } from "../utils/formatting";
 
 export const communityAddressSchema = new Schema<CommunityAddress>({
   addressLine1: {
@@ -45,7 +47,6 @@ const communitySchema = new Schema<Community>(
       type: String,
       required: true,
       trim: true,
-      uppercase: true,
     },
     foodPreferences: [
       {
@@ -68,6 +69,12 @@ const communitySchema = new Schema<Community>(
   },
   { timestamps: true }
 );
+
+communitySchema.pre("save", function (next) {
+  this.name = capitalizeWords(this.name);
+
+  next();
+});
 
 const communityModel = model<Community>("Community", communitySchema);
 

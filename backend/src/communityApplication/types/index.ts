@@ -4,9 +4,9 @@ import { CommunityAddress, CommunityCoordinate } from "src/community/types";
 import { UserWithoutPassword } from "src/user/types";
 
 export enum CommunityApplicationStatus {
-  PENDING = "PENDING",
-  ACCEPTED = "ACCEPTED",
-  REJECTED = "REJECTED",
+  PENDING = "pending",
+  ACCEPTED = "accepted",
+  REJECTED = "rejected",
 }
 
 export type CommunityApplication = {

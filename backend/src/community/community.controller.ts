@@ -73,14 +73,15 @@ class CommunityController {
     res: Response,
     next: NextFunction
   ) => {
-    const { limit, page } = req.body;
+    const { limit, page, searchInput } = req.body;
     const { _id: userId } = req.user;
 
     try {
       const data = await this._communityService.getAllCommunities(
         userId,
         limit,
-        page
+        page,
+        searchInput
       );
       return res.status(HTTP_STATUS.OK_200).json(data);
     } catch (error: any) {

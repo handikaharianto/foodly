@@ -14,6 +14,8 @@ import communityApplicationRouter from "./communityApplication/communityApplicat
 import chatRouter from "./chat/routes/chat.route";
 import connectSocket, { SOCKET_CONNECTED } from "./socket";
 import donationRouter from "./donation/donation.route";
+import dashboardRouter from "./dashboard/dashboard.route";
+import notificationRouter from "./notification/notification.route";
 
 dotenv.config();
 
@@ -21,7 +23,11 @@ export const app = express();
 export const server = http.createServer(app);
 export const io = new Server(server, {
   cors: {
-    origin: ["http://127.0.0.1:5173", "http://localhost:5173"],
+    origin: [
+      "http://127.0.0.1:5173",
+      "http://localhost:5173",
+      "https://foodly-app.onrender.com",
+    ],
   },
 });
 
@@ -31,8 +37,12 @@ const COOKIE_SECRET_KEY = config.get<string>("cookieSecretKey");
 
 app.use(
   cors({
-    origin: ["http://127.0.0.1:5173", "http://localhost:5173"],
-    credentials: true,
+    origin: [
+      "http://127.0.0.1:5173",
+      "http://localhost:5173",
+      "https://foodly-app.onrender.com",
+    ],
+    // credentials: true,`
   })
 );
 app.use(json());
@@ -45,6 +55,8 @@ app.use("/api/communities", communityRouter);
 app.use("/api/community-applications", communityApplicationRouter);
 app.use("/api/chats", chatRouter);
 app.use("/api/donations", donationRouter);
+app.use("/api/dashboard", dashboardRouter);
+app.use("/api/notifications", notificationRouter);
 
 // error handler
 app.use(handleError);

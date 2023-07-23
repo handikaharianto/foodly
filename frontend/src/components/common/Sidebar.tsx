@@ -6,14 +6,14 @@ import {
   UnstyledButton,
 } from "@mantine/core";
 import {
-  IconBellRinging,
   IconLogout,
-  IconHome,
   IconFileDescription,
   IconDashboard,
   IconFiles,
   IconMessage,
   IconHeartHandshake,
+  IconBuildingCommunity,
+  IconListDetails,
 } from "@tabler/icons-react";
 import { UserRole } from "../../features/user/types";
 import { NavLink } from "react-router-dom";
@@ -84,9 +84,13 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const publicUserLinks = [
-  { link: "/home", label: "Home", icon: IconHome },
-  { link: "/notifications", label: "Notifications", icon: IconBellRinging },
+  {
+    link: "/communities",
+    label: "Browse Communities",
+    icon: IconBuildingCommunity,
+  },
   { link: "/chat", label: "Chat", icon: IconMessage },
+  { link: "/donations", label: "Donations", icon: IconHeartHandshake },
   {
     link: "/community-applications",
     label: "Community Applications",
@@ -95,13 +99,22 @@ const publicUserLinks = [
 ];
 
 const communityUserLinks = [
-  { link: "/home", label: "Home", icon: IconHome },
-  { link: "/notifications", label: "Notifications", icon: IconBellRinging },
+  {
+    link: "/communities",
+    label: "Browse Communities",
+    icon: IconBuildingCommunity,
+  },
   { link: "/chat", label: "Chat", icon: IconMessage },
+  { link: "/donations", label: "Donations", icon: IconHeartHandshake },
   {
     link: "/donation-requests",
     label: "Donation Requests",
-    icon: IconHeartHandshake,
+    icon: IconListDetails,
+  },
+  {
+    link: "/community-applications",
+    label: "Community Applications",
+    icon: IconFileDescription,
   },
 ];
 

@@ -50,20 +50,18 @@ const useStyles = createStyles((theme) => ({
 
 type CommunityApplicationMapProps = {
   closeModal: () => void;
-  showCommunityLocationError: boolean;
 };
 
-function CommunityApplicationMap({
-  closeModal,
-  showCommunityLocationError,
-}: CommunityApplicationMapProps) {
-  const [searchInput, setSearchInput] = useState("");
-  const [debouncedSearchInput] = useDebouncedValue(searchInput, 200);
-
+function CommunityApplicationMap({ closeModal }: CommunityApplicationMapProps) {
   const [locationResults, setLocationResults] = useState<
     LocationAutoCompleteType[]
   >([]);
   const [opened, setOpened] = useState(false);
+  const [lngLat, setLngLat] = useState<{ lat: number; lng: number } | null>(
+    null
+  );
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearchInput] = useDebouncedValue(searchInput, 200);
 
   const { classes } = useStyles();
 
@@ -77,6 +75,19 @@ function CommunityApplicationMap({
     () => (debouncedSearchInput.length < 1 ? [] : locationResults),
     [debouncedSearchInput.length, locationResults]
   );
+
+  const confirmCoordinate = () => {
+    if (!lngLat) return;
+
+    form.setValues({
+      coordinate: {
+        latitude: lngLat.lat,
+        longitude: lngLat.lng,
+      },
+    });
+
+    closeModal();
+  };
 
   const selectLocation = async (location: LocationAutoCompleteType) => {
     // set marker
@@ -92,14 +103,11 @@ function CommunityApplicationMap({
       ?.jumpTo({
         center: [location.coordinate.longitude, location.coordinate.latitude],
       })
-      .zoomTo(18);
+      .zoomTo(16);
 
-    // add marker's latitude & longitude to form values
-    form.setValues({
-      coordinate: {
-        latitude: location.coordinate.latitude,
-        longitude: location.coordinate.longitude,
-      },
+    setLngLat({
+      lat: location.coordinate.latitude,
+      lng: location.coordinate.longitude,
     });
 
     setSearchInput(location.value);
@@ -148,12 +156,9 @@ function CommunityApplicationMap({
         ?.setLngLat(event.lngLat)
         .addTo(mapboxMap.current as Map);
 
-      // add marker's latitude & longitude to form values
-      form.setValues({
-        coordinate: {
-          latitude: event.lngLat.lat,
-          longitude: event.lngLat.lng,
-        },
+      setLngLat({
+        lat: event.lngLat.lat,
+        lng: event.lngLat.lng,
       });
 
       fetchLocationByGeocode(event.lngLat.lat, event.lngLat.lng);
@@ -206,9 +211,12 @@ function CommunityApplicationMap({
         ?.jumpTo({
           center: [longitude, latitude],
         })
-        .zoomTo(18);
+        .zoomTo(16);
     }
   }, [form.values.coordinate.latitude, form.values.coordinate.longitude]);
+
+  console.log({ lngLat });
+  console.log(form.values);
 
   return (
     <Container fluid px={0}>
@@ -269,7 +277,7 @@ function CommunityApplicationMap({
         })}
       />
       <Center>
-        <Button type="button" color="red" mt="xl" onClick={closeModal}>
+        <Button type="button" color="red" mt="xl" onClick={confirmCoordinate}>
           Confirm location
         </Button>
       </Center>

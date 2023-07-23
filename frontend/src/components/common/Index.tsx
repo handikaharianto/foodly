@@ -11,9 +11,10 @@ function Index() {
     return <Loader />;
   }
 
-  return loggedInUser?.role === UserRole.PUBLIC ||
-    loggedInUser?.role === UserRole.COMMUNITY ? (
-    <Navigate to="/home" replace />
+  return loggedInUser?.role === UserRole.PUBLIC ? (
+    <Navigate to="/communities" replace />
+  ) : loggedInUser?.role === UserRole.COMMUNITY ? (
+    <Navigate to="/communities" replace />
   ) : (
     <Navigate to="/dashboard" replace />
   );

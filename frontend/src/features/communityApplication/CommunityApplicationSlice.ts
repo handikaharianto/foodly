@@ -72,11 +72,8 @@ export const communityApplicationSlice = createSlice({
       .addCase(createCommunityApplication.fulfilled, (state, action) => {
         state.isLoading = false;
         state.communityApplication = action.payload;
-        showNotification({
-          message:
-            "Community application form has successfully been submitted.",
-          variant: NotificationVariant.SUCCESS,
-        });
+
+        state.communityApplications.push(action.payload);
       })
       .addCase(getOneCommunityApplication.fulfilled, (state, action) => {
         state.isLoading = false;

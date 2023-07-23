@@ -14,6 +14,7 @@ export type Message = {
   chat: Types.ObjectId | Chat;
   sender: Types.ObjectId | UserWithoutPassword;
   content: string;
+  isRead: Boolean;
   createdAt: Date;
   updatedAt: Date;
 };

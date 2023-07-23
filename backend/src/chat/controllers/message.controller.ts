@@ -57,6 +57,25 @@ class MessageController {
       next(error);
     }
   };
+
+  updateManyMessages = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { receiver, isRead } = req.body;
+    const { chatId } = req.params;
+
+    try {
+      await this._messageService.updateManyMessages(
+        { chat: chatId, receiver },
+        { isRead }
+      );
+      return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+    } catch (error: any) {
+      next(error);
+    }
+  };
 }
 
 export default MessageController;

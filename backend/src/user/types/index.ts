@@ -3,9 +3,9 @@ import { Types } from "mongoose";
 import { Community } from "src/community/types";
 
 export enum UserRole {
-  PUBLIC = "PUBLIC",
-  COMMUNITY = "COMMUNITY",
-  ADMINISTRATOR = "ADMINISTRATOR",
+  PUBLIC = "public",
+  COMMUNITY = "community",
+  ADMINISTRATOR = "administrator",
 }
 
 export type User = {
@@ -13,6 +13,7 @@ export type User = {
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber: string;
   password: string;
   role: UserRole;
   community?: Types.ObjectId | Community;
@@ -24,6 +25,7 @@ export type NewUser = {
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber: string;
   password: string;
   role?: UserRole;
 };

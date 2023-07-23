@@ -1,4 +1,4 @@
-import { Tabs } from "@mantine/core";
+import { Tabs, createStyles } from "@mantine/core";
 
 import MainContent from "../components/common/MainContent";
 import { DonationStatus } from "../features/donation/types";
@@ -10,13 +10,30 @@ import {
   IconProgressCheck,
 } from "@tabler/icons-react";
 
+const useStyles = createStyles((theme) => ({
+  tabsRoot: {
+    display: "flex",
+    flexDirection: "column",
+    flexGrow: 1,
+  },
+  tabsPanel: {
+    flexGrow: 1,
+  },
+}));
+
 function DonationRequests() {
+  const { classes } = useStyles();
+
   return (
     <MainContent heading="Donation Requests">
       <Tabs
         keepMounted={false}
         defaultValue={DonationStatus.PENDING}
         color="red"
+        classNames={{
+          root: classes.tabsRoot,
+          panel: classes.tabsPanel,
+        }}
       >
         <Tabs.List mb="xl">
           <Tabs.Tab

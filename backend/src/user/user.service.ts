@@ -7,8 +7,10 @@ import {
 } from "../common/auth";
 import {
   INVALID_REFRESH_TOKEN,
+  USER_EMAIL_REGISTERED_ERROR,
   USER_EXISTS_ERROR,
   USER_NOT_FOUND,
+  USER_PHONE_NUMBER_REGISTERED_ERROR,
   USER_WRONG_PASSWORD,
 } from "../common/error-message";
 import HTTP_STATUS from "../common/http-status-code";
@@ -26,7 +28,17 @@ class UserService {
     let user = await userModel.findOne({
       email: userData.email,
     });
-    if (user) throw new ApiError(HTTP_STATUS.CONFLICT_409, USER_EXISTS_ERROR);
+    if (user)
+      throw new ApiError(HTTP_STATUS.CONFLICT_409, USER_EMAIL_REGISTERED_ERROR);
+
+    user = await userModel.findOne({
+      phoneNumber: userData.phoneNumber,
+    });
+    if (user)
+      throw new ApiError(
+        HTTP_STATUS.CONFLICT_409,
+        USER_PHONE_NUMBER_REGISTERED_ERROR
+      );
 
     const hashedPassword = await hashPassword(userData.password);
 

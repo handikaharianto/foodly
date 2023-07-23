@@ -5,6 +5,7 @@ import {
   communityAddressSchema,
   communityCoordinateSchema,
 } from "../community/community.model";
+import { capitalizeWords } from "../utils/formatting";
 
 const communityApplicationSchema = new Schema<CommunityApplication>(
   {
@@ -17,7 +18,6 @@ const communityApplicationSchema = new Schema<CommunityApplication>(
       type: String,
       required: true,
       trim: true,
-      uppercase: true,
     },
     foodPreferences: [
       {
@@ -45,6 +45,12 @@ const communityApplicationSchema = new Schema<CommunityApplication>(
   },
   { timestamps: true }
 );
+
+communityApplicationSchema.pre("save", function (next) {
+  this.name = capitalizeWords(this.name);
+
+  next();
+});
 
 const communityApplicationModel = model<CommunityApplication>(
   "CommunityApplication",

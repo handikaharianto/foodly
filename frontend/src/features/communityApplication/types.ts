@@ -2,10 +2,10 @@ import { CommunityAddress, CommunityCoordinate } from "../community/types";
 import { User } from "../user/types";
 
 export enum CommunityApplicationStatus {
-  ALL = "ALL",
-  PENDING = "PENDING",
-  ACCEPTED = "ACCEPTED",
-  REJECTED = "REJECTED",
+  ALL = "all",
+  PENDING = "pending",
+  ACCEPTED = "accepted",
+  REJECTED = "rejected",
 }
 
 export type CommunityApplication = {

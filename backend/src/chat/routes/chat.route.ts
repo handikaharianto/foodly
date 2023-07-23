@@ -74,4 +74,12 @@ chatRouter
     messageController.getOneMessage
   );
 
+chatRouter
+  .route("/:chatId/messages")
+  .put(
+    verifyJWT,
+    authorizeUser(UserRole.PUBLIC, UserRole.COMMUNITY),
+    messageController.updateManyMessages
+  );
+
 export default chatRouter;

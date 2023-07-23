@@ -9,7 +9,7 @@ const MessageSchema = new Schema<Message>(
       trim: true,
     },
     sender: {
-      type: String,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
@@ -17,6 +17,10 @@ const MessageSchema = new Schema<Message>(
       type: Schema.Types.ObjectId,
       ref: "Chat",
       required: true,
+    },
+    isRead: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

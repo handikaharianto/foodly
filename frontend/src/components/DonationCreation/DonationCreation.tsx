@@ -14,13 +14,15 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { IconRowInsertBottom, IconTrash } from "@tabler/icons-react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { createDonation } from "../../features/donation/donationSlice";
-import { DonationItem, NewDonation } from "../../features/donation/types";
+import { NewDonation } from "../../features/donation/types";
 import { communityState } from "../../features/community/communitySlice";
 import { userState } from "../../features/user/UserSlice";
 import {
   NotificationVariant,
   showNotification,
 } from "../../utils/notifications";
+import { NOTIFICATION, socket } from "../../socket/socket";
+import { UserRole } from "../../features/user/types";
 
 type FormValues = {
   items: {
@@ -50,8 +52,6 @@ function DonationCreation({ closeDonateModal }: DonationCreationProps) {
     control,
     name: "items",
   });
-  console.log({ errors });
-  console.log({ fields });
 
   const theme = useMantineTheme();
 
@@ -69,7 +69,14 @@ function DonationCreation({ closeDonateModal }: DonationCreationProps) {
 
   const submitDonation = async (data: FormValues) => {
     trigger();
-    console.log(data);
+
+    socket.emit(NOTIFICATION, {
+      content: `${loggedInUser?.firstName} ${loggedInUser?.lastName} has sent a donation request.`,
+      sender: loggedInUser?._id,
+      receiver: community?.user._id,
+      target: UserRole.COMMUNITY,
+    });
+
     await dispatch(
       createDonation({
         items: data,
@@ -149,9 +156,17 @@ function DonationCreation({ closeDonateModal }: DonationCreationProps) {
                     {...register(`items.${index}.quantity` as const, {
                       required: "Item quantity is required.",
                       valueAsNumber: true,
+                      min: 1,
                     })}
                   />
-                  <ActionIcon onClick={() => removeItem(index)} mt="1.75rem">
+                  <ActionIcon
+                    disabled={fields.length === 1}
+                    onClick={() => removeItem(index)}
+                    mt="1.75rem"
+                    sx={{
+                      visibility: fields.length === 1 ? "hidden" : "visible",
+                    }}
+                  >
                     <IconTrash size="1rem" color={theme.colors.red[7]} />
                   </ActionIcon>
                 </Group>

@@ -13,6 +13,10 @@ export const FORBIDDEN_ACCESS = "Access forbidden.";
 export const USER_EXISTS_ERROR = "User exists.";
 export const USER_NOT_FOUND = "User not found.";
 export const USER_WRONG_PASSWORD = "Incorrect password.";
+export const USER_EMAIL_REGISTERED_ERROR =
+  "Email is associated with another account.";
+export const USER_PHONE_NUMBER_REGISTERED_ERROR =
+  "Phone number is associated with another account.";
 
 /**
  * COMMUNITY
@@ -44,3 +48,8 @@ export const MESSAGE_NOT_FOUND = "Message not found.";
  * DONATION
  */
 export const DONATION_NOT_FOUND = "Donation not found.";
+
+/**
+ * NOTIFICATION
+ */
+export const NOTIFICATION_NOT_FOUND = "Notification not found.";

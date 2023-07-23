@@ -13,7 +13,8 @@ import {
   Container,
   Badge,
 } from "@mantine/core";
-import mapboxgl, { Map, Marker } from "mapbox-gl";
+import { LngLatLike, Map, Marker } from "mapbox-gl";
+import { IconMapPin } from "@tabler/icons-react";
 
 import MainContent from "../common/MainContent";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -31,10 +32,15 @@ import {
   NotificationVariant,
   showNotification,
 } from "../../utils/notifications";
-import { formatCommunityAddress } from "../../utils/community";
+import {
+  CoordinateType,
+  calculateDistance,
+  formatCommunityAddress,
+} from "../../utils/community";
 import { NewCommunity } from "../../features/community/types";
 import { updateOneUser, userState } from "../../features/user/UserSlice";
 import { UserRole } from "../../features/user/types";
+import { NOTIFICATION, socket } from "../../socket/socket";
 
 //TODO: Add community application status in UI
 
@@ -51,6 +57,7 @@ function CommunityRequestsDetails() {
   const { communityApplication, isLoading: communityAppLoading } =
     useAppSelector(communityApplicationState);
   const { isLoading: communityLoading } = useAppSelector(communityState);
+  const { loggedInUser, location } = useAppSelector(userState);
 
   const { classes } = useStyles();
 
@@ -58,9 +65,25 @@ function CommunityRequestsDetails() {
   const mapboxMap = useRef<Map | null>(null);
   const mapMarker = useRef<Marker | null>(null);
 
+  const distance = calculateDistance(
+    location as CoordinateType,
+    [
+      communityApplication?.coordinate.longitude,
+      communityApplication?.coordinate.latitude,
+    ] as CoordinateType,
+    { units: "kilometers" }
+  );
+
   // TODO: Handle Error from Promise.all
   const acceptCommunityRequest = () => {
     if (!communityApplication) return;
+
+    socket.emit(NOTIFICATION, {
+      content: "Congratulations! Your community application has been acepted!",
+      sender: loggedInUser?._id,
+      receiver: communityApplication.user._id,
+      target: UserRole.COMMUNITY,
+    });
 
     Promise.all([
       dispatch(
@@ -94,6 +117,16 @@ function CommunityRequestsDetails() {
   };
 
   const rejectCommunityRequest = () => {
+    if (!communityApplication) return;
+
+    socket.emit(NOTIFICATION, {
+      content:
+        "Your community application has been rejected. Please check and submit again later.",
+      sender: loggedInUser?._id,
+      receiver: communityApplication.user._id,
+      target: UserRole.PUBLIC,
+    });
+
     dispatch(
       updateOneCommunityApplication({
         communityApplicationId: communityApplication!._id,
@@ -131,19 +164,40 @@ function CommunityRequestsDetails() {
     );
   }, [communityApplicationId, dispatch]);
 
-  // useEffect(() => {
-  //   if (mapboxMap.current) return; // initialize map only once
-  //   mapboxMap.current = new Map({
-  //     container: "community-application-map",
-  //     style: import.meta.env.VITE_MAPBOX_MAP_STYLE,
-  //     center: [101.68904509676878, 3.136788620294628],
-  //     zoom: 12,
-  //   });
+  useEffect(() => {
+    if (communityAppLoading || communityLoading) return;
+    // if (mapboxMap.current) return; // initialize map only once
+    mapboxMap.current = new Map({
+      container: "community-application-map",
+      style: import.meta.env.VITE_MAPBOX_MAP_STYLE,
+      center: [101.68904509676878, 3.136788620294628],
+      zoom: 12,
+    });
 
-  //   mapMarker.current = new Marker({
-  //     color: "red",
-  //   });
-  // });
+    mapMarker.current = new Marker({
+      color: "red",
+    });
+
+    mapboxMap.current.scrollZoom.disable();
+    mapboxMap.current.doubleClickZoom.disable();
+    mapboxMap.current.dragPan.disable();
+  });
+
+  useEffect(() => {
+    if (communityApplication) {
+      const latLng: LngLatLike = [
+        communityApplication.coordinate.longitude,
+        communityApplication.coordinate.latitude,
+      ];
+
+      mapMarker.current = new Marker({
+        color: "red",
+      })
+        .setLngLat(latLng)
+        .addTo(mapboxMap.current as Map);
+      mapboxMap.current?.jumpTo({ center: latLng }).zoomTo(15);
+    }
+  }, [communityApplication]);
 
   return (
     <MainContent heading={"Community Request Details"}>
@@ -159,12 +213,22 @@ function CommunityRequestsDetails() {
                 align="left"
                 size="h4"
                 weight={600}
+                mb="xs"
               >
                 {communityApplication?.name}
               </Title>
-              <Text color="dimmed" size="sm">
-                {communityApplication?.type}
-              </Text>
+              <Group align="center">
+                <Badge color="red" size="md" radius="sm" variant="outline">
+                  {communityApplication?.type}
+                </Badge>
+                <Divider orientation="vertical" />
+                <Group spacing={"0.3rem"} noWrap position="left">
+                  <IconMapPin stroke={1} size={18} />
+                  <Text color="dimmed" size="xs">
+                    {distance && `${distance} km`}
+                  </Text>
+                </Group>
+              </Group>
             </Stack>
             {communityApplication?.status ===
               CommunityApplicationStatus.PENDING && (
@@ -211,7 +275,7 @@ function CommunityRequestsDetails() {
                       formatCommunityAddress(communityApplication.address)}
                   </Text>
                 </Card.Section>
-                {/* <Card.Section>
+                <Card.Section px="xl" pb="xl">
                   <Container
                     fluid
                     px={0}
@@ -224,7 +288,7 @@ function CommunityRequestsDetails() {
                       borderRadius: theme.radius.xs,
                     })}
                   />
-                </Card.Section> */}
+                </Card.Section>
               </Card>
               <Card withBorder>
                 <Card.Section withBorder p="xl">
@@ -295,7 +359,9 @@ function CommunityRequestsDetails() {
                       >
                         Phone number
                       </Title>
-                      <Text size="sm">+1 (950) 654-1602</Text>
+                      <Text size="sm">
+                        {communityApplication?.user.phoneNumber}
+                      </Text>
                     </Stack>
                   </Stack>
                 </Card.Section>

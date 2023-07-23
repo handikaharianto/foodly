@@ -8,7 +8,9 @@ export const publicAxios = axios.create({
 });
 
 export const privateAxios = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: import.meta.env.PROD
+    ? "https://foodly-app.onrender.com"
+    : "http://localhost:8000/api",
   headers: {
     "Content-Type": "application/json",
   },

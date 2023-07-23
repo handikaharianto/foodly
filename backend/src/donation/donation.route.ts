@@ -12,7 +12,7 @@ const donationController = new DonationController(new DonationService());
 donationRouter.post(
   "/",
   verifyJWT,
-  authorizeUser(UserRole.ADMINISTRATOR, UserRole.PUBLIC),
+  authorizeUser(UserRole.ADMINISTRATOR, UserRole.PUBLIC, UserRole.COMMUNITY),
   donationController.createDonation
 );
 
@@ -34,6 +34,11 @@ donationRouter
     verifyJWT,
     authorizeUser(UserRole.ADMINISTRATOR, UserRole.COMMUNITY, UserRole.PUBLIC),
     donationController.getOneDonation
+  )
+  .delete(
+    verifyJWT,
+    authorizeUser(UserRole.ADMINISTRATOR, UserRole.PUBLIC),
+    donationController.deleteOneDonation
   );
 
 export default donationRouter;

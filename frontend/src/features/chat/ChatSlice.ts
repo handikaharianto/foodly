@@ -8,7 +8,7 @@ export const createChat = executeAsyncThunk<{ users: string[] }, Chat>(
   (req) => privateAxios.post("/chats", req)
 );
 
-export const getAllChats = executeAsyncThunk<void, Chat[]>(
+export const getAllChats = executeAsyncThunk<{ searchInput?: string }, Chat[]>(
   "chat/getAllChats",
   (req) => privateAxios.post("/chats/list", req)
 );
@@ -47,6 +47,20 @@ export const getOneMessage = executeAsyncThunk<
   privateAxios.get(`/chats/${req.chatId}/messages/${req.messageId}`)
 );
 
+export const updateManyMessages = executeAsyncThunk<
+  {
+    chatId: string;
+    receiver: string;
+    isRead: boolean;
+  },
+  void
+>("chat/updateManyMessages", (req) =>
+  privateAxios.put(`/chats/${req.chatId}/messages`, {
+    receiver: req.receiver,
+    isRead: req.isRead,
+  })
+);
+
 type ChatState = {
   chats: Chat[];
   chat: Chat | null;
@@ -69,6 +83,34 @@ export const chatSlice = createSlice({
   reducers: {
     addNewMessage(state, action: PayloadAction<Message>) {
       state.messages = [...state.messages, action.payload];
+    },
+    addNewChatWithMessage(state, action: PayloadAction<Chat>) {
+      state.chats.unshift(action.payload);
+    },
+    updateChatLatestMessage(state, action: PayloadAction<Message>) {
+      if (state.chat) {
+        state.chat = { ...state.chat, latestMessage: action.payload } as Chat;
+      }
+      state.chats = state.chats.map((chat) => {
+        if (chat._id === action.payload.chat._id) {
+          return {
+            ...chat,
+            latestMessage: action.payload,
+          };
+        }
+        return chat;
+      });
+    },
+    reorderUserContacts(state, action: PayloadAction<Message>) {
+      state.chats.forEach((chat, index) => {
+        if (chat._id === action.payload.chat._id) {
+          const removedChat = state.chats.splice(index, 1)[0];
+          state.chats.unshift(removedChat);
+        }
+      });
+    },
+    clearCurrentChat(state, action) {
+      state.chat = null;
     },
   },
   extraReducers: (builder) => {
@@ -103,6 +145,9 @@ export const chatSlice = createSlice({
         state.isLoading = false;
         state.message = action.payload;
       })
+      .addCase(updateManyMessages.fulfilled, (state, action) => {
+        state.isLoading = false;
+      })
       .addMatcher(
         isAnyOf(createChat.pending, getAllChats.pending, getOneMessage.pending),
         (state, action) => {
@@ -116,7 +161,8 @@ export const chatSlice = createSlice({
           getOneChat.rejected,
           createMessage.rejected,
           getAllMessages.rejected,
-          getOneMessage.rejected
+          getOneMessage.rejected,
+          updateManyMessages.rejected
         ),
         (state, action) => {
           state.isLoading = false;
@@ -125,7 +171,13 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { addNewMessage } = chatSlice.actions;
+export const {
+  addNewMessage,
+  addNewChatWithMessage,
+  updateChatLatestMessage,
+  reorderUserContacts,
+  clearCurrentChat,
+} = chatSlice.actions;
 
 export const chatState = (state: RootState) => state.chat;
 

@@ -27,7 +27,7 @@ communityApplicationRouter
   .route("/list")
   .post(
     verifyJWT,
-    authorizeUser(UserRole.ADMINISTRATOR, UserRole.PUBLIC),
+    authorizeUser(UserRole.ADMINISTRATOR, UserRole.PUBLIC, UserRole.COMMUNITY),
     communityApplicationController.getAllCommunityApplications
   );
 

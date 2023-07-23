@@ -13,7 +13,7 @@ function EmptyState({ Icon, title, description }: EmptyStateProps) {
         <Center>
           <Icon stroke={1} size={64} />
         </Center>
-        <Title order={3} size="h4" align="center" color="gray.8">
+        <Title order={3} size="h4" align="center" color="gray.8" weight={600}>
           {title}
         </Title>
         <Text align="center" color="gray.7">

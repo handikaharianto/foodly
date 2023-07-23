@@ -14,7 +14,6 @@ import { communityApplicationState } from "../../features/communityApplication/C
 import { IconMap } from "@tabler/icons-react";
 import CommunityApplicationMap from "./CommunityApplicationMap";
 import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
 
 const useStyles = createStyles((theme) => ({
   cardGrid: {
@@ -25,9 +24,6 @@ const useStyles = createStyles((theme) => ({
 }));
 
 function CommunityApplicationAddressForm() {
-  const [showCommunityLocationError, setShowCommunityLocationError] =
-    useState<boolean>(false);
-
   const { isLoading } = useAppSelector(communityApplicationState);
 
   const { classes } = useStyles();
@@ -36,17 +32,11 @@ function CommunityApplicationAddressForm() {
 
   const form = useCommunityApplicationFormContext();
 
-  const closeMapModal = () => {
-    if (!form.values.coordinate.latitude && !form.values.coordinate.longitude) {
-      setShowCommunityLocationError(true);
-      return;
-    }
-
-    close();
-  };
+  const showCommunityLocationError =
+    form.errors["coordinate.latitude"] && form.errors["coordinate.longitude"];
 
   return (
-    <Paper withBorder p="xl" className={classes.cardGrid}>
+    <Paper withBorder p="xl" className={classes.cardGrid} radius="md">
       <div>
         <Text weight={600} mb="xs">
           Community address
@@ -97,26 +87,29 @@ function CommunityApplicationAddressForm() {
           </Text>
         </Group>
         <Button
-          variant="default"
+          variant={showCommunityLocationError ? "outline" : "default"}
           color="red"
           leftIcon={<IconMap size="0.8rem" />}
           onClick={open}
+          mb={"0.3125rem"}
         >
           Open map
         </Button>
+        {showCommunityLocationError && (
+          <Text color="red" size="xs">
+            Exact community location is required.
+          </Text>
+        )}
         <Modal
           centered
           size={800}
           opened={opened}
-          onClose={closeMapModal}
+          onClose={close}
           title={
             <Text weight={600}>What is the exact community location?</Text>
           }
         >
-          <CommunityApplicationMap
-            closeModal={closeMapModal}
-            showCommunityLocationError={showCommunityLocationError}
-          />
+          <CommunityApplicationMap closeModal={close} />
         </Modal>
       </div>
     </Paper>

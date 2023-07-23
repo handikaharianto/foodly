@@ -30,7 +30,7 @@ class MessageService {
 
   getAllMessages = async (chat: string): Promise<Message[]> => {
     const messages = await messageModel
-      .find({ chat })
+      .find({ chat }, null, { sort: "createdAt" })
       .populate<{ users: UserWithoutPassword }>({
         path: "sender",
         select: "-password",
@@ -60,6 +60,25 @@ class MessageService {
       throw new ApiError(HTTP_STATUS.NOT_FOUND_404, MESSAGE_NOT_FOUND);
 
     return chatMessage;
+  };
+
+  updateManyMessages = async (
+    filter: {
+      chat: string;
+      receiver: string;
+    },
+    updateBody: Pick<Message, "isRead">
+  ) => {
+    let query: any = {
+      chat: filter.chat,
+      sender: { $ne: filter.receiver },
+    };
+
+    await messageModel.updateMany(query, updateBody, {
+      sort: "createdAt",
+      runValidators: true,
+      new: true,
+    });
   };
 }
 

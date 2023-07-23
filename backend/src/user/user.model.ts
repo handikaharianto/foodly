@@ -2,6 +2,7 @@ import { model, Schema } from "mongoose";
 
 import { RefreshToken, User, UserRole } from "./types";
 import { REFRESH_TOKEN_EXPIRATION_TIME } from "../common/auth";
+import { capitalizeWords } from "../utils/formatting";
 
 const userSchema = new Schema<User>(
   {
@@ -22,6 +23,12 @@ const userSchema = new Schema<User>(
       lowercase: true,
       trim: true,
     },
+    phoneNumber: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
     password: {
       type: String,
       required: true,
@@ -39,6 +46,13 @@ const userSchema = new Schema<User>(
   },
   { timestamps: true }
 );
+
+userSchema.pre("save", function (next) {
+  this.firstName = capitalizeWords(this.firstName);
+  this.lastName = capitalizeWords(this.lastName);
+
+  next();
+});
 
 const refreshTokenSchema = new Schema<RefreshToken>(
   {

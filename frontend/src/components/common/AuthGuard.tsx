@@ -3,7 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { refreshAccessToken, userState } from "../../features/user/UserSlice";
-import Loader from "./LoaderWithOverlay";
+import LoaderWithOverlay from "./LoaderWithOverlay";
 import { privateAxios } from "../../api/axios";
 import { USER_OFFLINE, USER_ONLINE, socket } from "../../socket/socket";
 
@@ -15,12 +15,12 @@ const AuthGuard = () => {
   const dispatch = useAppDispatch();
 
   const logoutUser = () => {
+    socket.emit(USER_OFFLINE, loggedInUser?._id);
+    socket.disconnect();
+
     delete privateAxios.defaults.headers.common.Authorization;
     window.localStorage.clear();
     navigate("/sign-in", { replace: true });
-
-    socket.emit(USER_OFFLINE);
-    socket.disconnect();
   };
 
   useEffect(() => {
@@ -43,12 +43,15 @@ const AuthGuard = () => {
   useEffect(() => {
     if (loggedInUser?.accessToken) {
       socket.connect();
-      socket.emit(USER_ONLINE, { userId: loggedInUser._id });
+      socket.emit(USER_ONLINE, {
+        userId: loggedInUser._id,
+        userRole: loggedInUser.role,
+      });
     }
   }, [loggedInUser]);
 
   if (isLoading) {
-    return <Loader />;
+    return <LoaderWithOverlay />;
   }
 
   return <Outlet />;

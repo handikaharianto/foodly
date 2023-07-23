@@ -8,18 +8,21 @@ import {
 } from "@mantine/core";
 import { IconSend } from "@tabler/icons-react";
 import React, { useEffect } from "react";
-import { socket } from "../../socket/socket";
+import { CREATE_CHAT_WITH_MESSAGE, socket } from "../../socket/socket";
 import { useForm } from "@mantine/form";
+import { useScrollIntoView } from "@mantine/hooks";
+
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { userState } from "../../features/user/UserSlice";
 import {
-  addNewMessage,
   chatState,
   createMessage,
+  reorderUserContacts,
+  updateChatLatestMessage,
 } from "../../features/chat/ChatSlice";
-import { Message } from "../../features/chat/types";
 import SingleMessage from "./SingleMessage";
-import { useScrollIntoView } from "@mantine/hooks";
+import { getChatReceiverId } from "../../utils/chat";
+import { LoginUserResponse, User } from "../../features/user/types";
 
 const useStyles = createStyles((theme) => ({
   chatMessages: {
@@ -52,7 +55,11 @@ const useStyles = createStyles((theme) => ({
 
 const SEND_CHAT_MESSAGE = "send_chat_message";
 
-function ChatMessages() {
+type ChatMessagesProps = {
+  isLoading: boolean;
+};
+
+function ChatMessages({ isLoading }: ChatMessagesProps) {
   const { classes } = useStyles();
 
   const dispatch = useAppDispatch();
@@ -83,6 +90,23 @@ function ChatMessages() {
       const messageData = await dispatch(createMessage(message)).unwrap();
       socket.emit(SEND_CHAT_MESSAGE, messageData);
 
+      // if it's a new chat
+      if (!chat?.latestMessage) {
+        socket.emit(
+          CREATE_CHAT_WITH_MESSAGE,
+          {
+            ...chat,
+            latestMessage: messageData,
+          },
+          getChatReceiverId(
+            loggedInUser as LoginUserResponse,
+            chat?.users as User[]
+          )
+        );
+      }
+      dispatch(updateChatLatestMessage(messageData));
+      dispatch(reorderUserContacts(messageData));
+
       messageForm.reset();
 
       scrollIntoView(); // scroll to bottom
@@ -99,16 +123,10 @@ function ChatMessages() {
   };
 
   useEffect(() => {
-    const onSendChatMessage = (data: Message) => {
-      dispatch(addNewMessage(data));
-    };
-
-    socket.on(SEND_CHAT_MESSAGE, onSendChatMessage);
-
-    return () => {
-      socket.off(SEND_CHAT_MESSAGE, onSendChatMessage);
-    };
-  }, []);
+    if (!isLoading) {
+      scrollIntoView();
+    }
+  }, [isLoading, scrollIntoView, messages]);
 
   return (
     <>
@@ -128,7 +146,12 @@ function ChatMessages() {
           <div ref={targetRef}></div>
         </Container>
       </Paper>
-      <Paper withBorder p={"md"} className={classes.chatInputContainer}>
+      <Paper
+        withBorder
+        p={"md"}
+        className={classes.chatInputContainer}
+        radius="md"
+      >
         <form onSubmit={submitMessage}>
           <Group noWrap spacing={0}>
             <Textarea
