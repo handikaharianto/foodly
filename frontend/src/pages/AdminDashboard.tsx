@@ -4,7 +4,7 @@ import { Grid } from "@mantine/core";
 import Stats from "../components/AdminDashboard/Stats";
 import MainContent from "../components/common/MainContent";
 import PieChart from "../components/AdminDashboard/PieChart";
-import LineChart from "../components/AdminDashboard/LineChart";
+import AreaChart from "../components/AdminDashboard/AreaChart";
 import { useAppDispatch } from "../app/hooks";
 import {
   getCommunityStats,
@@ -38,10 +38,10 @@ function AdminDashboard() {
         <>
           <Stats />
           <Grid mt="xl" gutter="xl">
-            <Grid.Col span={7}>
-              <LineChart />
+            <Grid.Col sm={7}>
+              <AreaChart />
             </Grid.Col>
-            <Grid.Col span={5}>
+            <Grid.Col sm={5}>
               <PieChart />
             </Grid.Col>
           </Grid>

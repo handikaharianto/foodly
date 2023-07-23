@@ -17,7 +17,7 @@ export function Stats() {
     <SimpleGrid
       cols={3}
       breakpoints={[
-        { maxWidth: "md", cols: 2 },
+        { maxWidth: "lg", cols: 2 },
         { maxWidth: "xs", cols: 1 },
       ]}
     >

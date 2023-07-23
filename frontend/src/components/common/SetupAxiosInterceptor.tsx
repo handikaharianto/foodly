@@ -42,8 +42,8 @@ const SetupAxiosInterceptor = ({ children }: { children: JSX.Element }) => {
             const userData: LoginUserResponse = await response.data;
 
             window.localStorage.setItem("refreshToken", userData.refreshToken);
+            privateAxios.defaults.headers.common.Authorization = `Bearer ${userData.accessToken}`;
             error.response.config.headers.Authorization = `Bearer ${userData.accessToken}`;
-
             return privateAxios(error.config);
           } catch (error) {
             logoutUser();

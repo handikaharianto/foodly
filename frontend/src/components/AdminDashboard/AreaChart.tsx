@@ -3,7 +3,7 @@ import Chart from "react-apexcharts";
 import { useAppSelector } from "../../app/hooks";
 import { dashboardState } from "../../features/dashboard/DashboardSlice";
 
-function LineChart() {
+function AreaChart() {
   const { donationByMonths } = useAppSelector(dashboardState);
 
   const values = donationByMonths.map((donation) => donation.count);
@@ -57,4 +57,4 @@ function LineChart() {
   );
 }
 
-export default LineChart;
+export default AreaChart;

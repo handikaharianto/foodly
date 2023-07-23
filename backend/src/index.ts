@@ -23,7 +23,11 @@ export const app = express();
 export const server = http.createServer(app);
 export const io = new Server(server, {
   cors: {
-    origin: ["http://127.0.0.1:5173", "http://localhost:5173"],
+    origin: [
+      "http://127.0.0.1:5173",
+      "http://localhost:5173",
+      "https://foodly-app.onrender.com",
+    ],
   },
 });
 
@@ -33,8 +37,12 @@ const COOKIE_SECRET_KEY = config.get<string>("cookieSecretKey");
 
 app.use(
   cors({
-    origin: ["http://127.0.0.1:5173", "http://localhost:5173"],
-    credentials: true,
+    origin: [
+      "http://127.0.0.1:5173",
+      "http://localhost:5173",
+      "https://foodly-app.onrender.com",
+    ],
+    // credentials: true,`
   })
 );
 app.use(json());

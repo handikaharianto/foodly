@@ -112,6 +112,7 @@ function DonationDetails() {
                 mt="xs"
                 radius="sm"
                 variant="outline"
+                mr="auto"
               >
                 {donation?.community.type}
               </Badge>

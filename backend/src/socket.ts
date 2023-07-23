@@ -22,13 +22,8 @@ const notificationController = new NotificationController(
 
 const users: { [key: string]: string } = {};
 const connectSocket = (socket: Socket) => {
-  // console.log(`user connected ${socket.id}`);
-  // console.log(users);
-
   // receive new message
   socket.on(SEND_CHAT_MESSAGE, (message: NewMessage) => {
-    // console.log({ message });
-
     socket.broadcast.emit(SEND_CHAT_MESSAGE, message);
   });
 
@@ -38,7 +33,6 @@ const connectSocket = (socket: Socket) => {
 
   // user online
   socket.on(USER_ONLINE, ({ userId, userRole }) => {
-    // console.log(`user ${userId} is online`);
     users[userId] = socket.id;
 
     if (userRole === UserRole.ADMINISTRATOR) {
@@ -49,13 +43,11 @@ const connectSocket = (socket: Socket) => {
 
   // user offline
   socket.on(USER_OFFLINE, (userId: string) => {
-    // console.log(`user ${userId} is offline`);
     delete users[userId];
   });
 
   // user disconnected
   socket.on(SOCKET_DISCONNECTED, (userId: string) => {
-    // console.log(`${userId} disconnected`);
     delete users[userId];
   });
 

@@ -61,12 +61,18 @@ function DonationCard({
       component={Link}
       className={classes.card}
     >
-      <Group position="apart" align="stretch">
+      <Group noWrap position="apart" align="stretch">
         <Stack spacing={0}>
           <Text fz="xs" color="dimmed">
             Donated to:
           </Text>
-          <Text fz="md" transform="capitalize" weight={600}>
+          <Text
+            truncate
+            size="md"
+            transform="capitalize"
+            weight={600}
+            maw={160}
+          >
             {community.name}
           </Text>
           <Text fz="xs" color="dimmed" mt="auto">

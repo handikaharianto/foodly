@@ -37,8 +37,11 @@ const useStyles = createStyles((theme) => ({
   },
   twoColumnsWrapper: {
     display: "grid",
-    gridTemplateColumns: "repeat(2, 1fr)",
     columnGap: "1rem",
+
+    [theme.fn.largerThan("xs")]: {
+      gridTemplateColumns: "repeat(2, 1fr)",
+    },
   },
   signUpLink: {
     color: theme.colors.red[6],

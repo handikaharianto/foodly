@@ -43,7 +43,7 @@ export const loginUser = executeAsyncThunk<LoginUserRequest, LoginUserResponse>(
 export const refreshAccessToken = executeAsyncThunk<
   { refreshToken: string },
   LoginUserResponse
->("refreshAccessToken", (req) => publicAxios.post("/users/refresh", req));
+>("user/refreshAccessToken", (req) => privateAxios.post("/users/refresh", req));
 
 export const testPage = executeAsyncThunk<void, void>("user/testPage", () => {
   return privateAxios.get("/users/test");
