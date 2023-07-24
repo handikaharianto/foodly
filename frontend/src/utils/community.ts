@@ -1,4 +1,5 @@
 import * as turf from "@turf/turf";
+import { point } from "@turf/helpers";
 
 import { CommunityAddress } from "../features/community/types";
 
@@ -22,8 +23,8 @@ export const calculateDistance = (
     return;
   }
 
-  const fromCoordinate = turf.point(from);
-  const toCoordinate = turf.point(to);
+  const fromCoordinate = point(from);
+  const toCoordinate = point(to);
 
   return turf.distance(fromCoordinate, toCoordinate, options).toFixed(1);
 };
