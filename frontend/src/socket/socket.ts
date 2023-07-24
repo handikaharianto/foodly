@@ -9,6 +9,11 @@ export const USER_OFFLINE = "user_offline";
 export const NOTIFICATION = "notification";
 export const ADMIN_ROOM = "admin_room";
 
-export const socket = io("http://localhost:8000", {
-  autoConnect: false,
-});
+export const socket = io(
+  import.meta.env.PROD
+    ? "https://foodly-app-api.onrender.com"
+    : "http://localhost:8000",
+  {
+    autoConnect: false,
+  }
+);
