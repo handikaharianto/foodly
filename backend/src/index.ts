@@ -33,7 +33,6 @@ export const io = new Server(server, {
 
 const PORT = config.get<string>("port");
 const MONGO_DB_URI = config.get<string>("mongoUri");
-const COOKIE_SECRET_KEY = config.get<string>("cookieSecretKey");
 
 app.use(
   cors({

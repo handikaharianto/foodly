@@ -5,13 +5,13 @@ import { ErrorResponse } from "../utils/types";
 
 export const publicAxios = axios.create({
   baseURL: import.meta.env.PROD
-    ? "https://foodly-app-api.onrender.com"
+    ? "https://foodly-app-api.onrender.com/api"
     : "http://localhost:8000/api",
 });
 
 export const privateAxios = axios.create({
   baseURL: import.meta.env.PROD
-    ? "https://foodly-app-api.onrender.com"
+    ? "https://foodly-app-api.onrender.com/api"
     : "http://localhost:8000/api",
   headers: {
     "Content-Type": "application/json",
