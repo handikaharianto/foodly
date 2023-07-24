@@ -9,7 +9,7 @@ export const publicAxios = axios.create({
 
 export const privateAxios = axios.create({
   baseURL:
-    import.meta.env.PROD === true
+    import.meta.env.MODE === "production"
       ? "https://foodly-app-api.onrender.com"
       : "http://localhost:8000/api",
   headers: {
