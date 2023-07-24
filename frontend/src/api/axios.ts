@@ -4,14 +4,15 @@ import axios, { AxiosPromise } from "axios";
 import { ErrorResponse } from "../utils/types";
 
 export const publicAxios = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: import.meta.env.PROD
+    ? "https://foodly-app-api.onrender.com"
+    : "http://localhost:8000/api",
 });
 
 export const privateAxios = axios.create({
-  baseURL:
-    import.meta.env.MODE === "production"
-      ? "https://foodly-app-api.onrender.com"
-      : "http://localhost:8000/api",
+  baseURL: import.meta.env.PROD
+    ? "https://foodly-app-api.onrender.com"
+    : "http://localhost:8000/api",
   headers: {
     "Content-Type": "application/json",
   },
