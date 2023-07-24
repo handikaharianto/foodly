@@ -1,13 +1,12 @@
 import { Stepper, Text } from "@mantine/core";
 
 import { donationState } from "../../features/donation/donationSlice";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppSelector } from "../../app/hooks";
 import { DonationStatus } from "../../features/donation/types";
 import { IconCheck, IconX } from "@tabler/icons-react";
 
 function DonationStepper() {
-  const dispatch = useAppDispatch();
-  const { donation, isLoading } = useAppSelector(donationState);
+  const { donation } = useAppSelector(donationState);
 
   const activeStepper =
     donation?.status === DonationStatus.PENDING

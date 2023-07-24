@@ -104,7 +104,7 @@ function CommunityRequestsDetails() {
         })
       ),
     ]).then((res) => {
-      const [createCommunityRes, updateOneCommunityApplicationRes] = res;
+      const [createCommunityRes] = res;
 
       dispatch(
         updateOneUser({

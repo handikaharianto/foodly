@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import {
   MultiSelect,
   Paper,
@@ -27,11 +26,6 @@ function CommunityApplicationDetailsForm() {
   const { isLoading } = useAppSelector(communityApplicationState);
 
   const { classes } = useStyles();
-
-  const isOthersSelected = useMemo(
-    () => form.values.type === "Others",
-    [form.values.type]
-  );
 
   return (
     <Paper withBorder p="xl" className={classes.cardGrid} radius="md">
