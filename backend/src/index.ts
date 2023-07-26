@@ -26,21 +26,20 @@ export const io = new Server(server, {
     origin: [
       "http://127.0.0.1:5173",
       "http://localhost:5173",
-      "https://foodly-app-api.onrender.com",
+      "https://foodly-app.onrender.com",
     ],
   },
 });
 
 const PORT = config.get<string>("port");
 const MONGO_DB_URI = config.get<string>("mongoUri");
-const COOKIE_SECRET_KEY = config.get<string>("cookieSecretKey");
 
 app.use(
   cors({
     origin: [
       "http://127.0.0.1:5173",
       "http://localhost:5173",
-      "https://foodly-app-api.onrender.com",
+      "https://foodly-app.onrender.com",
     ],
     // credentials: true,`
   })

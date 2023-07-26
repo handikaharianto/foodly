@@ -74,7 +74,8 @@ class NotificationController {
     res: Response,
     next: NextFunction
   ) => {
-    const { isRead, receiver, target } = req.body;
+    const { isRead } = req.body;
+    const { _id: receiver } = req.user;
 
     try {
       await this._notificationService.updateManyNotifications(

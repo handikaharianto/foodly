@@ -12,7 +12,6 @@ import { useEffect, useMemo, useState } from "react";
 import {
   addNewChatWithMessage,
   chatState,
-  getAllChats,
 } from "../../features/chat/ChatSlice";
 import LoaderState from "../common/LoaderState";
 import EmptyState from "../common/EmptyState";

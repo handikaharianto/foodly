@@ -37,8 +37,9 @@ function CommunityRequests() {
     useState<CommunityApplicationStatus>(CommunityApplicationStatus.PENDING);
 
   const dispatch = useAppDispatch();
-  const { totalPages, totalData, communityApplications, isLoading } =
-    useAppSelector(communityApplicationState);
+  const { totalData, communityApplications, isLoading } = useAppSelector(
+    communityApplicationState
+  );
 
   const theme = useMantineTheme();
   const { classes } = useStyles();

@@ -1,15 +1,12 @@
 import {
-  ActionIcon,
   Avatar,
-  Divider,
   Group,
   Paper,
   Stack,
-  Text,
   Title,
   createStyles,
 } from "@mantine/core";
-import { IconLayoutSidebarLeftCollapse } from "@tabler/icons-react";
+
 import { useAppSelector } from "../../app/hooks";
 import { chatState } from "../../features/chat/ChatSlice";
 import { getSender } from "../../utils/chat";
