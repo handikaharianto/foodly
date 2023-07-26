@@ -99,7 +99,7 @@ function UserContact({ _id, latestMessage, users }: UserContactProps) {
               {setChatMessageTime(latestMessage?.createdAt as string)}
             </Text>
           </Group>
-          <Group position="apart" h="100%">
+          <Group noWrap position="apart" h="100%">
             <Text
               truncate
               color="dimmed"
@@ -111,8 +111,11 @@ function UserContact({ _id, latestMessage, users }: UserContactProps) {
             </Text>
             {!isSenderCurrentUser && latestMessage && !isLatestMessageRead && (
               <IconPointFilled
-                size={18}
-                style={{ color: theme.colors.red[7] }}
+                size={16}
+                style={{
+                  color: theme.colors.red[7],
+                  flexShrink: 0,
+                }}
               />
             )}
           </Group>
